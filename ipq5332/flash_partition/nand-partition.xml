@@ -54,8 +54,7 @@ SPDX-License-Identifier: ISC
 			<attr>0xFF</attr>
 			<attr>0x00</attr>
 			<attr>0xFF</attr>
-			<img_name type="string" bootconfig_type="1">bootconfig.bin</img_name>
-			<img_name type="string" bootconfig_type="2">bootconfig0-try.bin</img_name>
+			<img_name type="string">bootconfig.bin</img_name>
 		</partition>
 		<partition>
 			<name length="16" type="string">0:BOOTCONFIG1</name>
@@ -66,8 +65,7 @@ SPDX-License-Identifier: ISC
 			<attr>0xFF</attr>
 			<attr>0x00</attr>
 			<attr>0xFF</attr>
-			<img_name type="string" bootconfig_type="1">bootconfig.bin</img_name>
-			<img_name type="string" bootconfig_type="2">bootconfig1-try.bin</img_name>
+			<img_name type="string">bootconfig.bin</img_name>
 		</partition>
 		<partition>
 			<name length="16" type="string">0:QSEE</name>
@@ -234,8 +232,9 @@ SPDX-License-Identifier: ISC
 			<attr>0xFF</attr>
 			<attr>0x00</attr>
 			<attr>0xFF</attr>
-			<img_name type="string" mode="32" image_type="hlos">openwrt-ipq53xx-ipq53xx_32-ubi-root.img</img_name>
-			<img_name type="string" mode="64" image_type="hlos">openwrt-ipq53xx-generic-ubi-root.img</img_name>
+			<img_name type="string" mode="32">openwrt-ipq53xx-ipq53xx_32-ubi-root.img</img_name>
+			<img_name type="string" mode="64">openwrt-ipq53xx-generic-ubi-root.img</img_name>
+			<image_type>hlos</image_type>
 		</partition>
 		<partition>
 			<name length="16" type="string">rootfs_1</name>

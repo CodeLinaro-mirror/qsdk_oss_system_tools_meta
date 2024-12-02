@@ -16,7 +16,7 @@ SPDX-License-Identifier: ISC
 <!-- NOR Partition Informations -->
 		<partition>
 			<name length="16" type="string">0:XBL</name>
-			<size_kb length="4">1024</size_kb>
+			<size_kb length="4">768</size_kb>
 			<pad_kb length="2">0</pad_kb>
 			<which_flash length="2">0</which_flash>
 			<attr>0xFF</attr>
@@ -37,7 +37,7 @@ SPDX-License-Identifier: ISC
 			<img_name type="string">norplusnand-system-partition-ipq5424-m4096-p256KiB.bin</img_name>
 		</partition>
 		<partition>
-			<name length="16" type="string">0:BOOTCONFIG</name>
+			<name erase-only="true" length="16" type="string">0:BOOTCONFIG</name>
 			<size_kb length="4">128</size_kb>
 			<pad_kb length="2">0</pad_kb>
 			<which_flash length="2">0</which_flash>
@@ -45,7 +45,6 @@ SPDX-License-Identifier: ISC
 			<attr>64</attr>
 			<attr>16</attr>
 			<attr>0xFF</attr>
-			<img_name type="string">bootconfig.bin</img_name>
 		</partition>
 		<partition>
 			<name length="16" type="string">0:BOOTCONFIG1</name>
@@ -56,7 +55,6 @@ SPDX-License-Identifier: ISC
 			<attr>64</attr>
 			<attr>16</attr>
 			<attr>0xFF</attr>
-			<img_name type="string">bootconfig.bin</img_name>
 		</partition>
 		<partition>
 			<name length="16" type="string">0:QSEE</name>
@@ -88,7 +86,7 @@ SPDX-License-Identifier: ISC
 			<attr>0xFF</attr>
 			<attr>0x00</attr>
 			<attr>0xFF</attr>
-			<img_name type="string">devcfg_noac.mbn</img_name>
+			<img_name type="string">devcfg.mbn</img_name>
 		</partition>
 		<partition>
 			<name length="16" type="string">0:DEVCFG_1</name>
@@ -133,7 +131,19 @@ SPDX-License-Identifier: ISC
 		</partition>
 		<partition>
 			<name length="16" type="string">0:APPSBL</name>
-			<size_kb length="4">2048</size_kb>
+			<size_kb length="4">640</size_kb>
+			<pad_kb length="2">0</pad_kb>
+			<which_flash length="2">0</which_flash>
+			<attr>0xFF</attr>
+			<attr>0xFF</attr>
+			<attr>0x00</attr>
+			<attr>0xFF</attr>
+			<img_name mode="32" type="string">openwrt-ipq5424-ipq54xx_32-norplusnand32-u-boot_compressed.mbn</img_name>
+			<img_name mode="64" type="string">openwrt-ipq5424-generic-norplusnand-u-boot_compressed.mbn</img_name>
+		</partition>
+		<partition>
+			<name length="16" type="string">0:APPSBL_1</name>
+			<size_kb length="4">640</size_kb>
 			<pad_kb length="2">0</pad_kb>
 			<which_flash length="2">0</which_flash>
 			<attr>0xFF</attr>
@@ -161,43 +171,54 @@ SPDX-License-Identifier: ISC
 			<attr>0x00</attr>
 			<attr>0xFF</attr>
 		</partition>
+                <partition>
+                        <name length="16" type="string">0:LICENSE</name>
+                        <size_kb length="4">128</size_kb>
+                        <pad_kb length="2">0</pad_kb>
+                        <which_flash length="2">0</which_flash>
+                        <attr>0xFF</attr>
+                        <attr>0xFF</attr>
+                        <attr>0x00</attr>
+                        <attr>0xFF</attr>
+                </partition>
+                <partition>
+                        <name length="16" type="string">0:DPR</name>
+                        <size_kb length="4">64</size_kb>
+                        <pad_kb length="2">0</pad_kb>
+                        <which_flash length="2">0</which_flash>
+                        <attr>0xFF</attr>
+                        <attr>0xFF</attr>
+                        <attr>0x00</attr>
+                        <attr>0xFF</attr>
+                </partition>
 
 <!-- NAND Partition Informations -->
 		<partition>
 			<name length="16" type="string">0:TRAINING</name>
-			<size_kb length="4">512</size_kb>
-			<pad_kb length="2">512</pad_kb>
+			<size_kb length="4">256</size_kb>
+			<pad_kb length="2">256</pad_kb>
 			<which_flash length="2">1</which_flash>
 			<attr>0xFF</attr>
 			<attr>0xFF</attr>
 			<attr>0x00</attr>
 			<attr>0xFF</attr>
 		</partition>
-                <partition>
-                        <name length="16" type="string">0:LICENSE</name>
-                        <size_kb length="4">256</size_kb>
-                        <pad_kb length="2">0</pad_kb>
-                        <which_flash length="2">1</which_flash>
-                        <attr>0xFF</attr>
-                        <attr>0xFF</attr>
-                        <attr>0x00</attr>
-                        <attr>0xFF</attr>
-                </partition>
 		<partition>
 			<name length="16" type="string">rootfs</name>
-			<size_kb length="4">85504</size_kb>
+			<size_kb length="4">104960</size_kb>
 			<pad_kb length="2">0</pad_kb>
 			<which_flash length="2">1</which_flash>
 			<attr>0xFF</attr>
 			<attr>0xFF</attr>
 			<attr>0x00</attr>
 			<attr>0xFF</attr>
-			<img_name mode="32" type="string" image_type="hlos">openwrt-ipq54xx-ipq54xx_32-ubi-root-m4096-p256KiB.img</img_name>
-			<img_name mode="64" type="string" image_type="hlos">openwrt-ipq54xx-generic-ubi-root-m4096-p256KiB.img</img_name>
+			<img_name mode="32" type="string">openwrt-ipq54xx-ipq54xx_32-ubi-root-m4096-p256KiB.img</img_name>
+			<img_name mode="64" type="string">openwrt-ipq54xx-generic-ubi-root-m4096-p256KiB.img</img_name>
+			<image_type>hlos</image_type>
 		</partition>
 		<partition>
 			<name length="16" type="string">rootfs_1</name>
-			<size_kb length="4">85504</size_kb>
+			<size_kb length="4">104960</size_kb>
 			<pad_kb length="2">0</pad_kb>
 			<which_flash length="2">1</which_flash>
 			<attr>0xFF</attr>

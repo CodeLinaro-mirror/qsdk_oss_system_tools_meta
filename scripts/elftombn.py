@@ -33,6 +33,10 @@ def main():
                     action="store", type="string", dest="arch",
                     help="arch ipq5332")
 
+    parser.add_option("-s", "--sw_id",
+                    action="store", type="string", dest="sw_id",
+                    help="Software ID in Decimal")
+
     (options, args) = parser.parse_args()
     if not options.elf_inp_file1:
         parser.error('First ELF filename not given')
@@ -86,7 +90,8 @@ def main():
                     target_hash_hd,
                     image_header_secflag,
                     elf_file_name = target_phdr_elf,
-                    mbn_version = mbnv)
+                    mbn_version = mbnv,
+                    sw_id = options.sw_id)
     if rv:
         raise RuntimeError("Failed to create image header for hash segment")
 

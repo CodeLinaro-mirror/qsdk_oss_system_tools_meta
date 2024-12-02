@@ -896,7 +896,8 @@ def image_header(env, gen_dict,
                       in_code_size = None,
                       cert_chain_size_in = CERT_CHAIN_ONEROOT_MAXSIZE,
                       num_of_pages = None,
-                      mbn_version = None):
+                      mbn_version = None,
+                      sw_id = None):
 
     # Preliminary checks
     if (requires_preamble == True) and (preamble_file_name == None):
@@ -907,6 +908,9 @@ def image_header(env, gen_dict,
 
     if (in_code_size == None) and (os.path.exists(code_file_name) == False):
         raise RuntimeError("Code size unavailable, and input file does not exist")
+
+    if (sw_id == None) and (mbn_version == 7):
+        raise RuntimeError("Image Header MBN v7 requires a SW ID")
 
     # Initialize
     if in_code_size != None:
@@ -1007,7 +1011,7 @@ def image_header(env, gen_dict,
         boot_header.qti_cert_chain_size = 0
         boot_header.sig_size = signature_size
         boot_header.cert_chain_size = cert_chain_size
-        boot_header.sw_id = 0x9
+        boot_header.sw_id = int(sw_id)
         # sha384 algo
         boot_header.hash_table_algo = 3
 

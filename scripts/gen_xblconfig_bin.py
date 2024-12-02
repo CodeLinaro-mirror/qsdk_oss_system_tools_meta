@@ -51,14 +51,8 @@ def main():
 
     machid = None
     board = None
-    memory = None
     arch = root.find(".//data[@type='ARCH']/SOC")
     ARCH_NAME = str(arch.text)
-
-    if memory_profile != "default":
-        if memory_profile != '256' and memory_profile != '512':
-            print("memory_profile should be 256/512")
-            return -1
 
     srcDir = '$$/' + ARCH_NAME + '/xblconfig_json'
     srcDir = srcDir.replace('$$', cdir)
@@ -97,18 +91,21 @@ def main():
 
     if ARCH_NAME != "ipq806x":
         entries = root.findall("./data[@type='MACH_ID_BOARD_MAP']/entry")
-        memory_first = entries[0].find(".//memory")
 
         for entry in entries:
+            memory = None
             machid = entry.find(".//machid")
             board = entry.find(".//board")
-            memory = entry.find(".//memory")
+            if memory_profile != "default":
+                memory = entry.find(".//memory_" + memory_profile)
 
-            if memory_profile == "default":
-                name_suffix =  board.text + "_" + memory.text
-            else:
+            if memory == None:
+                memory = entry.find(".//memory")
+
+            if memory_profile == '256' or memory_profile == '512':
                 name_suffix =  board.text + "_" + memory.text + "_LM" + memory_profile
-
+            else:
+                name_suffix =  board.text + "_" + memory.text
 
             cdt_bin =  "cdt-" + name_suffix + ".bin"
 
@@ -149,7 +146,7 @@ def main():
             #elf2mbn conversion
             bootconfig_path = cdir +'/scripts' + '/elftombn.py'
             print("Converting xbconfig elf to mbn ...")
-            cmd = ['python', bootconfig_path, '-a', ARCH_NAME, '-f', outfile_xblconfig, '-o', cdir + "/" + out_xblconfig + ".elf", '-v', "7"]
+            cmd = ['python', bootconfig_path, '-a', ARCH_NAME, '-f', outfile_xblconfig, '-o', cdir + "/" + out_xblconfig + ".elf", '-v', "7", '-s', "37"]
             print(cmd)
             prc = subprocess.Popen(cmd, cwd=cdir)
             prc.wait()

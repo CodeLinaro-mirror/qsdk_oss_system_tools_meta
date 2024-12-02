@@ -55,7 +55,7 @@ SPDX-License-Identifier: ISC
 			<attr>0xFF</attr>
 			<attr>0x00</attr>
 			<attr>0xFF</attr>
-			<img_name type="string">devcfg_noac.mbn</img_name>
+			<img_name type="string">devcfg.mbn</img_name>
 		</partition>
 		<partition>
 			<name length="16" type="string">0:XBLCONFIG</name>

@@ -11,19 +11,29 @@ SPDX-License-Identifier: ISC
 		<SOC>ipq5424</SOC>
 	</data>
 
+	<data type="TINY_NOR_PARAMETER">
+		<entry layout="default">
+			<page_size>256</page_size>
+			<pages_per_block>16</pages_per_block>
+			<total_block>4096</total_block>
+		</entry>
+	</data>
+
 	<data type="NOR_PARAMETER">
-		<page_size>256</page_size>
-		<pages_per_block>256</pages_per_block>
-		<total_block>256</total_block>
+		<entry layout="default">
+			<page_size>256</page_size>
+			<pages_per_block>256</pages_per_block>
+			<total_block>256</total_block>
+		</entry>
 	</data>
 
 	<data type="NAND_PARAMETER">
-		<entry type="2k">
+		<entry type="2k" layout="default">
 			<page_size>2048</page_size>
 			<pages_per_block>64</pages_per_block>
 			<total_block>4096</total_block>
 		</entry>
-		<entry type="4k">
+		<entry type="4k" layout="default">
 			<page_size>4096</page_size>
 			<pages_per_block>64</pages_per_block>
 			<total_block>4096</total_block>
@@ -31,75 +41,376 @@ SPDX-License-Identifier: ISC
 	</data>
 
 	<data type="EMMC_PARAMETER">
-		<total_block>15269888</total_block>
-		<partition_mbn>gpt_main0.bin</partition_mbn>
-		<partition_mbn_backup>gpt_backup0.bin</partition_mbn_backup>
+		<entry layout="default">
+			<entry physical_partition="0">
+				<total_block>15269888</total_block>
+				<partition_mbn>emmc_gpt_main.bin</partition_mbn>
+				<partition_mbn_backup>emmc_gpt_backup.bin</partition_mbn_backup>
+			</entry>
+		</entry>
+		<entry layout="vendor">
+			<entry physical_partition="0" gpt_type="user">
+				<total_block>15269888</total_block>
+				<partition_mbn>emmc_user_gpt_main.bin</partition_mbn>
+				<partition_mbn_backup>emmc_user_gpt_backup.bin</partition_mbn_backup>
+			</entry>
+			<entry physical_partition="1" gpt_type="boot0">
+				<total_block>8192</total_block>
+				<partition_mbn>emmc_boot_gpt_main.bin</partition_mbn>
+				<partition_mbn_backup>emmc_boot_gpt_backup.bin</partition_mbn_backup>
+			</entry>
+		</entry>
 	</data>
 
 	<data type="NORPLUSNAND_PARAMETER">
-		<page_size>256</page_size>
-		<pages_per_block>256</pages_per_block>
-		<total_block>256</total_block>
+		<entry type="2k" layout="default">
+			<page_size>256</page_size>
+			<pages_per_block>256</pages_per_block>
+			<total_block>256</total_block>
+			<nand_page_size>2048</nand_page_size>
+			<nand_pages_per_block>64</nand_pages_per_block>
+			<nand_total_block>4096</nand_total_block>
+		</entry>
+		<entry type="4k" layout="default">
+			<page_size>256</page_size>
+			<pages_per_block>256</pages_per_block>
+			<total_block>256</total_block>
+			<nand_page_size>4096</nand_page_size>
+			<nand_pages_per_block>64</nand_pages_per_block>
+			<nand_total_block>4096</nand_total_block>
+		</entry>
 	</data>
 
 	<data type="NORPLUSEMMC_PARAMETER">
-		<page_size>256</page_size>
-		<page_size_flash>512</page_size_flash>
-		<pages_per_block>256</pages_per_block>
-		<total_block>256</total_block>
-		<partition_mbn>gpt_main1.bin</partition_mbn>
-		<partition_mbn_backup>gpt_backup1.bin</partition_mbn_backup>
+		<entry layout="default">
+			<entry physical_partition="0">
+				<page_size>256</page_size>
+				<page_size_flash>512</page_size_flash>
+				<pages_per_block>256</pages_per_block>
+				<total_block>256</total_block>
+				<emmc_total_block>15269888</emmc_total_block>
+				<partition_mbn>nemmc_gpt_main.bin</partition_mbn>
+				<partition_mbn_backup>nemmc_gpt_backup.bin</partition_mbn_backup>
+			</entry>
+		</entry>
 	</data>
 
 	<data type="NORPLUSNAND-GPT_PARAMETER">
-		<total_block>8192</total_block>
-		<partition_mbn>nor_gpt_main0.bin</partition_mbn>
-		<partition_mbn_backup>nor_gpt_backup0.bin</partition_mbn_backup>
+		<entry type="2k" layout="default">
+			<entry physical_partition="0">
+				<total_block>8192</total_block>
+				<partition_mbn>norplusnand_gpt_main.bin</partition_mbn>
+				<partition_mbn_backup>norplusnand_gpt_backup.bin</partition_mbn_backup>
+			</entry>
+		</entry>
+		<entry type="4k" layout="default">
+			<entry physical_partition="2">
+				<total_block>8192</total_block>
+				<partition_mbn>norplusnand_4k_gpt_main.bin</partition_mbn>
+				<partition_mbn_backup>norplusnand_4k_gpt_backup.bin</partition_mbn_backup>
+			</entry>
+		</entry>
 	</data>
 
 	<data type="NORPLUSEMMC-GPT_PARAMETER">
-		<total_block>8192</total_block>
-		<partition_mbn>nor_gpt_main1.bin</partition_mbn>
-		<partition_mbn_backup>nor_gpt_backup1.bin</partition_mbn_backup>
+		<entry layout="default">
+			<entry physical_partition="1">
+				<total_block>8192</total_block>
+				<partition_mbn>norplusemmc_gpt_main.bin</partition_mbn>
+				<partition_mbn_backup>norplusemmc_gpt_backup.bin</partition_mbn_backup>
+			</entry>
+		</entry>
 	</data>
 
 	<data type="MACH_ID_BOARD_MAP">
 		<entry>
 			<machid>0xF060000</machid>
 			<board>MA-EMU</board>
-			<memory>512M32_DDR4</memory>
+			<memory>256M32_DDR4</memory>
+			<memory_2048>512M32_DDR4</memory_2048>
+			<memory_8192>2048M32_DDR4</memory_8192>
+			<layouts>default,vendor</layouts>
+			<fw_override>
+				<profile-8192 layouts="default,vendor">
+					<xblconfig>xblconfig-MA-EMU_2048M32_DDR4.elf</xblconfig>
+				</profile-8192>
+				<profile-2048 layouts="default,vendor">
+					<xblconfig>xblconfig-MA-EMU_512M32_DDR4.elf</xblconfig>
+				</profile-2048>
+				<profile-default layouts="default,vendor">
+					<xblconfig>xblconfig-MA-EMU_256M32_DDR4.elf</xblconfig>
+				</profile-default>
+				<profile-512 layouts="default,vendor">
+					<xblconfig>xblconfig-MA-EMU_256M32_DDR4_LM512.elf</xblconfig>
+				</profile-512>
+			</fw_override>
 		</entry>
-	</data>
+		<entry>
+			<machid>0x8070001</machid>
+			<board>AP-MR01.1</board>
+			<memory>256M32_DDR4</memory>
+			<memory_2048>512M32_DDR4</memory_2048>
+			<memory_8192>2048M32_DDR4</memory_8192>
+			<layouts>default,vendor</layouts>
+			<fw_override>
+				<profile-8192 layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR01.1_2048M32_DDR4.elf</xblconfig>
+				</profile-8192>
+				<profile-2048 layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR01.1_512M32_DDR4.elf</xblconfig>
+				</profile-2048>
+				<profile-default layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR01.1_256M32_DDR4.elf</xblconfig>
+				</profile-default>
+				<profile-512 layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR01.1_256M32_DDR4_LM512.elf</xblconfig>
+				</profile-512>
+			</fw_override>
 
-	<data type="COPY_IMAGES">
-		<image type="BOOT">
-			<entry><image_path>/boot_images/QcomPkg/IPQ5332Pkg/Bin/5332/LA/DEBUG/sign/default/sbl1/xbl.elf</image_path></entry>
-			<entry><image_path>/boot_images/QcomPkg/IPQ5332Pkg/Bin/5332/LA/DEBUG/sign/default/sbl1/xbl_nand.elf</image_path></entry>
-			<entry><image_path>/boot_images/Build/IPQ5332_Loader/DEBUG_CLANG40LINUX/ARM/QcomPkg/XBLLoader/XBLLoader/DEBUG/XBLLoader.dll</image_path></entry>
-			<entry><image_path>/boot_images/core/bsp/tools/flash/partition_tool_exe/build/partition_tool</image_path></entry>
-			<entry><image_path>/boot_images/core/bsp/tools/flash/bootconfig_exe/build/bootconfig_tool</image_path></entry>
-		</image>
-		<image type="TZ">
-			<entry><image_path>/trustzone_images/build/ms/bin/OAPAANAA/signed/tz.mbn</image_path></entry>
-			<entry><image_path>/trustzone_images/build/ms/bin/OAPAANAA/signed/devcfg.mbn</image_path></entry>
-			<entry><image_path>/trustzone_images/build/ms/bin/OAPAANAA/signed/devcfg_noac.mbn</image_path></entry>
-			<entry><image_path>/trustzone_images/build/ms/bin/OAPAANAA/signed/devcfg_nosmmu.mbn</image_path></entry>
-		</image>
-		<image type="NHSS32">
-			<entry><image_path>/apss_proc/out/ipq53xx_32/openwrt-ipq5332-u-boot.mbn</image_path></entry>
-			<entry><image_path>/apss_proc/out/ipq53xx_32/openwrt-ipq53xx-ipq53xx_32-qcom_mixx-fit-uImage.itb</image_path></entry>
-			<entry><image_path>/apss_proc/out/ipq53xx_32/openwrt-ipq53xx-ipq53xx_32-squashfs-root.img</image_path></entry>
-			<entry><image_path>/apss_proc/out/ipq53xx_32/openwrt-ipq53xx-ipq53xx_32-ubi-root.img</image_path></entry>
-			<entry><image_path>/apss_proc/out/pack.py</image_path></entry>
-		</image>
-		<image type="NHSS64">
-			<entry><image_path>/apss_proc/out/ipq53xx_64/openwrt-ipq53xx-generic-qcom_mixx-fit-uImage.itb</image_path></entry>
-			<entry><image_path>/apss_proc/out/ipq53xx_64/openwrt-ipq53xx-generic-squashfs-root.img</image_path></entry>
-			<entry><image_path>/apss_proc/out/ipq53xx_64/openwrt-ipq53xx-generic-ubi-root.img</image_path></entry>
-			<entry><image_path>/apss_proc/out/pack.py</image_path></entry>
-		</image>
-		<image type="WIFIFW">
-			<entry><image_path>/wlan_proc/build/ms/bin/5332.wlanfw.eval/FW_IMAGES/wifi_fw_ipq5332_squashfs.img</image_path></entry>
-		</image>
+		</entry>
+		<entry>
+			<machid>0x8070000</machid>
+			<board>AP-MR01.1-C2</board>
+			<memory>256M32_DDR4</memory>
+			<memory_2048>512M32_DDR4</memory_2048>
+			<memory_8192>2048M32_DDR4</memory_8192>
+			<layouts>default,vendor</layouts>
+			<fw_override>
+				<profile-8192 layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR01.1-C2_2048M32_DDR4.elf</xblconfig>
+				</profile-8192>
+				<profile-2048 layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR01.1-C2_512M32_DDR4.elf</xblconfig>
+				</profile-2048>
+				<profile-default layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR01.1-C2_256M32_DDR4.elf</xblconfig>
+				</profile-default>
+				<profile-512 layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR01.1-C2_256M32_DDR4_LM512.elf</xblconfig>
+				</profile-512>
+			</fw_override>
+
+		</entry>
+		<entry>
+			<machid>0x8071100</machid>
+			<board>AP-MR02.1</board>
+			<memory>256M32_DDR4</memory>
+			<memory_2048>512M32_DDR4</memory_2048>
+			<memory_8192>2048M32_DDR4</memory_8192>
+			<layouts>default,vendor</layouts>
+			<fw_override>
+				<profile-8192 layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR02.1_2048M32_DDR4.elf</xblconfig>
+				</profile-8192>
+				<profile-2048 layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR02.1_512M32_DDR4.elf</xblconfig>
+				</profile-2048>
+				<profile-default layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR02.1_256M32_DDR4.elf</xblconfig>
+				</profile-default>
+				<profile-512 layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR02.1_256M32_DDR4_LM512.elf</xblconfig>
+				</profile-512>
+			</fw_override>
+		</entry>
+		<entry>
+			<machid>0x8070100</machid>
+			<board>AP-MR02.1-C2</board>
+			<memory>256M32_DDR4</memory>
+			<memory_2048>512M32_DDR4</memory_2048>
+			<memory_8192>2048M32_DDR4</memory_8192>
+			<layouts>default,vendor</layouts>
+			<fw_override>
+				<profile-8192 layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR02.1-C2_2048M32_DDR4.elf</xblconfig>
+				</profile-8192>
+				<profile-2048 layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR02.1-C2_512M32_DDR4.elf</xblconfig>
+				</profile-2048>
+				<profile-default layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR02.1-C2_256M32_DDR4.elf</xblconfig>
+				</profile-default>
+				<profile-512 layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR02.1-C2_256M32_DDR4_LM512.elf</xblconfig>
+				</profile-512>
+			</fw_override>
+		</entry>
+		<entry>
+			<machid>0x8071101</machid>
+			<board>AP-MR02.2</board>
+			<memory>256M32_DDR4</memory>
+			<memory_2048>512M32_DDR4</memory_2048>
+			<memory_8192>2048M32_DDR4</memory_8192>
+			<layouts>default,vendor</layouts>
+			<fw_override>
+				<profile-8192 layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR02.2_2048M32_DDR4.elf</xblconfig>
+				</profile-8192>
+				<profile-2048 layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR02.2_512M32_DDR4.elf</xblconfig>
+				</profile-2048>
+				<profile-default layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR02.2_256M32_DDR4.elf</xblconfig>
+				</profile-default>
+				<profile-512 layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR02.2_256M32_DDR4_LM512.elf</xblconfig>
+				</profile-512>
+			</fw_override>
+		</entry>
+		<entry>
+			<machid>0x8070101</machid>
+			<board>AP-MR02.2-C2</board>
+			<memory>256M32_DDR4</memory>
+			<memory_2048>512M32_DDR4</memory_2048>
+			<memory_8192>2048M32_DDR4</memory_8192>
+			<layouts>default,vendor</layouts>
+			<fw_override>
+				<profile-8192 layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR02.2-C2_2048M32_DDR4.elf</xblconfig>
+				</profile-8192>
+				<profile-2048 layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR02.2-C2_512M32_DDR4.elf</xblconfig>
+				</profile-2048>
+				<profile-default layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR02.2-C2_256M32_DDR4.elf</xblconfig>
+				</profile-default>
+				<profile-512 layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR02.2-C2_256M32_DDR4_LM512.elf</xblconfig>
+				</profile-512>
+			</fw_override>
+		</entry>
+		<entry>
+			<machid>0x8071110</machid>
+			<board>AP-MR02.1-RFFE</board>
+			<memory>256M32_DDR4</memory>
+			<memory_2048>512M32_DDR4</memory_2048>
+			<memory_8192>2048M32_DDR4</memory_8192>
+			<layouts>default,vendor</layouts>
+			<fw_override>
+				<profile-8192 layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR02.1-RFFE_2048M32_DDR4.elf</xblconfig>
+				</profile-8192>
+				<profile-2048 layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR02.1-RFFE_512M32_DDR4.elf</xblconfig>
+				</profile-2048>
+				<profile-default layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR02.1-RFFE_256M32_DDR4.elf</xblconfig>
+				</profile-default>
+				<profile-512 layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR02.1-RFFE_256M32_DDR4_LM512.elf</xblconfig>
+				</profile-512>
+			</fw_override>
+		</entry>
+		<entry>
+			<machid>0x8070110</machid>
+			<board>AP-MR02.3</board>
+			<memory>256M32_DDR4</memory>
+			<memory_2048>512M32_DDR4</memory_2048>
+			<memory_8192>2048M32_DDR4</memory_8192>
+			<layouts>default,vendor</layouts>
+			<fw_override>
+				<profile-8192 layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR02.3_2048M32_DDR4.elf</xblconfig>
+				</profile-8192>
+				<profile-2048 layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR02.3_512M32_DDR4.elf</xblconfig>
+				</profile-2048>
+				<profile-default layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR02.3_256M32_DDR4.elf</xblconfig>
+				</profile-default>
+				<profile-512 layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR02.3_256M32_DDR4_LM512.elf</xblconfig>
+				</profile-512>
+			</fw_override>
+		</entry>
+		<entry>
+			<machid>0x8071111</machid>
+			<board>AP-MR02.2-RFFE</board>
+			<memory>256M32_DDR4</memory>
+			<memory_2048>512M32_DDR4</memory_2048>
+			<memory_8192>2048M32_DDR4</memory_8192>
+			<layouts>default,vendor</layouts>
+			<fw_override>
+				<profile-8192 layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR02.2-RFFE_2048M32_DDR4.elf</xblconfig>
+				</profile-8192>
+				<profile-2048 layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR02.2-RFFE_512M32_DDR4.elf</xblconfig>
+				</profile-2048>
+				<profile-default layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR02.2-RFFE_256M32_DDR4.elf</xblconfig>
+				</profile-default>
+				<profile-512 layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR02.2-RFFE_256M32_DDR4_LM512.elf</xblconfig>
+				</profile-512>
+			</fw_override>
+		</entry>
+		<entry>
+			<machid>0x8070111</machid>
+			<board>AP-MR02.2-RFFE-C2</board>
+			<memory>256M32_DDR4</memory>
+			<memory_2048>512M32_DDR4</memory_2048>
+			<memory_8192>2048M32_DDR4</memory_8192>
+			<layouts>default,vendor</layouts>
+			<fw_override>
+				<profile-8192 layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR02.2-RFFE-C2_2048M32_DDR4.elf</xblconfig>
+				</profile-8192>
+				<profile-2048 layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR02.2-RFFE-C2_512M32_DDR4.elf</xblconfig>
+				</profile-2048>
+				<profile-default layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR02.2-RFFE-C2_256M32_DDR4.elf</xblconfig>
+				</profile-default>
+				<profile-512 layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR02.2-RFFE-C2_256M32_DDR4_LM512.elf</xblconfig>
+				</profile-512>
+			</fw_override>
+		</entry>
+		<entry>
+			<machid>0x8070200</machid>
+			<board>AP-MR03.1</board>
+			<memory>256M16_DDR3</memory>
+			<layouts>default,vendor</layouts>
+			<fw_override>
+				<profile-default layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR03.1_256M16_DDR3.elf</xblconfig>
+				</profile-default>
+				<profile-512 layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR03.1_256M16_DDR3_LM512.elf</xblconfig>
+				</profile-512>
+				<profile-256 layouts="default">
+					<xbl flash="nand" mode="32">xbl_s_nand_atf.melf</xbl>
+					<xbl flash="nand-4k" mode="32">xbl_s_nand_4K_atf.melf</xbl>
+					<xbl flash="norplusnand,norplusnand-gpt,norplusnand-4k,norplusnand-4k-gpt" mode="32">xbl_s_atf.melf</xbl>
+					<xblconfig>xblconfig-AP-MR03.1_256M16_DDR3_LM256.elf</xblconfig>
+					<qsee>bl31.mbn</qsee>
+					<appsbl flash="nand,nand-4k" mode="32">openwrt-ipq5424-ipq54xx_32-tiny_nand32-u-boot_compressed.mbn</appsbl>
+					<appsbl flash="norplusnand,norplusnand-gpt,norplusnand-4k,norplusnand-4k-gpt" mode="32">openwrt-ipq5424-ipq54xx_32-tiny_norplusnand32-u-boot_compressed.mbn</appsbl>
+				</profile-256>
+			</fw_override>
+		</entry>
+		<entry>
+			<machid>0x1070000</machid>
+			<board>DB-MR01.1</board>
+			<memory>256M32_DDR4</memory>
+			<memory_2048>512M32_DDR4</memory_2048>
+			<memory_8192>2048M32_DDR4</memory_8192>
+			<layouts>default,vendor</layouts>
+			<fw_override>
+				<profile-8192 layouts="default,vendor">
+					<xblconfig>xblconfig-DB-MR01.1_2048M32_DDR4.elf</xblconfig>
+				</profile-8192>
+				<profile-2048 layouts="default,vendor">
+					<xblconfig>xblconfig-DB-MR01.1_512M32_DDR4.elf</xblconfig>
+				</profile-2048>
+				<profile-default layouts="default,vendor">
+					<xblconfig>xblconfig-DB-MR01.1_256M32_DDR4.elf</xblconfig>
+				</profile-default>
+				<profile-512 layouts="default,vendor">
+					<xblconfig>xblconfig-DB-MR01.1_256M32_DDR4_LM512.elf</xblconfig>
+				</profile-512>
+			</fw_override>
+		</entry>
 	</data>
 </config>

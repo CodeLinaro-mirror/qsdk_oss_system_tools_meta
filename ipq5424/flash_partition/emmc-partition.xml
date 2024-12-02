@@ -43,7 +43,8 @@ SPDX-License-Identifier: ISC
 		type="2B7D04FF-31F0-4E6A-BE9A-DA50314DAD58"
 		bootable="false"
 		readonly="false"
-		filename="bootconfig.bin"
+		filename=""
+		erase-only="true"
 		/>
 	<partition
 		label="0:BOOTCONFIG1"
@@ -51,7 +52,7 @@ SPDX-License-Identifier: ISC
 		type="7BD25378-5C39-11E5-8A77-40A8F05F1418"
 		bootable="false"
 		readonly="false"
-		filename="bootconfig.bin"
+		filename=""
 		/>
 	<partition
 		label="0:QSEE"
@@ -75,7 +76,7 @@ SPDX-License-Identifier: ISC
 		type="F65D4B16-343D-4E25-AAFC-BE99B6556A6D"
 		bootable="false"
 		readonly="false"
-		filename="devcfg_noac.mbn"
+		filename="devcfg.mbn"
 		/>
 	<partition
 		label="0:DEVCFG_1"
@@ -111,17 +112,17 @@ SPDX-License-Identifier: ISC
 		/>
 	<partition
 		label="0:APPSBL"
-		size_in_kb="2048"
+		size_in_kb="768"
 		type="400FFDCD-22E0-47E7-9A23-F16ED9382388"
 		bootable="false"
 		readonly="false"
 		diff_files = "true"
-		filename_32="openwrt-ipq5424-ipq5424_32-mmc32-u-boot.mbn"
-		filename_64="openwrt-ipq5424-generic-mmc-u-boot.mbn"
+		filename_32="openwrt-ipq5424-ipq54xx_32-mmc32-u-boot_compressed.mbn"
+		filename_64="openwrt-ipq5424-generic-mmc-u-boot_compressed.mbn"
 		/>
 	<partition
 		label="0:APPSBL_1"
-		size_in_kb="2048"
+		size_in_kb="768"
 		type="C126787D-3EEF-444C-9E43-FEFF3F103E22"
 		bootable="false"
 		readonly="false"
@@ -151,19 +152,27 @@ SPDX-License-Identifier: ISC
                 readonly="false"
                 filename=""
                 />
+        <partition
+                label="0:DPR"
+                size_in_kb="256"
+                type="e6e98da2-e22a-4d12-ab33-169e7deaa507"
+                bootable="false"
+                readonly="false"
+                filename=""
+                />
 	<partition
 		label="0:WIFIFW"
-		size_in_kb="10240"
+		size_in_kb="16384"
 		type="888d8069-8d27-40a8-95a9-6006e1ce9b3b"
 		bootable="false"
 		readonly="false"
 		image_type = "hlos"
 		optional="true"
-		filename=""
+		filename="wifi_fw_ipq5424_qcn9224_v2_squashfs.img"
 		/>
 	<partition
 		label="0:WIFIFW_1"
-		size_in_kb="10240"
+		size_in_kb="16384"
 		type="981476f5-5cd7-42db-9ce9-87b3a31aadbd"
 		bootable="false"
 		readonly="false"
@@ -208,79 +217,5 @@ SPDX-License-Identifier: ISC
 		filename=""
 		/>
 	</physical_partition>
-
-<!-- This is physical partition 1 -->
-	<physical_partition ref="norplusemmc">
-	<!-- NOTE: Define information for each partition, which will be created in order listed here -->
-	<!-- NOTE: Place all "readonly=true" partitions side by side for optimum space usage -->
-	<!-- NOTE: If OPTIMIZE_READONLY_PARTITIONS=true, then partitions won't be in the order listed here -->
-	<!--       they will instead be placed side by side at the beginning of the disk -->
-        <partition
-                label="0:LICENSE"
-                size_in_kb="256"
-                type="a7a81a61-66ce-c908-f4a2-82d39d2aff57"
-                bootable="false"
-                readonly="false"
-                filename=""
-		/>
-	<partition
-		label="0:WIFIFW"
-		size_in_kb="10240"
-		type="5911fd72-35be-424e-975d-69c957ad3a43"
-		bootable="false"
-		readonly="false"
-		image_type = "hlos"
-		optional="true"
-		filename=""
-		/>
-	<partition
-		label="0:WIFIFW_1"
-		size_in_kb="10240"
-		type="a640a4e3-6aeb-4d83-81a0-dfeae6b7d1a5"
-		bootable="false"
-		readonly="false"
-		filename=""
-		/>
-	<partition
-		label="0:HLOS"
-		size_in_kb="7168"
-		type="B51F2982-3EBE-46DE-8721-EE641E1F9997"
-		bootable="false"
-		readonly="false"
-		diff_files = "true"
-		image_type = "hlos"
-		filename_32="openwrt-ipq54xx-ipq54xx_32-qcom_maxx-fit-uImage.itb"
-		filename_64="openwrt-ipq54xx-generic-qcom_maxx-fit-uImage.itb"
-		/>
-	<partition
-		label="0:HLOS_1"
-		size_in_kb="7168"
-		type="A71DA577-7F81-4626-B4A2-E377F9174525"
-		bootable="false"
-		readonly="false"
-		filename=""
-		/>
-	<partition
-		label="rootfs"
-		size_in_kb="124928"
-		type="98D2248D-7140-449F-A954-39D67BD6C3B4"
-		bootable="false"
-		readonly="false"
-		diff_files="true"
-		image_type = "hlos"
-		filename_32="openwrt-ipq54xx-ipq54xx_32-squashfs-root.img"
-		filename_64="openwrt-ipq54xx-generic-squashfs-root.img"
-		/>
-	<partition
-		label="rootfs_1"
-		size_in_kb="124928"
-		type="5647B280-DC2A-485D-9913-CF53AC40FA32"
-		bootable="false"
-		readonly="false"
-		filename=""
-		/>
-	</physical_partition>
-
-
 </configuration>
 

@@ -59,7 +59,11 @@ def process_bootconfig(config_file):
     arch = root.find(".//data[@type='ARCH']/SOC")
     ARCH_NAME = str(arch.text)
 
-    if ARCH_NAME == "ipq5018" or ARCH_NAME == "ipq5332" or ARCH_NAME == "ipq5424":
+    if ARCH_NAME == "ipq5424" or ARCH_NAME == "ipq5332":
+        nand_param = root.find(".//data[@type='NOR_PARAMETER']/entry")
+        nand_pagesize = int(nand_param.find('page_size').text)
+        nand_pages_per_block = int(nand_param.find('pages_per_block').text)
+    elif ARCH_NAME == "ipq5018":
         # IPQ5018 and IPQ5332 flash optimization needs bootconfig.bin to fit in 64KB
         # Hence using NOR params - blocksize will be 64 KB
         nand_param = root.find(".//data[@type='NOR_PARAMETER']")

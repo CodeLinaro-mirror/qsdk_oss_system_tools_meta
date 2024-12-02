@@ -8,7 +8,6 @@ import itertools
 import os
 import subprocess
 import sys
-import shutil
 from getopt import getopt
 from getopt import GetoptError
 
@@ -193,32 +192,54 @@ def gen_melf():
     global configDir
     global memory
     global dtcDir
-
+    
+    xbl_img_dict = {'xbl_sc.elf'           : 'xbl_s.melf',
+                    'xbl_sc_atf.elf'       : 'xbl_s_atf.melf',
+                    'xbl_sc_flashless.elf' : 'xbl_s_flashless.melf',
+                    'xbl_sc_devprg.elf'    : 'xbl_s_devprg.melf'}
+    
     # create melf
     script_path = inDir + '/create_multielf.py'
-    prc = subprocess.Popen(['python', script_path, '-f', inDir+"/xbl_sc.elf"+","+ inDir+"/tmel-ipq54xx-patch.elf", '-o', inDir+"/xbl_s.melf"], cwd=cdir)
-    prc.wait()
-    if prc.returncode != 0:
-        print('ERROR: unable to create xbl_s.melf binary')
-        return prc.returncode
-
-    # create nand 2k melf
+    for xbl_elf, xbl_melf in xbl_img_dict.items():
+        # XBL ATF is optional, skip if not present in input directory
+        if 'atf' in xbl_elf and os.path.isfile(inDir+"/"+xbl_elf) == False:
+            print('Optional image - xbl_sc_atf.elf file not present, skipping xbl_s_atf.melf binary')
+        else:
+            prc = subprocess.Popen(['python', script_path, '-f', inDir+"/"+xbl_elf+","+ inDir+"/tmel-ipq54xx-patch.elf", '-o', inDir+"/"+xbl_melf], cwd=cdir)
+            prc.wait()
+            if prc.returncode != 0:
+                print('ERROR: unable to create xbl_s.melf binary')
+                return prc.returncode
+    
+    # create nand melf
     script_path = inDir + '/Gen_xbl_nand_elf.py'
-    prc = subprocess.Popen(['python',script_path, inDir+"/xbl_s.melf", '-f', "NAND_2K",'-o', inDir ], cwd=cdir)
-    prc.wait()
-    if prc.returncode != 0:
-        print('ERROR: unable to create xbl_s.melf binary')
-        return prc.returncode
-
-    # create nand 4K melf
-    prc = subprocess.Popen(['python', script_path, inDir+"/xbl_s.melf", '-f', "NAND_4K",'-o', inDir ], cwd=cdir)
-    prc.wait()
-    if prc.returncode != 0:
-        print('ERROR: unable to create xbl_s.melf binary')
-        return prc.returncode
-
-    os.rename(os.path.join(inDir, "xbl_nand.elf"), os.path.join(inDir, "xbl_s_nand.melf"));
-    os.rename(os.path.join(inDir, "xbl_nand_4K.elf"), os.path.join(inDir, "xbl_s_nand_4K.melf"));
+    xbl_nand_input_img_list = ['xbl_s.melf', 'xbl_s_atf.melf']
+    xbl_nand_cmd_list       = ['NAND_2K', 'NAND_4K']
+    
+    # Generate XBL 2K and 4K nand images
+    for xbl_nand_cmd in xbl_nand_cmd_list:
+        for xbl_nand_input_img in xbl_nand_input_img_list:
+            # Get output image name
+            if xbl_nand_cmd == 'NAND_2K':
+                xbl_nand_output_img = xbl_nand_input_img.replace('xbl_s', 'xbl_s_nand')
+                xbl_nand_intermediate = 'xbl_nand.elf'
+            else:
+                xbl_nand_output_img = xbl_nand_input_img.replace('xbl_s', 'xbl_s_nand_4K')
+                xbl_nand_intermediate = 'xbl_nand_4K.elf'
+            
+            # XBL ATF is optional, skip if not present in input directory
+            if 'atf' in xbl_nand_input_img and os.path.isfile(inDir+"/"+xbl_nand_input_img) == False:
+                print('skipping '+xbl_nand_output_img+' binary')
+            else:
+                # create NAND melf
+                prc = subprocess.Popen(['python',script_path, inDir+"/"+xbl_nand_input_img, '-f', xbl_nand_cmd,'-o', inDir ], cwd=cdir)
+                prc.wait()
+                if prc.returncode != 0:
+                    print('ERROR: unable to create '+xbl_nand_output_img+' binary')
+                    return prc.returncode
+                else:
+                    os.rename(os.path.join(inDir, xbl_nand_intermediate), os.path.join(inDir, xbl_nand_output_img));
+    
     return 0
 
 def gen_part(flash):
@@ -266,6 +287,24 @@ def gen_bootldr():
         return prc.returncode
     return 0
 
+def gen_license():
+    global cdir
+    global lic_dir
+    global flash
+    global arch
+    global mode
+
+    for type in flash.split(","):
+        prc = subprocess.Popen(['python', srcDir + '/gen_license.py', '--arch',
+            arch, '--fltype', type, '--in', cdir, '--lic_path', lic_dir])
+        prc.wait()
+
+        if prc.returncode != 0:
+            print('ERROR: Generating license bin')
+            return prc.returncode
+
+    return 0
+
 def gen_mbn():
     global srcDir
     global mbn_version
@@ -279,34 +318,22 @@ def gen_mbn():
     img_flag = 1
 
     if mode == "32":
-        if arch == 'ipq5424':
-            img_str = '-ipq54xx_32-'
-            input_img = [inDir + "/openwrt-" + arch + img_str + "mmc32" + "-u-boot.elf", \
-                    inDir + "/openwrt-" + arch + img_str + "norplusmmc32" + "-u-boot.elf", \
-                    inDir + "/openwrt-" + arch + img_str + "nand32" + "-u-boot.elf", \
-                    inDir + "/openwrt-" + arch + img_str + "norplusnand32" + "-u-boot.elf", \
-                    inDir + "/openwrt-" + arch + img_str + "mmc32" + "-u-boot_signed.mbn", \
-                    inDir + "/openwrt-" + arch + img_str + "norplusmmc32" + "-u-boot_signed.mbn", \
-                    inDir + "/openwrt-" + arch + img_str + "nand32" + "-u-boot_signed.mbn", \
-                    inDir + "/openwrt-" + arch + img_str + "norplusnand32" + "-u-boot_signed.mbn"]
-            img_str = '-ipq5424_32-'
-        else:
-            img_str = "-" + arch[:-2]+"xx_32-"
-
+        img_str = "-" + arch[:-2]+"xx_32-"
         img_path = [inDir + "/openwrt-" + arch + img_str + "mmc32" + "-u-boot.elf", \
                 inDir + "/openwrt-" + arch + img_str + "norplusmmc32" + "-u-boot.elf", \
                 inDir + "/openwrt-" + arch + img_str + "nand32" + "-u-boot.elf", \
                 inDir + "/openwrt-" + arch + img_str + "norplusnand32" + "-u-boot.elf", \
+                inDir + "/openwrt-" + arch + img_str + "tiny_nand32" + "-u-boot.elf", \
+                inDir + "/openwrt-" + arch + img_str + "tiny_v2_nand32" + "-u-boot.elf", \
+                inDir + "/openwrt-" + arch + img_str + "tiny_nand32_64M" + "-u-boot.elf", \
+                inDir + "/openwrt-" + arch + img_str + "tiny_v2_nand32_64M" + "-u-boot.elf", \
+                inDir + "/openwrt-" + arch + img_str + "tiny_nor32" + "-u-boot.elf", \
+                inDir + "/openwrt-" + arch + img_str + "tiny_norplusnand32" + "-u-boot.elf", \
+                inDir + "/openwrt-" + arch + img_str + "tiny_v2_norplusnand32" + "-u-boot.elf", \
                 inDir + "/openwrt-" + arch + img_str + "mmc32" + "-u-boot_signed.mbn", \
                 inDir + "/openwrt-" + arch + img_str + "norplusmmc32" + "-u-boot_signed.mbn", \
                 inDir + "/openwrt-" + arch + img_str + "nand32" + "-u-boot_signed.mbn", \
                 inDir + "/openwrt-" + arch + img_str + "norplusnand32" + "-u-boot_signed.mbn"]
-
-        if arch == 'ipq5424':
-            for in_img,out_img in zip(input_img, img_path):
-                if os.path.exists(in_img):
-                    shutil.copyfile(in_img, out_img)
-
     elif mode == "64":
         img_str = "-generic-"
         img_path = [inDir + "/openwrt-" + arch + img_str + "mmc" + "-u-boot.elf", \
@@ -317,11 +344,6 @@ def gen_mbn():
                 inDir + "/openwrt-" + arch + img_str + "norplusmmc" + "-u-boot_signed.mbn", \
                 inDir + "/openwrt-" + arch + img_str + "nand" + "-u-boot_signed.mbn", \
                 inDir + "/openwrt-" + arch + img_str + "norplusnand" + "-u-boot_signed.mbn"]
-
-    cmd = 'cat > %s <<- "EOF"' % (inDir + "/uboot.ld")
-    subprocess.call(cmd, shell=True)
-    cmd = 'echo "SECTIONS { . = 0x4a400000; .data : { *(.data) } }" > %s' % (inDir + "/uboot.ld")
-    subprocess.call(cmd, shell=True)
 
     if mbn_version == "3":
         if os.path.exists(u_boot_2016_path):
@@ -353,13 +375,33 @@ def gen_mbn():
 
         for img in img_path:
             if os.path.exists(img):
+                cmd = "readelf -h %s | grep Entry | awk -F ' ' '{print $4}'" % img
+                prc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
+                entry_point, err = prc.communicate()
+                if err != None:
+                    print("Failed to parse entry point from %s", img)
+                    return -1
+
+                if sys.version_info.major >= 3:
+                    entry_point = entry_point.decode("utf-8").strip()
+
+                entry_point = entry_point.strip()
+
+                cmd = 'echo "SECTIONS { . = %s ; .data : { *(.data) } }" > %s' % (entry_point, inDir + "/uboot.ld")
+                subprocess.call(cmd, shell=True)
+
+                cmd = 'sed -i -e "s/4a280000/4a400000/g" %s' % (inDir + "/uboot.ld")
+                subprocess.call(cmd, shell=True)
+                cmd = 'sed -i -e "s/4a240000/4a400000/g" %s' % (inDir + "/uboot.ld")
+                subprocess.call(cmd, shell=True)
+
                 if "signed" not in img:
-                    subprocess.call(['python', bootconfig_path, '-a', arch, '-f', img, '-o', img[:-3] + "mbn", '-v', mbn_version], cwd=cdir)
+                    subprocess.call(['python', bootconfig_path, '-a', arch, '-f', img, '-o', img[:-3] + "mbn", '-v', mbn_version, '-s', "9"], cwd=cdir)
                 cmd = 'objcopy -I binary -O elf32-i386 --binary-architecture i386 %s %s' % (img[:-4] + ".mbn", img[:-4] + "_out.o")
                 subprocess.call(cmd, shell=True)
                 cmd = 'ld -m elf_i386 %s -T %s  -o  %s' % (img[:-4] + "_out.o", inDir + "/uboot.ld", img[:-4] + "_wrapped.elf")
                 subprocess.call(cmd, shell=True)
-                subprocess.call(['python', bootconfig_path, '-a', arch, '-f', img[:-4] + "_wrapped.elf", '-o', img[:-4] + "_compressed.mbn", '-v', mbn_version, '-c', "lzma"], cwd=cdir)
+                subprocess.call(['python', bootconfig_path, '-a', arch, '-f', img[:-4] + "_wrapped.elf", '-o', img[:-4] + "_compressed.mbn", '-v', mbn_version, '-c', "lzma", '-s', "9"], cwd=cdir)
                 img_flag = 0
 
         if os.path.exists(tiny_path):
@@ -419,6 +461,7 @@ def main():
     global memory
     global flash_size
     global total_blocks
+    global lic_dir
 
     to_generate_cdt = "false"
     to_generate_xblcfg = "false"
@@ -428,13 +471,19 @@ def main():
     to_generate_mbn = "false"
     to_generate_lk_mbn = "false"
     to_generate_bootldr = "false"
+    to_generate_license = "false"
     memory = "default"
     flash_size = ""
     total_blocks = ""
+    lic_dir = ""
 
     if len(sys.argv) > 1:
         try:
-            opts, args = getopt(sys.argv[1:], "h", ["arch=", "fltype=", "in=", "bootimg=", "tzimg=", "nhssimg=", "rpmimg=", "wififwimg", "gencdt", "genxblcfg", "genmelf", "dtc_path=","memory=", "total_blocks=", "flash_size=", "genpart", "genbootconf", "genmbn", "lk", "genbootldr", "help"])
+            opts, args = getopt(sys.argv[1:], "h", ["arch=", "fltype=", "in=",
+                "bootimg=", "tzimg=", "nhssimg=", "rpmimg=", "wififwimg",
+                "gencdt", "genxblcfg", "genmelf", "dtc_path=","memory=",
+                "total_blocks=", "flash_size=", "genpart", "genbootconf",
+                "genmbn", "lk", "genbootldr", "genlicense", "lic_path=", "help"])
         except GetoptError as e:
             print_help()
             raise
@@ -504,6 +553,10 @@ def main():
                 to_generate_lk_mbn = "true"
             elif option == "--genbootldr":
                 to_generate_bootldr = "true"
+            elif option == "--genlicense":
+                to_generate_license = "true"
+            elif option == "--lic_path":
+                lic_dir = value
 
             elif (option == "-h" or option == "--help"):
                 print_help()
@@ -559,6 +612,14 @@ def main():
 
         if to_generate_bootldr == "true":
             if gen_bootldr() != 0:
+                return -1
+
+        if to_generate_license == "true":
+            if os.path.exists(lic_dir) and arch == "ipq5424":
+                if gen_license() != 0:
+                    return -1
+            else:
+                print("License directory or arch not valid")
                 return -1
 
         if to_generate_mbn == "true":
