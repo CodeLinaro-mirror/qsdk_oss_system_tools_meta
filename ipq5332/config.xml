@@ -258,6 +258,30 @@ SPDX-License-Identifier: ISC
 					<bootconfig1>bootconfig1-try.bin</bootconfig1>
 					<wififw>wifi_fw_ipq5332_qcn9224_v2_single_dualmac_squashfs.img</wififw>
 				</profile-512open>
+				<profile-fontana layouts="default,256M">
+					<cdt>cdt-AP-MI01.2-C2_512M16_DDR4.bin</cdt>
+					<bootconfig>bootconfig0-try.bin</bootconfig>
+					<bootconfig1>bootconfig1-try.bin</bootconfig1>
+					<wififw>wifi_fw_ipq5332_qcn9224_v2_single_dualmac_squashfs.img</wififw>
+				</profile-fontana>
+				<profile-512-fontana layouts="default,256M">
+					<cdt>cdt-AP-MI01.2-C2_512M16_DDR4_LM512.bin</cdt>
+					<bootconfig>bootconfig0-try.bin</bootconfig>
+					<bootconfig1>bootconfig1-try.bin</bootconfig1>
+					<wififw>wifi_fw_ipq5332_qcn9224_v2_single_dualmac_squashfs.img</wififw>
+				</profile-512-fontana>
+				<profile-open-fontana layouts="default,256M">
+					<cdt>cdt-AP-MI01.2-C2_512M16_DDR4.bin</cdt>
+					<bootconfig>bootconfig0-try.bin</bootconfig>
+					<bootconfig1>bootconfig1-try.bin</bootconfig1>
+					<wififw>wifi_fw_ipq5332_qcn9224_v2_single_dualmac_squashfs.img</wififw>
+				</profile-open-fontana>
+				<profile-512open-fontana layouts="default,256M">
+					<cdt>cdt-AP-MI01.2-C2_512M16_DDR4_LM512.bin</cdt>
+					<bootconfig>bootconfig0-try.bin</bootconfig>
+					<bootconfig1>bootconfig1-try.bin</bootconfig1>
+					<wififw>wifi_fw_ipq5332_qcn9224_v2_single_dualmac_squashfs.img</wififw>
+				</profile-512open-fontana>
 			</fw_override>
 		</entry>
 		<entry>
