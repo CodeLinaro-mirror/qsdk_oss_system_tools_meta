@@ -23,20 +23,12 @@ SPDX-License-Identifier: ISC
 	<!--       they will instead be placed side by side at the beginning of the disk -->
 	<partition
 		label="0:BOOTCONFIG"
-		size_in_kb="256"
+		size_in_kb="512"
 		type="2B7D04FF-31F0-4E6A-BE9A-DA50314DAD58"
 		bootable="false"
 		readonly="false"
 		filename=""
 		erase-only="true"
-		/>
-	<partition
-		label="0:BOOTCONFIG1"
-		size_in_kb="256"
-		type="7BD25378-5C39-11E5-8A77-40A8F05F1418"
-		bootable="false"
-		readonly="false"
-		filename=""
 		/>
 	<partition
 		label="0:QSEE"

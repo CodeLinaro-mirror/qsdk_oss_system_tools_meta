@@ -179,6 +179,27 @@ def gen_xblcfg():
     global dtcDir
 
     xblconfig_path = srcDir + '/gen_xblconfig_bin.py'
+
+    data_retention_xblcfg_path = cdir + "/data_retention_xblcfg"
+    if not os.path.exists(data_retention_xblcfg_path):
+        dts_file_path = cdir + "/" + arch + "/xbl_config/*"
+        sed_cmd = "sed -i.bak -e 's/ddr_retention_en = <0>/ddr_retention_en = <1>/g' " + dts_file_path
+        os.system(sed_cmd)
+
+        prc = subprocess.Popen(['python', xblconfig_path, '-c', configDir, '-o', inDir, '-m', memory, '--dtc_path', dtcDir], cwd=cdir)
+        prc.wait()
+
+        if prc.returncode != 0:
+            print('ERROR: unable to create xbl_config binary')
+            return prc.returncode
+
+        os.makedirs(data_retention_xblcfg_path)
+        copy_cmd = "cp -rf " + cdir + "/xblconfig-* " + data_retention_xblcfg_path
+        os.system(copy_cmd)
+
+        sed_cmd = "sed -i.bak -e 's/ddr_retention_en = <1>/ddr_retention_en = <0>/g' " + dts_file_path
+        os.system(sed_cmd)
+
     prc = subprocess.Popen(['python', xblconfig_path, '-c', configDir, '-o', inDir, '-m', memory, '--dtc_path', dtcDir], cwd=cdir)
     prc.wait()
 
@@ -192,12 +213,12 @@ def gen_melf():
     global configDir
     global memory
     global dtcDir
-    
+
     xbl_img_dict = {'xbl_sc.elf'           : 'xbl_s.melf',
                     'xbl_sc_atf.elf'       : 'xbl_s_atf.melf',
                     'xbl_sc_flashless.elf' : 'xbl_s_flashless.melf',
                     'xbl_sc_devprg.elf'    : 'xbl_s_devprg.melf'}
-    
+
     # create melf
     script_path = inDir + '/create_multielf.py'
     for xbl_elf, xbl_melf in xbl_img_dict.items():
@@ -210,12 +231,12 @@ def gen_melf():
             if prc.returncode != 0:
                 print('ERROR: unable to create xbl_s.melf binary')
                 return prc.returncode
-    
+
     # create nand melf
     script_path = inDir + '/Gen_xbl_nand_elf.py'
     xbl_nand_input_img_list = ['xbl_s.melf', 'xbl_s_atf.melf']
     xbl_nand_cmd_list       = ['NAND_2K', 'NAND_4K']
-    
+
     # Generate XBL 2K and 4K nand images
     for xbl_nand_cmd in xbl_nand_cmd_list:
         for xbl_nand_input_img in xbl_nand_input_img_list:
@@ -226,7 +247,7 @@ def gen_melf():
             else:
                 xbl_nand_output_img = xbl_nand_input_img.replace('xbl_s', 'xbl_s_nand_4K')
                 xbl_nand_intermediate = 'xbl_nand_4K.elf'
-            
+
             # XBL ATF is optional, skip if not present in input directory
             if 'atf' in xbl_nand_input_img and os.path.isfile(inDir+"/"+xbl_nand_input_img) == False:
                 print('skipping '+xbl_nand_output_img+' binary')
@@ -239,7 +260,7 @@ def gen_melf():
                     return prc.returncode
                 else:
                     os.rename(os.path.join(inDir, xbl_nand_intermediate), os.path.join(inDir, xbl_nand_output_img));
-    
+
     return 0
 
 def gen_part(flash):
