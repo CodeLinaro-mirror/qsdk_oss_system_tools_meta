@@ -12,11 +12,62 @@ from getopt import getopt
 from getopt import GetoptError
 import json
 import shutil
+import struct
 
 ARCH_NAME = ''
 
 cdir = os.path.dirname("")
 cdir = os.path.abspath(cdir)
+
+XBL_CONFIG_RAW_ELF = cdir + "/xbl_config_raw.elf"
+
+def update_CDT_segment(xbl_cfg_file_path, CDT_path):
+    # Read the CDT content
+    with open(CDT_path, 'rb') as new_file:
+        CDT = new_file.read()
+        CDT_file_size = os.path.getsize(CDT_path)
+
+    with open(xbl_cfg_file_path, 'r+b') as elf_file:
+        # Read an ELF header
+        elf_file.seek(0)
+        elf_header = elf_file.read(64)
+
+        # Check if it's an elf file
+        if elf_header[:4] != b'\x7fELF':
+            return -1;
+
+        # Get the pgm hdr table off and num of entries
+        e_phoff = struct.unpack('Q', elf_header[32:40])[0]
+        e_phnum = struct.unpack('H', elf_header[56:58])[0]
+
+        # Iterate through pgm hdrs
+        for i in range(e_phnum):
+            elf_file.seek(e_phoff + i * 56)
+            e_phdr = elf_file.read(56)
+
+            # chk if it is a loadbale seg
+            p_type = struct.unpack('I', e_phdr[0:4])[0]
+            if p_type == 1:  # PT_LOAD
+                p_offset = struct.unpack('Q', e_phdr[8:16])[0]
+                p_filesz = struct.unpack('Q', e_phdr[32:40])[0]
+
+                # Read the segment
+                elf_file.seek(p_offset)
+                segment = elf_file.read(3)
+
+                # Check if starts with "CDT"
+                if "CDT".encode() in segment:
+                    print("Found CDT segment ")
+                    if p_filesz != CDT_file_size:
+                         print("CDT size mismatch")
+                         return -1
+                    elf_file.seek(p_offset)
+                    elf_file.write(CDT)
+                    return 0
+
+        print("CDT not found in any loadable segment")
+        return -1
+
 
 def main():
 
@@ -74,20 +125,27 @@ def main():
     print(cmd)
     prc = subprocess.Popen(cmd, cwd=cdir)
     prc.wait()
-    if prc.returncode != 0:
-        print('ERROR: unable to disassemble xbl config')
-        return prc.returncode
+    dircet_CDT_update = 0
 
-    # add support to generate the xbl cust dtb
-    print("Generating xbl cust dtb")
-    dtcBin = os.path.join(dtcDir, "dtc")
-    cmd = [dtcBin, '-@', '-O', 'dtb', '-o', srcDir + "/" + "xbl-cust-marina-1.0.dtb", cdir + "/ipq5424/xbl_config/xbl-cust-marina-1.0.dts"]
-    print(cmd)
-    prc = subprocess.Popen(cmd, cwd=cdir)
-    prc.wait()
     if prc.returncode != 0:
-        print('ERROR: unable to generate dtb')
-        return prc.returncode
+        dircet_CDT_update = os.path.isfile(XBL_CONFIG_RAW_ELF)
+        if dircet_CDT_update == 0:
+            print('ERROR: unable to disassemble xbl config')
+            return prc.returncode
+        else:
+            print('CDT will be directly added into xbl config elf')
+
+    if dircet_CDT_update == 0:
+        # add support to generate the xbl cust dtb
+        print("Generating xbl cust dtb")
+        dtcBin = os.path.join(dtcDir, "dtc")
+        cmd = [dtcBin, '-@', '-O', 'dtb', '-o', srcDir + "/" + "xbl-cust-marina-1.0.dtb", cdir + "/ipq5424/xbl_config/xbl-cust-marina-1.0.dts"]
+        print(cmd)
+        prc = subprocess.Popen(cmd, cwd=cdir)
+        prc.wait()
+        if prc.returncode != 0:
+            print('ERROR: unable to generate dtb')
+            return prc.returncode
 
     if ARCH_NAME != "ipq806x":
         entries = root.findall("./data[@type='MACH_ID_BOARD_MAP']/entry")
@@ -109,39 +167,49 @@ def main():
 
             cdt_bin =  "cdt-" + name_suffix + ".bin"
 
-            # edit the cdt name in json
-            with open(xblconfig_json, 'r') as file:
-                # Parse JSON data
-                Data = json.load(file)
+            if dircet_CDT_update == 0:
+                # edit the cdt name in json
+                with open(xblconfig_json, 'r') as file:
+                    # Parse JSON data
+                    Data = json.load(file)
 
-            Temp_Data=Data['CFGL']
-            for key,value in Temp_Data.items():
-                if isinstance(value, dict):
-                    for key1,value1 in value.items():
-                        if key1 == "config_name":
-                            if value1 == "/cdt.bin":
-                                value["file_name"] = cdt_bin
+                Temp_Data=Data['CFGL']
+                for key,value in Temp_Data.items():
+                    if isinstance(value, dict):
+                        for key1,value1 in value.items():
+                            if key1 == "config_name":
+                                if value1 == "/cdt.bin":
+                                    value["file_name"] = cdt_bin
 
-            outfile_json = os.path.join(srcDir, "create_xbl_config-" + name_suffix + ".json")
-            with open(outfile_json, "w") as outfile:
-                json.dump(Data, outfile)
+                outfile_json = os.path.join(srcDir, "create_xbl_config-" + name_suffix + ".json")
+                with open(outfile_json, "w") as outfile:
+                    json.dump(Data, outfile)
 
-            #copy the cdt bin
-            shutil.copy2(cdir+'/'+cdt_bin, srcDir);
+                #copy the cdt bin
+                shutil.copy2(cdir+'/'+cdt_bin, srcDir);
 
-            out_xblconfig = "xblconfig-" + name_suffix
-            outfile_xblconfig = os.path.join(srcDir, out_xblconfig )
+                out_xblconfig = "xblconfig-" + name_suffix
+                outfile_xblconfig = os.path.join(srcDir, out_xblconfig )
 
-            print('Generating xblconfig')
-            cmd = ['python', xblconfigtool_gen, '-i', outfile_json, '-fELF', '-o', outfile_xblconfig, '--tools_path', xblconfigtool_path, '--elf-address', '0x08CEE800', '-b', srcDir]
-            print(cmd)
-            prc = subprocess.Popen(cmd, cwd=cdir)
-            prc.wait()
-            if prc.returncode != 0:
-                print('ERROR: unable to create xbl config')
-                return prc.returncode
+                print('Generating xblconfig')
+                cmd = ['python', xblconfigtool_gen, '-i', outfile_json, '-fELF', '-o', outfile_xblconfig, '--tools_path', xblconfigtool_path, '--elf-address', '0x08CEE800', '-b', srcDir]
+                print(cmd)
+                prc = subprocess.Popen(cmd, cwd=cdir)
+                prc.wait()
+                if prc.returncode != 0:
+                    print('ERROR: unable to create xbl config')
+                    return prc.returncode
 
-            outfile_xblconfig = os.path.join(srcDir,'raw', out_xblconfig + ".elf")
+                outfile_xblconfig = os.path.join(srcDir,'raw', out_xblconfig + ".elf")
+            else:
+                out_xblconfig = "xblconfig-" + name_suffix
+                outfile_xblconfig =  cdir + "/" + out_xblconfig + "_raw.elf"
+                shutil.copyfile(XBL_CONFIG_RAW_ELF, outfile_xblconfig)
+                ret = update_CDT_segment(outfile_xblconfig, cdt_bin)
+
+                if ret < 0:
+                    print("CDT segment update failed")
+                    return ret
 
             #elf2mbn conversion
             bootconfig_path = cdir +'/scripts' + '/elftombn.py'
@@ -158,6 +226,8 @@ def main():
             os.remove(os.path.join(cdir, out_xblconfig + "_hash.hd"))
             os.remove(os.path.join(cdir, out_xblconfig + "_phdr.pbn"))
             os.remove(os.path.join(cdir, out_xblconfig + "_combined_hash.mbn"))
+            if dircet_CDT_update == 1:
+                os.remove(os.path.join(cdir, out_xblconfig + "_raw.elf"))
 
 if __name__ == '__main__':
     main()
