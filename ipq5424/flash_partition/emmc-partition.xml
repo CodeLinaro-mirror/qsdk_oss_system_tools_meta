@@ -208,6 +208,24 @@ SPDX-License-Identifier: ISC
 		readonly="false"
 		filename=""
 		/>
+	<partition
+		label="0:CALFW"
+		size_in_kb="2048"
+		type="19a6dc0c-bf65-2f27-6763-e2d2df7356e0"
+		bootable="false"
+		readonly="false"
+		image_type = "hlos"
+		optional="true"
+		filename="WLAN_CALDB_qcn9224_v2_merged_compressed.img"
+		/>
+	<partition
+		label="0:CALFW_1"
+		size_in_kb="2048"
+		type="5521e301-b498-5479-87b5-98adf1dadf6b"
+		bootable="false"
+		readonly="false"
+		filename=""
+		/>
 	</physical_partition>
 </configuration>
 
