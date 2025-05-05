@@ -435,6 +435,29 @@ SPDX-License-Identifier: ISC
 			</fw_override>
 		</entry>
 		<entry>
+			<machid>0x8070201</machid>
+			<board>AP-MR03.1-C2</board>
+			<memory>256M16_DDR3</memory>
+			<layouts>default,vendor</layouts>
+			<fw_override>
+				<profile-default layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR03.1-C2_256M16_DDR3.elf</xblconfig>
+				</profile-default>
+				<profile-512 layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR03.1-C2_256M16_DDR3_LM512.elf</xblconfig>
+				</profile-512>
+				<profile-256 layouts="default">
+					<xbl flash="nand" mode="32">xbl_s_nand_atf.melf</xbl>
+					<xbl flash="nand-4k" mode="32">xbl_s_nand_4K_atf.melf</xbl>
+					<xbl flash="norplusnand,norplusnand-gpt,norplusnand-4k,norplusnand-4k-gpt" mode="32">xbl_s_atf.melf</xbl>
+					<xblconfig>xblconfig-AP-MR03.1-C2_256M16_DDR3_LM256.elf</xblconfig>
+					<qsee>bl31.mbn</qsee>
+					<appsbl flash="nand,nand-4k" mode="32">openwrt-ipq5424-ipq54xx_32-tiny_nand32-u-boot_compressed.mbn</appsbl>
+					<appsbl flash="norplusnand,norplusnand-gpt,norplusnand-4k,norplusnand-4k-gpt" mode="32">openwrt-ipq5424-ipq54xx_32-tiny_norplusnand32-u-boot_compressed.mbn</appsbl>
+				</profile-256>
+			</fw_override>
+		</entry>
+		<entry>
 			<machid>0x1070000</machid>
 			<board>DB-MR01.1</board>
 			<memory>512M32_DDR4</memory>
