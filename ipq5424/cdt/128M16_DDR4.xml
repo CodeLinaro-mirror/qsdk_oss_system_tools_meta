@@ -87,7 +87,7 @@ SPDX-License-Identifier: ISC
 				<props name="rdlat_adj_f0" type="DALPROP_ATTR_TYPE_UINT32">18</props>
 				<props name="mr4" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="mr5" type="DALPROP_ATTR_TYPE_UINT32">1024</props>
-				<props name="mr6" type="DALPROP_ATTR_TYPE_UINT32">4096</props>
+				<props name="mr6" type="DALPROP_ATTR_TYPE_UINT32">4112</props>
 				<props name="mr3" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="reserved_6" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="manufacture_name" type="DALPROP_ATTR_TYPE_UINT32">0</props>
@@ -145,7 +145,7 @@ SPDX-License-Identifier: ISC
 				<props name="rdlat_adj_f0" type="DALPROP_ATTR_TYPE_UINT32">18</props>
 				<props name="mr4" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="mr5" type="DALPROP_ATTR_TYPE_UINT32">1024</props>
-				<props name="mr6" type="DALPROP_ATTR_TYPE_UINT32">4096</props>
+				<props name="mr6" type="DALPROP_ATTR_TYPE_UINT32">4112</props>
 				<props name="mr3" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="reserved_6" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 			</device>
