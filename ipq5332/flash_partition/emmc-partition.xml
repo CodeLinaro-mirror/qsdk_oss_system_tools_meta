@@ -127,7 +127,7 @@ SPDX-License-Identifier: ISC
 		/>
 	<partition
 		label="0:APPSBL"
-		size_in_kb="768"
+		size_in_kb="1152"
 		type="400FFDCD-22E0-47E7-9A23-F16ED9382388"
 		bootable="false"
 		readonly="false"
@@ -137,15 +137,7 @@ SPDX-License-Identifier: ISC
 		/>
 	<partition
 		label="0:APPSBL_1"
-		size_in_kb="768"
-		type="C126787D-3EEF-444C-9E43-FEFF3F103E22"
-		bootable="false"
-		readonly="false"
-		filename=""
-		/>
-	<partition
-		label="0:APPSBL_1"
-		size_in_kb="768"
+		size_in_kb="1152"
 		type="C126787D-3EEF-444C-9E43-FEFF3F103E22"
 		bootable="false"
 		readonly="false"
