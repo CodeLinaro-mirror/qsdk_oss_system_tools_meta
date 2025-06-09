@@ -15,7 +15,7 @@ import shutil
 def get_user_input():
 	boot_build_path = raw_input("Enter the IPQ Folder Path: ")
 
-	target_types = ["IPQ9574", "IPQ5332", "IPQ5424"]
+	target_types = ["IPQ95xx", "IPQ53xx", "IPQ54xx"]
 	print("Choose the TargetType from the following options:")
 	for i, target in enumerate(target_types, 1):
 		print("%d. %s" % (i, target))
@@ -24,11 +24,11 @@ def get_user_input():
 	target_type = target_types[target_type_index]
 
 	board_type = None
-	if target_type == "IPQ9574":
+	if target_type == "IPQ95xx":
 		board_types = ["RDP417/AP.AL01-C1", "RDP418/AP.AL02-C1", "RDP418-EMMC/AP.AL02-C2", "RDP437/AP.AL02-C3", "RDP433/AP.AL02-C4", "AP.AL02-C5", "RDP449/AP.AL02-C6", "RDP433-EMMC/AP.AL02-C7", "RDP453/AP.AL02-C8", "RDP454/AP.AL02-C9", "AP.AL02-C10", "RDP455-C11/AP.AL02-C11", "RDP455-C12/AP.AL02-C12", "RDP459/AP.AL02-C13", "AP.AL02-C14", "RDP457/AP.AL02-C15", "RDP456/AP.AL02-C16", "RDP469/AP.AL02-C17", "AP.AL02-C18", "RDP461/AP.AL02-C19", "RDP467/AP.AL02-C20", "AP.AL03-C1", "RDP458/AP.AL03-C2", "RDP475/AP.AL05", "RDP475-QCA81XX/AP.AL05-QCA81XX", "RDP475-QCA81XX-I2C/AP.AL05-QCA81XX-I2C", "RDP476/AP.AL06", "DB.AL01-C1", "DB.AL01-C2", "DB.AL01-C3", "DB.AL02-C1", "DB.AL02-C2", "DB.AL02-C3"]
-	elif target_type == "IPQ5332":
+	elif target_type == "IPQ53xx":
 		board_types = ["RDP441/AP-MI01.2", "RDP441-QCA81XX/AP-MI01.2-QCA81XX", "RDP441-QCA81XX-I2C/AP-MI01.2-QCA81XX-I2C", "RDP484/AP-MI01.2-C2", "RDP472/AP-MI01.2-QCN9160-C1", "RDP442​/AP-MI01.3", "RDP477​/AP-MI01.3-C2", "RDP486​/AP-MI01.3-C3", "RDP477-256M/AP-MI01.3-C4", "RDP444/AP-MI01.4", "RDP468/AP-MI01.6 ", "RDP473/AP-MI01.7", "RDP474/AP-MI01.9", "RDP479/AP-MI01.12", "RDP480/AP-MI01.13", "RDP481/AP-MI01.14", "RDP447/AP-MI03.1", "RDP446/AP-MI04.1", "RDP478/AP-MI04.1-C2", "RDP478-256M/AP-MI04.1-C3", "RDP483/AP-MI04.3", "TB-MI03.1", "TB-MI05.1", "DB-MI01.1", "DB-MI02.1", "DB-MI03.1"]
-	elif target_type == "IPQ5424":
+	elif target_type == "IPQ54xx":
 		board_types = ["RDP464/AP-MR01.1", "RDP464-C2/AP-MR01.1-C2", "RDP464-C3/AP-MR01.1-C3", "RDP466/AP-MR02.1", "RDP466-C2/AP-MR02.1-C2", "RDP466-C3/AP-MR02.1-C3", "RDP466-RFFE/AP-MR02.1-RFFE", "RDP485/AP-MR02.2", "RDP485-C2/AP-MR02.2-C2", "RDP485-C3/AP-MR02.2-C3", "RDP485-RFFE/AP-MR02.2-RFFE", "RDP485-RFFE-C2/AP-MR02.2-RFFE-C2", "RDP496/AP-MR02.3", "RDP487/AP-MR03.1", "DB-MR01.1"]
 
 	port_num = raw_input("Enter the port number: ")
@@ -115,7 +115,7 @@ def get_cdtbin_file(boot_build_path, board_type, target_type):
 		"DB-MI03.1": ["cdt-DB-MI03.1_128M16_DDR3.bin", "cdt-DB-MI03.1_128M16_DDR3_LM512.bin", "cdt-DB-MI03.1_128M16_DDR3_LM256.bin"]
 	}
 
-	if target_type == "IPQ5424":
+	if target_type == "IPQ54xx":
 		return None
 
 	if board_type in board_file_map:
@@ -129,7 +129,7 @@ def get_cdtbin_file(boot_build_path, board_type, target_type):
 def get_uboot_file(boot_build_path, flash_type, target_type):
 	uboot_file = None
 	uboot_file_map = {
-		"IPQ9574": {
+		"IPQ95xx": {
 			"EMMC": [
 				"openwrt-ipq9574-ipq95xx_32-mmc32-u-boot.mbn",
 				"openwrt-ipq9574-generic-mmc-u-boot.mbn"
@@ -147,7 +147,7 @@ def get_uboot_file(boot_build_path, flash_type, target_type):
 				"openwrt-ipq9574-generic-norplusnand-u-boot.mbn"
 			]
 		},
-		"IPQ5332": {
+		"IPQ53xx": {
 			"EMMC": [
 				"openwrt-ipq5332-ipq53xx_32-mmc32-u-boot.mbn",
 				"openwrt-ipq5332-generic-mmc-u-boot.mbn"
@@ -165,7 +165,7 @@ def get_uboot_file(boot_build_path, flash_type, target_type):
 				"openwrt-ipq5332-generic-norplusnand-u-boot.mbn"
 			]
 		},
-		"IPQ5424": {
+		"IPQ54xx": {
 			"EMMC": [
 				"openwrt-ipq5424-generic-mmc-u-boot.mbn",
 				"openwrt-ipq5424-ipq54xx_32-mmc32-u-boot.mbn"
@@ -194,9 +194,9 @@ def get_uboot_file(boot_build_path, flash_type, target_type):
 
 def get_xbl_file(boot_build_path, target_type):
 	xbl_file_map = {
-		"IPQ9574": "xbl.elf",
-		"IPQ5332": "xbl_flashless.elf",
-		"IPQ5424": "xbl_s_flashless.melf"
+		"IPQ95xx": "xbl.elf",
+		"IPQ53xx": "xbl_flashless.elf",
+		"IPQ54xx": "xbl_s_flashless.melf"
 	}
 
 	xbl_file = xbl_file_map.get(target_type)
@@ -205,7 +205,7 @@ def get_xbl_file(boot_build_path, target_type):
 	return None
 
 def prompt_target_type():
-	target_types = ["IPQ9574", "IPQ5332", "IPQ5424"]
+	target_types = ["IPQ95xx", "IPQ53xx", "IPQ54xx"]
 	print("Choose the TargetType from the following options:")
 	for i, target in enumerate(target_types, 1):
 		print("%d. %s" % (i, target))
@@ -213,11 +213,11 @@ def prompt_target_type():
 	return target_types[index]
 
 def prompt_board_type(target_type):
-	if target_type == "IPQ9574":
+	if target_type == "IPQ95xx":
 		board_types = ["RDP417/AP.AL01-C1", "RDP418/AP.AL02-C1", "RDP418-EMMC/AP.AL02-C2", "RDP437/AP.AL02-C3", "RDP433/AP.AL02-C4", "AP.AL02-C5", "RDP449/AP.AL02-C6", "RDP433-EMMC/AP.AL02-C7", "RDP453/AP.AL02-C8", "RDP454/AP.AL02-C9", "AP.AL02-C10", "RDP455-C11/AP.AL02-C11", "RDP455-C12/AP.AL02-C12", "RDP459/AP.AL02-C13", "AP.AL02-C14", "RDP457/AP.AL02-C15", "RDP456/AP.AL02-C16", "RDP469/AP.AL02-C17", "AP.AL02-C18", "RDP461/AP.AL02-C19", "RDP467/AP.AL02-C20", "AP.AL03-C1", "RDP458/AP.AL03-C2", "RDP475/AP.AL05", "RDP475-QCA81XX/AP.AL05-QCA81XX", "RDP475-QCA81XX-I2C/AP.AL05-QCA81XX-I2C", "RDP476/AP.AL06", "DB.AL01-C1", "DB.AL01-C2", "DB.AL01-C3", "DB.AL02-C1", "DB.AL02-C2", "DB.AL02-C3"]
-	elif target_type == "IPQ5332":
+	elif target_type == "IPQ53xx":
 		board_types = ["RDP441/AP-MI01.2", "RDP441-QCA81XX/AP-MI01.2-QCA81XX", "RDP441-QCA81XX-I2C/AP-MI01.2-QCA81XX-I2C", "RDP484/AP-MI01.2-C2", "RDP472/AP-MI01.2-QCN9160-C1", "RDP442​/AP-MI01.3", "RDP477​/AP-MI01.3-C2", "RDP486​/AP-MI01.3-C3", "RDP477-256M/AP-MI01.3-C4", "RDP444/AP-MI01.4", "RDP468/AP-MI01.6 ", "RDP473/AP-MI01.7", "RDP474/AP-MI01.9", "RDP479/AP-MI01.12", "RDP480/AP-MI01.13", "RDP481/AP-MI01.14", "RDP447/AP-MI03.1", "RDP446/AP-MI04.1", "RDP478/AP-MI04.1-C2", "RDP478-256M/AP-MI04.1-C3", "RDP483/AP-MI04.3", "TB-MI03.1", "TB-MI05.1", "DB-MI01.1", "DB-MI02.1", "DB-MI03.1"]
-	elif target_type == "IPQ5424":
+	elif target_type == "IPQ54xx":
 		board_types = ["RDP464/AP-MR01.1", "RDP464-C2/AP-MR01.1-C2", "RDP464-C3/AP-MR01.1-C3", "RDP466/AP-MR02.1", "RDP466-C2/AP-MR02.1-C2", "RDP466-C3/AP-MR02.1-C3", "RDP466-RFFE/AP-MR02.1-RFFE", "RDP485/AP-MR02.2", "RDP485-C2/AP-MR02.2-C2", "RDP485-C3/AP-MR02.2-C3", "RDP485-RFFE/AP-MR02.2-RFFE", "RDP485-RFFE-C2/AP-MR02.2-RFFE-C2", "RDP496/AP-MR02.3", "RDP487/AP-MR03.1", "DB-MR01.1"]
 
 	print("Choose the BoardType from the following options:")
@@ -366,13 +366,13 @@ def execute_initial_qsaharaserver_cmd(local_folder, port_num, xbl_file):
 def construct_qsaharaserver_cmd(port_num, uboot_file, target_type, cdtbin_file, xblconfig_file=None):
 	cmd = ".\\QSaharaServer.exe -p \\\\.\\COM%s -s 1:%s -s 34:devcfg.mbn -s 25:tz.mbn -s 5:%s" % (port_num, cdtbin_file, uboot_file)
 
-	if target_type == "IPQ5424":
+	if target_type == "IPQ54xx":
 		cmd += " -s 41:devcfg.mbn -s 25:tz.mbn"
 		if xblconfig_file:
 			cmd += " -s 38:%s" % xblconfig_file
-	elif target_type == "IPQ9574":
+	elif target_type == "IPQ95xx":
 		cmd += " -s 23:rpm.mbn -s 35:apdp.mbn -s 37:tmel-ipq95xx-firmware.elf"
-	elif target_type == "IPQ5332":
+	elif target_type == "IPQ53xx":
 		cmd += " -s 37:tmel-ipq53xx-patch.elf"
 
 	cmd += " -v 3"
@@ -397,11 +397,11 @@ def main():
 		formatter_class=argparse.RawTextHelpFormatter,
 		epilog="""\
 Example usage:
-  python EDL_recovery.py -b /path/to/ipq -t IPQ9574 -d RDP417/AP.AL01-C1 -f EMMC -p 3
+  python EDL_recovery.py -b /path/to/ipq -t IPQ95xx -d RDP417/AP.AL01-C1 -f EMMC -p 3
 
 Arguments:
   -b, --boot_path   Path to the IPQ boot build folder
-  -t, --target      Target type (e.g., IPQ9574, IPQ5332, IPQ5424)
+  -t, --target      Target type (e.g., IPQ95xx, IPQ53xx, IPQ54xx)
   -d, --board       Board type (e.g., RDP417/AP.AL01-C1)
   -f, --flash       Flash type (e.g., NAND, NORPLUSNAND, EMMC, NORPLUSEMMC)
   -p, --port        COM port number (e.g., 3)
@@ -429,11 +429,11 @@ If any argument is missing, the script will prompt you interactively.
 	board_type_input = args.board
 	if board_type_input:
 		# Define board_types based on target_type
-		if target_type == "IPQ9574":
+		if target_type == "IPQ95xx":
 			board_types = ["RDP417/AP.AL01-C1", "RDP418/AP.AL02-C1", "RDP418-EMMC/AP.AL02-C2", "RDP437/AP.AL02-C3", "RDP433/AP.AL02-C4", "AP.AL02-C5", "RDP449/AP.AL02-C6", "RDP433-EMMC/AP.AL02-C7", "RDP453/AP.AL02-C8", "RDP454/AP.AL02-C9", "AP.AL02-C10", "RDP455-C11/AP.AL02-C11", "RDP455-C12/AP.AL02-C12", "RDP459/AP.AL02-C13", "AP.AL02-C14", "RDP457/AP.AL02-C15", "RDP456/AP.AL02-C16", "RDP469/AP.AL02-C17", "AP.AL02-C18", "RDP461/AP.AL02-C19", "RDP467/AP.AL02-C20", "AP.AL03-C1", "RDP458/AP.AL03-C2", "RDP475/AP.AL05", "RDP475-QCA81XX/AP.AL05-QCA81XX", "RDP475-QCA81XX-I2C/AP.AL05-QCA81XX-I2C", "RDP476/AP.AL06", "DB.AL01-C1", "DB.AL01-C2", "DB.AL01-C3", "DB.AL02-C1", "DB.AL02-C2", "DB.AL02-C3"]
-		elif target_type == "IPQ5332":
+		elif target_type == "IPQ53xx":
 			board_types = ["RDP441/AP-MI01.2", "RDP441-QCA81XX/AP-MI01.2-QCA81XX", "RDP441-QCA81XX-I2C/AP-MI01.2-QCA81XX-I2C", "RDP484/AP-MI01.2-C2", "RDP472/AP-MI01.2-QCN9160-C1", "RDP442​/AP-MI01.3", "RDP477​/AP-MI01.3-C2", "RDP486​/AP-MI01.3-C3", "RDP477-256M/AP-MI01.3-C4", "RDP444/AP-MI01.4", "RDP468/AP-MI01.6 ", "RDP473/AP-MI01.7", "RDP474/AP-MI01.9", "RDP479/AP-MI01.12", "RDP480/AP-MI01.13", "RDP481/AP-MI01.14", "RDP447/AP-MI03.1", "RDP446/AP-MI04.1", "RDP478/AP-MI04.1-C2", "RDP478-256M/AP-MI04.1-C3", "RDP483/AP-MI04.3", "TB-MI03.1", "TB-MI05.1", "DB-MI01.1", "DB-MI02.1", "DB-MI03.1"]
-		elif target_type == "IPQ5424":
+		elif target_type == "IPQ54xx":
 			board_types = ["RDP464/AP-MR01.1", "RDP464-C2/AP-MR01.1-C2", "RDP464-C3/AP-MR01.1-C3", "RDP466/AP-MR02.1", "RDP466-C2/AP-MR02.1-C2", "RDP466-C3/AP-MR02.1-C3", "RDP466-RFFE/AP-MR02.1-RFFE", "RDP485/AP-MR02.2", "RDP485-C2/AP-MR02.2-C2", "RDP485-C3/AP-MR02.2-C3", "RDP485-RFFE/AP-MR02.2-RFFE", "RDP485-RFFE-C2/AP-MR02.2-RFFE-C2", "RDP496/AP-MR02.3", "RDP487/AP-MR03.1", "DB-MR01.1"]
 
 		matching_boards = [b for b in board_types if b.startswith(board_type_input + "/") or b.endswith("/" + board_type_input) or b == board_type_input]
@@ -461,14 +461,14 @@ If any argument is missing, the script will prompt you interactively.
 	uboot_file = get_uboot_file(boot_build_path, flash_type, target_type)
 	xbl_file = get_xbl_file(boot_build_path, target_type)
 	cdtbin_file = get_cdtbin_file(boot_build_path, board_type, target_type)
-	xblconfig_file = get_xblconfig_file(boot_build_path, board_type) if target_type == "IPQ5424" else None
+	xblconfig_file = get_xblconfig_file(boot_build_path, board_type) if target_type == "IPQ54xx" else None
 
 	local_folder = os.path.join(os.getcwd(), target_type)
-	if target_type == "IPQ9574":
+	if target_type == "IPQ95xx":
 		files_to_copy = [xbl_file, cdtbin_file, "devcfg.mbn", "tz.mbn", uboot_file, "tmel-ipq95xx-firmware.elf", "rpm.mbn", "apdp.mbn", "QSaharaServer.exe"]
-	elif target_type == "IPQ5332":
+	elif target_type == "IPQ53xx":
 		files_to_copy = [xbl_file, cdtbin_file, "devcfg.mbn", "tz.mbn", uboot_file, "tmel-ipq53xx-patch.elf", "QSaharaServer.exe"]
-	elif target_type == "IPQ5424":
+	elif target_type == "IPQ54xx":
 		files_to_copy = [xbl_file, xblconfig_file, "devcfg.mbn", "tz.mbn", uboot_file, "QSaharaServer.exe"]
 
 	# Remove None values from files_to_copy list
