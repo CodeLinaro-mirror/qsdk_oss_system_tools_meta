@@ -306,6 +306,7 @@ SPDX-License-Identifier: ISC
 			<board>AP-AL06</board>
 			<spi_nand>false</spi_nand>
 			<memory>256M32_DDR4</memory>
+			<discrete_smps>true</discrete_smps>
 			<wififw_type>2</wififw_type>
 			<data_retention>false</data_retention>
 			<bootconfig_type>2</bootconfig_type>

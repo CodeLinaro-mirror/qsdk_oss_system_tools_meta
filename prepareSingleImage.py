@@ -279,13 +279,20 @@ def gen_part(flash):
             return prc.returncode
     return 0
 
-def gen_bootconfig():
+def gen_bootconfig(flag):
     global srcDir
     global configDir
 
+    if arch not in ["ipq40xx", "ipq806x", "ipq807x", "ipq807x_64", "ipq6018", "ipq6018_64", "ipq5018", "ipq5018_64", "ipq9574", "ipq9574_64", "ipq5332", "ipq5332_64"]:
+        print("Invalid arch type: " + arch)
+        return -1
+
     bootconfig_path = srcDir + '/gen_bootconfig_bin.py'
     print("Creating Bootconfig")
-    prc = subprocess.Popen(['python', bootconfig_path, '-c', configDir, '-o', inDir], cwd=cdir)
+    if(flag == 0):
+        prc = subprocess.Popen(['python', bootconfig_path, '-c', configDir, '-o', inDir], cwd=cdir)
+    if(flag == 1):
+        prc = subprocess.Popen(['python', bootconfig_path, '-c', configDir, '-o', inDir, '-f', 'crc', ], cwd=cdir)
     prc.wait()
 
     if prc.returncode != 0:
@@ -489,6 +496,7 @@ def main():
     to_generate_melf = "false"
     to_generate_part = "false"
     to_generate_bootconf = "false"
+    to_generate_bootconf_crc = "false"
     to_generate_mbn = "false"
     to_generate_lk_mbn = "false"
     to_generate_bootldr = "false"
@@ -503,7 +511,7 @@ def main():
             opts, args = getopt(sys.argv[1:], "h", ["arch=", "fltype=", "in=",
                 "bootimg=", "tzimg=", "nhssimg=", "rpmimg=", "wififwimg",
                 "gencdt", "genxblcfg", "genmelf", "dtc_path=","memory=",
-                "total_blocks=", "flash_size=", "genpart", "genbootconf",
+                "total_blocks=", "flash_size=", "genpart", "genbootconf", "genbootconf_crc",
                 "genmbn", "lk", "genbootldr", "genlicense", "lic_path=", "help"])
         except GetoptError as e:
             print_help()
@@ -566,6 +574,8 @@ def main():
                 total_blocks = value
             elif option == "--genbootconf":
                 to_generate_bootconf = "true"
+            elif option == "--genbootconf_crc":
+                to_generate_bootconf_crc = "true"
             elif option == "--genpart":
                 to_generate_part = "true"
             elif option == "--genmbn":
@@ -624,7 +634,11 @@ def main():
                 return -1
 
         if to_generate_bootconf == "true":
-            if gen_bootconfig() != 0:
+            if gen_bootconfig(0) != 0:
+                return -1
+
+        if to_generate_bootconf_crc == "true":
+            if gen_bootconfig(1) != 0:
                 return -1
 
         if to_generate_part == "true":
