@@ -75,7 +75,7 @@ else:
     ELFINFO_VERSION_CURRENT   = '\x01'
 ELFINFO_CLASS_INDEX       = 4
 ELFINFO_VERSION_INDEX     = 6
-ELF_BLOCK_ALIGN_16B       = 0x10
+ELF_BLOCK_ALIGN_4B       = 0x4
 ELF_BLOCK_ALIGN           = 0x1000
 ALIGNVALUE_1MB             = 0x100000
 ALIGNVALUE_4MB             = 0x400000
@@ -1227,10 +1227,10 @@ def pboot_gen_elf(env, elf_in_file_name,
         # Initialize the hash table program header
         if mbn_version == 7:
             hhdr_off = (elf_header_size + (elf_header.e_phnum * phdr_size))
-            if (hhdr_off & (ELF_BLOCK_ALIGN_16B - 1)):
-                hhdr_off += ELF_BLOCK_ALIGN_16B - (hhdr_off & (ELF_BLOCK_ALIGN_16B - 1))
+            if (hhdr_off & (ELF_BLOCK_ALIGN_4B - 1)):
+                hhdr_off += ELF_BLOCK_ALIGN_4B - (hhdr_off & (ELF_BLOCK_ALIGN_4B - 1))
             [hash_Phdr, pad_hash_segment, hash_tbl_end_addr, hash_tbl_offset] = \
-                    initialize_hash_phdr(elf_in_file_name, hashtable_size, MI_BOOT_IMG_HDR_SIZE_V7, hhdr_off, is_elf64, ELF_BLOCK_ALIGN_16B)
+                    initialize_hash_phdr(elf_in_file_name, hashtable_size, MI_BOOT_IMG_HDR_SIZE_V7, hhdr_off, is_elf64, ELF_BLOCK_ALIGN_4B)
         elif mbn_version == 6:
             [hash_Phdr, pad_hash_segment, hash_tbl_end_addr, hash_tbl_offset] = \
                     initialize_hash_phdr(elf_in_file_name, hashtable_size, MI_BOOT_IMG_HDR_SIZE_V6, ELF_BLOCK_ALIGN, is_elf64)
@@ -1258,7 +1258,7 @@ def pboot_gen_elf(env, elf_in_file_name,
         # Determine the end of the hash segment, make sure it's block aligned
         if (pad_hash_segment):
             if mbn_version == 7:
-                bytes_to_pad = ELF_BLOCK_ALIGN_16B - pad_hash_segment
+                bytes_to_pad = ELF_BLOCK_ALIGN_4B - pad_hash_segment
             else:
                 bytes_to_pad = ELF_BLOCK_ALIGN - pad_hash_segment
         hash_seg_end = hash_tbl_end_addr + bytes_to_pad
