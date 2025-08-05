@@ -34,11 +34,11 @@ SPDX-License-Identifier: ISC
 				<props name="Reserved_2" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="manufacture_name" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="ddr_type" type="DALPROP_ATTR_TYPE_UINT32">10</props>
-				<props name="num_rows_cs0" type="DALPROP_ATTR_TYPE_UINT32">16</props>
+				<props name="num_rows_cs0" type="DALPROP_ATTR_TYPE_UINT32">15</props>
 				<props name="num_cols_cs0" type="DALPROP_ATTR_TYPE_UINT32">10</props>
 				<props name="num_banks_cs0" type="DALPROP_ATTR_TYPE_UINT32">8</props>
 				<props name="interface_width_cs0" type="DALPROP_ATTR_TYPE_UINT32">1</props>
-				<props name="num_rows_cs1" type="DALPROP_ATTR_TYPE_UINT32">16</props>
+				<props name="num_rows_cs1" type="DALPROP_ATTR_TYPE_UINT32">15</props>
 				<props name="num_cols_cs1" type="DALPROP_ATTR_TYPE_UINT32">10</props>
 				<props name="num_banks_cs1" type="DALPROP_ATTR_TYPE_UINT32">8</props>
 				<props name="interleave_type" type="DALPROP_ATTR_TYPE_UINT32">0</props>
@@ -92,11 +92,11 @@ SPDX-License-Identifier: ISC
 				<props name="reserved_6" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="manufacture_name" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="ddr_type" type="DALPROP_ATTR_TYPE_UINT32">10</props>
-				<props name="num_rows_cs0" type="DALPROP_ATTR_TYPE_UINT32">16</props>
+				<props name="num_rows_cs0" type="DALPROP_ATTR_TYPE_UINT32">15</props>
 				<props name="num_cols_cs0" type="DALPROP_ATTR_TYPE_UINT32">10</props>
 				<props name="num_banks_cs0" type="DALPROP_ATTR_TYPE_UINT32">8</props>
 				<props name="interface_width_cs0" type="DALPROP_ATTR_TYPE_UINT32">1</props>
-				<props name="num_rows_cs1" type="DALPROP_ATTR_TYPE_UINT32">16</props>
+				<props name="num_rows_cs1" type="DALPROP_ATTR_TYPE_UINT32">15</props>
 				<props name="num_cols_cs1" type="DALPROP_ATTR_TYPE_UINT32">10</props>
 				<props name="num_banks_cs1" type="DALPROP_ATTR_TYPE_UINT32">8</props>
 				<props name="interleave_type" type="DALPROP_ATTR_TYPE_UINT32">0</props>
