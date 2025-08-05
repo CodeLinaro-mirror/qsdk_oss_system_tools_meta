@@ -90,7 +90,7 @@ SPDX-License-Identifier: ISC
 				<props name="mr5" type="DALPROP_ATTR_TYPE_UINT32">1024</props>
 				<props name="mr6" type="DALPROP_ATTR_TYPE_UINT32">2064</props>
 				<props name="burst_length" type="DALPROP_ATTR_TYPE_UINT32">8</props>
-				<props name="drive_strength" type="DALPROP_ATTR_TYPE_UINT32">960038663</props>
+				<props name="drive_strength" type="DALPROP_ATTR_TYPE_UINT32">960037892</props>
 				<props name="odt" type="DALPROP_ATTR_TYPE_UINT32">67372036</props>
 				<props name="odt_bypass" type="DALPROP_ATTR_TYPE_UINT32">555819297</props>
 				<props name="reserved_5" type="DALPROP_ATTR_TYPE_UINT32">0</props>
@@ -153,7 +153,7 @@ SPDX-License-Identifier: ISC
 				<props name="mr5" type="DALPROP_ATTR_TYPE_UINT32">1024</props>
 				<props name="mr6" type="DALPROP_ATTR_TYPE_UINT32">2064</props>
 				<props name="burst_length" type="DALPROP_ATTR_TYPE_UINT32">8</props>
-                                <props name="drive_strength" type="DALPROP_ATTR_TYPE_UINT32">960038663</props>
+                                <props name="drive_strength" type="DALPROP_ATTR_TYPE_UINT32">960037892</props>
                                 <props name="odt" type="DALPROP_ATTR_TYPE_UINT32">67372036</props>
                                 <props name="odt_bypass" type="DALPROP_ATTR_TYPE_UINT32">555819297</props>
                                 <props name="reserved_5" type="DALPROP_ATTR_TYPE_UINT32">0</props>
