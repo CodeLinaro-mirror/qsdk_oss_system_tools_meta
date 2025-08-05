@@ -74,7 +74,7 @@ SPDX-License-Identifier: ISC
 				<props name="tCCD_L" type="DALPROP_ATTR_TYPE_UINT32">6</props>
 				<props name="tRRD_L" type="DALPROP_ATTR_TYPE_UINT32">6400</props>
 				<props name="num_device_per_cs0" type="DALPROP_ATTR_TYPE_UINT32">0</props>
-				<props name="features" type="DALPROP_ATTR_TYPE_UINT32">268435474</props>
+				<props name="features" type="DALPROP_ATTR_TYPE_UINT32">18</props>
 				<props name="low_power_ctrl" type="DALPROP_ATTR_TYPE_UINT32">33590869</props>
 				<props name="ctl_long_count_param" type="DALPROP_ATTR_TYPE_UINT32">1968136</props>
 				<props name="pu_pd_params" type="DALPROP_ATTR_TYPE_UINT32">2795939494</props>
@@ -137,7 +137,7 @@ SPDX-License-Identifier: ISC
 				<props name="tCCD_L" type="DALPROP_ATTR_TYPE_UINT32">6</props>
 				<props name="tRRD_L" type="DALPROP_ATTR_TYPE_UINT32">6400</props>
 				<props name="num_device_per_cs0" type="DALPROP_ATTR_TYPE_UINT32">0</props>
-				<props name="features" type="DALPROP_ATTR_TYPE_UINT32">268435474</props>
+				<props name="features" type="DALPROP_ATTR_TYPE_UINT32">18</props>
 				<props name="low_power_ctrl" type="DALPROP_ATTR_TYPE_UINT32">33590869</props>
 				<props name="ctl_long_count_param" type="DALPROP_ATTR_TYPE_UINT32">1968136</props>
 				<props name="pu_pd_params" type="DALPROP_ATTR_TYPE_UINT32">2795939494</props>
@@ -163,10 +163,11 @@ SPDX-License-Identifier: ISC
 				<props name="boot_settings" type="DALPROP_ATTR_TYPE_UINT32">3918</props>
 				<props name="max_retry_count" type="DALPROP_ATTR_TYPE_UINT32">1</props>
 				<!-- boot_settings description
-				     BIT      14:13          12            11       10:9      8:7     6:5      4:3      2:1        0
-				     Feature  DDR FREQ  POWER_SOURCE  RESET_TYPE  CPR_APC  CPR_NSS  CPR_MX  CPR_WCSS  CPR_CX  BOOT_FAIL_SAFE
-				     Value       00             1        11        10      10       01       11        0
+				     BIT      19	      14:13          12            11       10:9      8:7     6:5      4:3      2:1        0
+				     Feature  DDR_PARAM_UPDATE_EN  DDR FREQ  POWER_SOURCE  RESET_TYPE  CPR_APC  CPR_NSS  CPR_MX  CPR_WCSS  CPR_CX  BOOT_FAIL_SAFE
+				     Value       	0   	   		   0       00             1        11        10      10       01       11        0
 
+				     DDR_PARAM_UPDATE_EN - Enable / Disable (1/0)
 				     POWER_SOURCE - PMIC / SMPS (0/1)
 				     RESET_TYPE - Warm / Cold (1/0)
 				     CPR Configuration

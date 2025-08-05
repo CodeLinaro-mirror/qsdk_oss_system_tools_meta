@@ -162,10 +162,11 @@ SPDX-License-Identifier: ISC
 				<props name="boot_settings" type="DALPROP_ATTR_TYPE_UINT32">3918</props>
 				<props name="max_retry_count" type="DALPROP_ATTR_TYPE_UINT32">1</props>
 				<!-- boot_settings description
-				     BIT          12            11       10:9      8:7     6:5      4:3      2:1        0
-				     Feature  POWER_SOURCE  RESET_TYPE  CPR_APC  CPR_NSS  CPR_MX  CPR_WCSS  CPR_CX  BOOT_FAIL_SAFE
-				     Value         0             1        11        10      10       01       11        0
+				     BIT          19		14:13          12            11       10:9      8:7     6:5      4:3      2:1        0
+				     Feature  DDR_PARAM_UPDATE_EN  DDR FREQ  POWER_SOURCE  RESET_TYPE  CPR_APC  CPR_NSS  CPR_MX  CPR_WCSS  CPR_CX  BOOT_FAIL_SAFE
+				     Value         0  	              0   		  00            1        11        10      10       01       11        0
 
+				     DDR_PARAM_UPDATE_EN - Enable / Disable (1/0)
 				     POWER_SOURCE - PMIC / SMPS (0/1)
 				     RESET_TYPE - Warm / Cold (1/0)
 				     CPR Configuration
@@ -174,6 +175,10 @@ SPDX-License-Identifier: ISC
 					01 - No CPR
 					00 - Default config
 				     BOOT_FAIL_SAFE - Enable / Disable (1/0)
+				     DDR Frequency:
+						00 - 933MHz
+						01 - 800MHz
+						10 - 666MHz
 				-->
 			</device>
 		</driver>
