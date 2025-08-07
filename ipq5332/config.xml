@@ -593,6 +593,51 @@ SPDX-License-Identifier: ISC
 			</fw_override>
 		</entry>
 		<entry>
+			<machid>0x8060702</machid>
+			<board>AP-MI01.3-C5</board>
+			<memory>512M16_DDR4</memory>
+			<memory_2048>1024M16_DDR4</memory_2048>
+			<memory_3072>2048M16_DDR4</memory_3072>
+			<q6_uses_pcie0>true</q6_uses_pcie0>
+			<q6_uses_pcie1>true</q6_uses_pcie1>
+			<data_retention>false</data_retention>
+			<layouts>default,256M</layouts>
+			<fw_override>
+				<profile-default layouts="default,256M">
+					<cdt>cdt-AP-MI01.3-C5_512M16_DDR4.bin</cdt>
+					<wififw>wifi_fw_ipq5332_qcn6432cs_squashfs.img</wififw>
+				</profile-default>
+				<profile-2048 layouts="default,256M">
+					<cdt>cdt-AP-MI01.3-C5_1024M16_DDR4.bin</cdt>
+					<wififw>wifi_fw_ipq5332_qcn6432cs_squashfs.img</wififw>
+				</profile-2048>
+				<profile-3072 layouts="default,256M">
+					<cdt>cdt-AP-MI01.3-C5_2048M16_DDR4.bin</cdt>
+					<wififw>wifi_fw_ipq5332_qcn6432cs_squashfs.img</wififw>
+				</profile-3072>
+				<profile-512 layouts="default,256M">
+					<cdt>cdt-AP-MI01.3-C5_512M16_DDR4_LM512.bin</cdt>
+					<wififw>wifi_fw_ipq5332_qcn6432cs_squashfs.img</wififw>
+				</profile-512>
+				<profile-open layouts="default,256M">
+					<cdt>cdt-AP-MI01.3-C5_512M16_DDR4.bin</cdt>
+					<wififw>wifi_fw_ipq5332_qcn6432cs_squashfs.img</wififw>
+				</profile-open>
+				<profile-2048open layouts="default,256M">
+					<cdt>cdt-AP-MI01.3-C5_1024M16_DDR4.bin</cdt>
+					<wififw>wifi_fw_ipq5332_qcn6432cs_squashfs.img</wififw>
+				</profile-2048open>
+				<profile-3072open layouts="default,256M">
+					<cdt>cdt-AP-MI01.3-C5_2048M16_DDR4.bin</cdt>
+					<wififw>wifi_fw_ipq5332_qcn6432cs_squashfs.img</wififw>
+				</profile-3072open>
+				<profile-512open layouts="default,256M">
+					<cdt>cdt-AP-MI01.3-C5_512M16_DDR4_LM512.bin</cdt>
+					<wififw>wifi_fw_ipq5332_qcn6432cs_squashfs.img</wififw>
+				</profile-512open>
+			</fw_override>
+		</entry>
+		<entry>
                         <machid>0x8060202</machid>
                         <board>AP-MI01.12</board>
                         <memory>512M16_DDR4</memory>
@@ -1041,6 +1086,41 @@ SPDX-License-Identifier: ISC
 				</profile-256>
 				<profile-256 layouts="64M">
 					<cdt>cdt-AP-MI04.3_256M16_NOM_DDR4_LM256.bin</cdt>
+					<appsbl flash="nand" mode="32">openwrt-ipq5332-ipq53xx_32-tiny_nand32_64M-u-boot_compressed.mbn</appsbl>
+				</profile-256>
+			</fw_override>
+		</entry>
+		<entry>
+			<machid>0x8060307</machid>
+			<board>AP-MI04.5</board>
+			<memory>256M16_NOM_DDR4</memory>
+			<q6_uses_pcie1>true</q6_uses_pcie1>
+			<data_retention>false</data_retention>
+			<layouts>default,256M,64M</layouts>
+			<fw_override>
+				<profile-default layouts="default,256M">
+					<cdt>cdt-AP-MI04.5_256M16_NOM_DDR4.bin</cdt>
+					<wififw>wifi_fw_ipq5332_qcn6432_squashfs.img</wififw>
+				</profile-default>
+				<profile-512 layouts="default,256M">
+					<cdt>cdt-AP-MI04.5_256M16_NOM_DDR4_LM512.bin</cdt>
+					<wififw>wifi_fw_ipq5332_qcn6432_squashfs.img</wififw>
+				</profile-512>
+				<profile-open layouts="default,256M">
+					<cdt>cdt-AP-MI04.5_256M16_NOM_DDR4.bin</cdt>
+					<wififw>wifi_fw_ipq5332_qcn6432_squashfs.img</wififw>
+				</profile-open>
+				<profile-512open layouts="default,256M">
+					<cdt>cdt-AP-MI04.5_256M16_NOM_DDR4_LM512.bin</cdt>
+					<wififw>wifi_fw_ipq5332_qcn6432_squashfs.img</wififw>
+				</profile-512open>
+				<profile-256 layouts="default">
+					<cdt>cdt-AP-MI04.5_256M16_NOM_DDR4_LM256.bin</cdt>
+					<appsbl flash="nand,nand-4k" mode="32">openwrt-ipq5332-ipq53xx_32-tiny_nand32-u-boot_compressed.mbn</appsbl>
+					<appsbl flash="norplusnand,norplusnand-4k" mode="32">openwrt-ipq5332-ipq53xx_32-tiny_norplusnand32-u-boot_compressed.mbn</appsbl>
+				</profile-256>
+				<profile-256 layouts="64M">
+					<cdt>cdt-AP-MI04.5_256M16_NOM_DDR4_LM256.bin</cdt>
 					<appsbl flash="nand" mode="32">openwrt-ipq5332-ipq53xx_32-tiny_nand32_64M-u-boot_compressed.mbn</appsbl>
 				</profile-256>
 			</fw_override>
