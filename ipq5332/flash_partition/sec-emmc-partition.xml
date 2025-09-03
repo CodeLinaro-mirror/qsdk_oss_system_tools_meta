@@ -93,7 +93,7 @@ SPDX-License-Identifier: ISC
 		readonly="false"
 		image_type = "hlos"
 		optional="true"
-		filename=""
+		filename="WLAN_CALDB_qcn9224_v2_merged_compressed.img"
 		/>
 	<partition
 		label="0:CALFW_1"
