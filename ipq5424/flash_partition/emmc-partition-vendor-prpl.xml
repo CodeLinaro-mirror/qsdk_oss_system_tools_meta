@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+===========================================================================
+Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
+SPDX-License-Identifier: ISC
+===========================================================================
+-->
+
+<configuration>
+	<parser_instructions>
+		<!-- NOTE: entries here are used by the parser when generating output -->
+		<!-- NOTE: each filename must be on it's own line as in variable=value-->
+		WRITE_PROTECT_BOUNDARY_IN_KB    = 65536
+		GROW_LAST_PARTITION_TO_FILL_DISK= false
+	</parser_instructions>
+
+<!-- NOTE: "physical_partition" are listed in order and apply to devices such as eMMC cards that have (for example) 3 physical partitions -->
+<!-- This is physical partition 0 -->
+	<physical_partition ref="user">
+	<!-- NOTE: Define information for each partition, which will be created in order listed here -->
+	<!-- NOTE: Place all "readonly=true" partitions side by side for optimum space usage -->
+	<!-- NOTE: If OPTIMIZE_READONLY_PARTITIONS=true, then partitions won't be in the order listed here -->
+	<!--       they will instead be placed side by side at the beginning of the disk -->
+	<partition
+		label="0:BOOTCONFIG"
+		size_in_kb="512"
+		type="2B7D04FF-31F0-4E6A-BE9A-DA50314DAD58"
+		bootable="false"
+		readonly="false"
+		filename=""
+		erase-only="true"
+		/>
+	<partition
+		label="0:QSEE"
+		size_in_kb="1792"
+		type="A053AA7F-40B8-4B1C-BA08-2F68AC71A4F4"
+		bootable="false"
+		readonly="false"
+		filename="tz.mbn"
+		/>
+	<partition
+		label="0:QSEE_1"
+		size_in_kb="1792"
+		type="A6DD74A1-C8BF-4DBC-AE39-62B8E78C4038"
+		bootable="false"
+		readonly="false"
+		filename=""
+		/>
+	<partition
+		label="0:DEVCFG"
+		size_in_kb="256"
+		type="F65D4B16-343D-4E25-AAFC-BE99B6556A6D"
+		bootable="false"
+		readonly="false"
+		filename="devcfg.mbn"
+		/>
+	<partition
+		label="0:DEVCFG_1"
+		size_in_kb="256"
+		type="48BFA451-9443-46F7-B400-892A6B1BFC16"
+		bootable="false"
+		readonly="false"
+		filename=""
+		/>
+	<partition
+		label="0:XBLCONFIG"
+		size_in_kb="256"
+		type="5A325AE4-4276-B66D-0ADD-3494DF27706A"
+		bootable="false"
+		readonly="false"
+		filename="xbl_config.elf"
+		/>
+	<partition
+		label="0:XBLCONFIG_1"
+		size_in_kb="256"
+		type="F462E0EA-A20E-4B10-867A-2D4455366548"
+		bootable="false"
+		readonly="false"
+		filename=""
+		/>
+	<partition
+		label="0:APPSBLENV"
+		size_in_kb="256"
+		type="300FFDCD-22E0-47E7-9A23-F16ED9382387"
+		bootable="false"
+		readonly="false"
+		filename=""
+		/>
+	<partition
+		label="0:APPSBL"
+		size_in_kb="768"
+		type="400FFDCD-22E0-47E7-9A23-F16ED9382388"
+		bootable="false"
+		readonly="false"
+		diff_files = "true"
+		filename_32="openwrt-ipq5424-ipq54xx_32-mmc32-u-boot_compressed.mbn"
+		filename_64="openwrt-ipq5424-generic-mmc-u-boot_compressed.mbn"
+		/>
+	<partition
+		label="0:APPSBL_1"
+		size_in_kb="768"
+		type="C126787D-3EEF-444C-9E43-FEFF3F103E22"
+		bootable="false"
+		readonly="false"
+		filename=""
+		/>
+	<partition
+		label="0:ETHPHYFW"
+		size_in_kb="512"
+		type="C1DC4CAB-430B-4CDC-A8C5-7115912B74FE"
+		bootable="false"
+		readonly="false"
+		filename=""
+		/>
+	<partition
+		label="0:ART"
+		size_in_kb="1024"
+		type="A72E50C1-D37C-429D-9620-35FCA612B9A8"
+		bootable="false"
+		readonly="false"
+		filename=""
+		/>
+	<partition
+		label="0:LICENSE"
+		size_in_kb="256"
+		type="a7a81a61-66ce-c908-f4a2-82d39d2aff57"
+		bootable="false"
+		readonly="false"
+		filename=""
+		/>
+	<partition
+		label="0:DPR"
+		size_in_kb="256"
+		type="e6e98da2-e22a-4d12-ab33-169e7deaa507"
+		bootable="false"
+		readonly="false"
+		filename=""
+		/>
+	<partition
+		label="0:WIFIFW"
+		size_in_kb="16384"
+		type="888d8069-8d27-40a8-95a9-6006e1ce9b3b"
+		bootable="false"
+		readonly="false"
+		image_type = "hlos"
+		optional="true"
+		filename="wifi_fw_ipq5424_qcn9224_v2_squashfs.img"
+		/>
+	<partition
+		label="0:WIFIFW_1"
+		size_in_kb="16384"
+		type="981476f5-5cd7-42db-9ce9-87b3a31aadbd"
+		bootable="false"
+		readonly="false"
+		filename=""
+		/>
+	<partition
+		label="0:HLOS"
+		size_in_kb="7168"
+		type="B51F2982-3EBE-46DE-8721-EE641E1F9997"
+		bootable="false"
+		readonly="false"
+		diff_files = "true"
+		image_type = "hlos"
+		filename_32="openwrt-ipq54xx-ipq54xx_32-qcom_maxx-fit-uImage.itb"
+		filename_64="openwrt-ipq54xx-generic-qcom_maxx-fit-uImage.itb"
+		/>
+	<partition
+		label="0:HLOS_1"
+		size_in_kb="7168"
+		type="A71DA577-7F81-4626-B4A2-E377F9174525"
+		bootable="false"
+		readonly="false"
+		filename=""
+		/>
+	<partition
+		label="rootfs"
+		size_in_kb="124928"
+		type="98D2248D-7140-449F-A954-39D67BD6C3B4"
+		bootable="false"
+		readonly="false"
+		diff_files = "true"
+		image_type = "hlos"
+		filename_32="openwrt-ipq54xx-ipq54xx_32-squashfs-root.img"
+		filename_64="openwrt-ipq54xx-generic-squashfs-root.img"
+		/>
+	<partition
+		label="rootfs_1"
+		size_in_kb="124928"
+		type="5647B280-DC2A-485D-9913-CF53AC40FA32"
+		bootable="false"
+		readonly="false"
+		filename=""
+		/>
+	<partition
+		label="lcm_data"
+		size_in_kb="102400"
+		type="78957C87-1FB9-5EA9-9CF4-5A4D8D6F32DC"
+		bootable="false"
+		readonly="false"
+		filename=""
+		/>
+	<partition
+		label="0:CALFW"
+		size_in_kb="2048"
+		type="19a6dc0c-bf65-2f27-6763-e2d2df7356e0"
+		bootable="false"
+		readonly="false"
+		image_type = "hlos"
+		optional="true"
+		filename="WLAN_CALDB_qcn9224_v2_merged_compressed.img"
+		/>
+	<partition
+		label="0:CALFW_1"
+		size_in_kb="2048"
+		type="5521e301-b498-5479-87b5-98adf1dadf6b"
+		bootable="false"
+		readonly="false"
+		filename=""
+		/>
+	</physical_partition>
+
+<!-- This is physical partition 1 -->
+	<physical_partition ref="boot0">
+	<!-- NOTE: Define information for each partition, which will be created in order listed here -->
+	<!-- NOTE: Place all "readonly=true" partitions side by side for optimum space usage -->
+	<!-- NOTE: If OPTIMIZE_READONLY_PARTITIONS=true, then partitions won't be in the order listed here -->
+	<!--       they will instead be placed side by side at the beginning of the disk -->
+	<partition
+		label="0:XBL"
+		size_in_kb="1024"
+		type="DEA0BA2C-CBDD-4805-B4F9-F428251C3E98"
+		bootable="false"
+		readonly="false"
+		filename="xbl_s.melf"
+		/>
+	<partition
+		label="0:XBL_1"
+		size_in_kb="1024"
+		type="7A3DF1A3-A31A-454D-BD78-DF259ED486BE"
+		bootable="false"
+		readonly="false"
+		filename=""
+		/>
+	</physical_partition>
+</configuration>
+
