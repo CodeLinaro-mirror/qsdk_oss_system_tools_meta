@@ -14,6 +14,7 @@ from getopt import GetoptError
 arch=""
 flash="nor,tiny-nor,nand,norplusnand,emmc,norplusemmc"
 ipq5424_supported_flash="nor,nand,norplusnand,emmc,norplusemmc,norplusemmc-gpt,norplusnand-gpt"
+ipq5200_supported_flash="nor,nand,norplusnand,emmc,norplusemmc,norplusemmc-gpt,norplusnand-gpt"
 bootImgDir=""
 rpmImgDir=""
 tzImgDir=""
@@ -32,7 +33,7 @@ mbn_version = "3"
 def print_help():
     print("\nUsage: python prepareSingleImage.py <option> <value>\n")
 
-    print("--arch \t\tArch(e.g ipq40xx/ipq807x/ipq807x_64/ipq6018/ipq6018_64/ipq5018/ipq5018_64/ipq9574/ipq9574_64/ipq5332/ipq5332_64/ipq5424/ipq5424_64)\n")
+    print("--arch \t\tArch(e.g ipq40xx/ipq807x/ipq807x_64/ipq6018/ipq6018_64/ipq5018/ipq5018_64/ipq9574/ipq9574_64/ipq5332/ipq5332_64/ipq5424/ipq5424_64/ipq5200/ipq5200_64)\n")
     print(" \t\te.g python prepareSingleImage.py --arch ipq807x\n\n")
 
     print("--fltype \tFlash Type (nor/nand/emmc/norplusnand/norplusemmc)")
@@ -67,7 +68,7 @@ def print_help():
 
     print("--genxblcfg \tWhether xbl_config binaries to be generated")
     print("\t\tIf not specified xbl_config binary will not be generated")
-    print("\t\tThis is currently used/needed only for IPQ5424")
+    print("\t\tThis is currently used/needed only for IPQ5424/IPQ5200")
     print("\t\tThis Argument does not take any value\n")
     print("\t\te.g python prepareSingleImage.py --genxblcfg\n\n")
 
@@ -77,7 +78,7 @@ def print_help():
 
     print("--genmelf \tWhether merged elf of xbl_sc and tme-l patch to be generated")
     print("\t\tIf not specified merged elf will not be generated")
-    print("\t\tThis is currently used/needed only for IPQ5424")
+    print("\t\tThis is currently used/needed only for IPQ5424/IPQ5200")
     print("\t\tThis Argument does not take any value\n")
     print("\t\te.g python prepareSingleImage.py --genmelf\n\n")
 
@@ -98,7 +99,7 @@ def print_help():
 
     print("--genmbn \tWhether u-boot.elf to be converted to u-boot.mbn")
     print("\t\tIf not specified u-boot.mbn will not be generated")
-    print("\t\tThis is currently used/needed only for IPQ807x, IPQ6018, IPQ5018, IPQ9574, IPQ5332, IPQ5424")
+    print("\t\tThis is currently used/needed only for IPQ807x, IPQ6018, IPQ5018, IPQ9574, IPQ5332, IPQ5424, IPQ5200")
     print("\t\tThis Argument does not take any value\n")
     print("\t\te.g python prepareSingleImage.py --genmbn\n\n")
 
@@ -520,13 +521,13 @@ def main():
         for option, value in opts:
             if option == "--arch":
                 arch = value
-                if arch not in ["ipq40xx", "ipq806x", "ipq807x", "ipq807x_64", "ipq6018", "ipq6018_64", "ipq5018", "ipq5018_64", "ipq9574", "ipq9574_64", "ipq5332", "ipq5332_64", "ipq5424", "ipq5424_64"]:
+                if arch not in ["ipq40xx", "ipq806x", "ipq807x", "ipq807x_64", "ipq6018", "ipq6018_64", "ipq5018", "ipq5018_64", "ipq9574", "ipq9574_64", "ipq5332", "ipq5332_64", "ipq5424", "ipq5424_64", "ipq5200", "ipq5200_64"]:
                     print("Invalid arch type: " + arch)
                     print_help()
                     return -1
-                if arch == "ipq807x" or arch == "ipq5018" or arch == "ipq9574" or arch == "ipq5332" or arch == "ipq5424":
+                if arch == "ipq807x" or arch == "ipq5018" or arch == "ipq9574" or arch == "ipq5332" or arch == "ipq5424" or arch == "ipq5200":
                     mode = "32"
-                elif arch == "ipq807x_64" or arch == "ipq5018_64" or arch == "ipq9574_64" or arch == "ipq5332_64" or arch == "ipq5424_64":
+                elif arch == "ipq807x_64" or arch == "ipq5018_64" or arch == "ipq9574_64" or arch == "ipq5332_64" or arch == "ipq5424_64" or arch == "ipq5200_64":
                     mode = "64"
                     arch = arch[:-3]
 
@@ -538,6 +539,9 @@ def main():
 
                 if arch == "ipq5424":
                     flash = ipq5424_supported_flash
+
+                if arch == "ipq5200":
+                    flash = ipq5200_supported_flash
 
             elif option == "--fltype":
                 flash = value
@@ -650,7 +654,7 @@ def main():
                 return -1
 
         if to_generate_license == "true":
-            if os.path.exists(lic_dir) and arch == "ipq5424":
+            if os.path.exists(lic_dir) and (arch == "ipq5424" or arch == "ipq5200"):
                 if gen_license() != 0:
                     return -1
             else:
@@ -658,10 +662,10 @@ def main():
                 return -1
 
         if to_generate_mbn == "true":
-            if arch == "ipq807x" or arch == "ipq6018" or arch == "ipq5018" or arch == "ipq9574" or arch == "ipq5332" or arch == "ipq5424":
+            if arch == "ipq807x" or arch == "ipq6018" or arch == "ipq5018" or arch == "ipq9574" or arch == "ipq5332" or arch == "ipq5424" or arch == "ipq5200":
                 if arch == "ipq6018" or arch == "ipq9574" or arch == "ipq5332":
                     mbn_version = "6"
-                elif arch == "ipq5424":
+                elif arch == "ipq5424" or arch == "ipq5200":
                     mbn_version = "7"
                 if gen_mbn() != 0:
                     return -1
@@ -669,7 +673,7 @@ def main():
                     return -1
             else:
                 print("Invalid arch \"" + arch + "\" for mbn conversion")
-                print("--genmbn is needed/used only for ipq807x, ipq6018, ipq5018, ipq9574, ipq5332 and ipq5424 type")
+                print("--genmbn is needed/used only for ipq807x, ipq6018, ipq5018, ipq9574, ipq5332, ipq5424 and ipq5200 type")
         return 0
     else:
         print_help()
