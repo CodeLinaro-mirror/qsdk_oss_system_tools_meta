@@ -266,6 +266,14 @@ SPDX-License-Identifier: ISC
 		filename=""
 		/>
 	<partition
+		label="lcm_data"
+		size_in_kb="102400"
+		type="78957C87-1FB9-5EA9-9CF4-5A4D8D6F32DC"
+		bootable="false"
+		readonly="false"
+		filename=""
+		/>
+	<partition
 		label="0:CALFW"
 		size_in_kb="2048"
 		type="19a6dc0c-bf65-2f27-6763-e2d2df7356e0"
@@ -357,6 +365,14 @@ SPDX-License-Identifier: ISC
 		label="NVRAM"
 		size_in_kb="1536"
 		type="E3F3F58B-597F-BA6F-EFB5-96C5CE76D468"
+		bootable="false"
+		readonly="false"
+		filename=""
+		/>
+	<partition
+		label="lcm_data"
+		size_in_kb="102400"
+		type="78957C87-1FB9-5EA9-9CF4-5A4D8D6F32DC"
 		bootable="false"
 		readonly="false"
 		filename=""
@@ -634,6 +650,14 @@ SPDX-License-Identifier: ISC
 		label="NVRAM"
 		size_in_kb="1536"
 		type="E3F3F58B-597F-BA6F-EFB5-96C5CE76D468"
+		bootable="false"
+		readonly="false"
+		filename=""
+		/>
+	<partition
+		label="lcm_data"
+		size_in_kb="102400"
+		type="78957C87-1FB9-5EA9-9CF4-5A4D8D6F32DC"
 		bootable="false"
 		readonly="false"
 		filename=""
