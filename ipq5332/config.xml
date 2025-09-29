@@ -165,6 +165,9 @@ SPDX-License-Identifier: ISC
 					<sbl1 flash="nand" mode="32">xbl_nand_LM256_atf.elf</sbl1>
 					<sbl1 flash="nand-4k" mode="32">xbl_nand_4K_LM256_atf.elf</sbl1>
 					<sbl1 flash="norplusnand,norplusnand-4k" mode="32">xbl_nor_LM256_atf.elf</sbl1>
+					<sbl1_1 flash="nand" mode="32">xbl_nand_LM256_atf.elf</sbl1_1>
+					<sbl1_1 flash="nand-4k" mode="32">xbl_nand_4K_LM256_atf.elf</sbl1_1>
+					<sbl1_1 flash="norplusnand,norplusnand-4k" mode="32">xbl_nor_LM256_atf.elf</sbl1_1>
 					<cdt>cdt-AP-MI01.2_512M16_DDR4_LM256.bin</cdt>
 					<qsee>bl31.mbn</qsee>
 					<appsbl flash="nand,nand-4k" mode="32">openwrt-ipq5332-ipq53xx_32-tiny_v2_nand32-u-boot_compressed.mbn</appsbl>
@@ -173,6 +176,7 @@ SPDX-License-Identifier: ISC
 				</profile-256>
 				<profile-256 layouts="64M">
 					<sbl1 flash="nand" mode="32">xbl_nand_LM256_atf.elf</sbl1>
+					<sbl1_1 flash="nand" mode="32">xbl_nand_LM256_atf.elf</sbl1_1>
 					<cdt>cdt-AP-MI01.2_512M16_DDR4_LM256.bin</cdt>
 					<qsee>bl31.mbn</qsee>
 					<appsbl flash="nand" mode="32">openwrt-ipq5332-ipq53xx_32-tiny_v2_nand32_64M-u-boot_compressed.mbn</appsbl>
@@ -579,6 +583,9 @@ SPDX-License-Identifier: ISC
 					<sbl1 flash="nand" mode="32">xbl_nand_LM256_atf.elf</sbl1>
 					<sbl1 flash="nand-4k" mode="32">xbl_nand_4K_LM256_atf.elf</sbl1>
 					<sbl1 flash="norplusnand,norplusnand-4k" mode="32">xbl_nor_LM256_atf.elf</sbl1>
+					<sbl1_1 flash="nand" mode="32">xbl_nand_LM256_atf.elf</sbl1_1>
+					<sbl1_1 flash="nand-4k" mode="32">xbl_nand_4K_LM256_atf.elf</sbl1_1>
+					<sbl1_1 flash="norplusnand,norplusnand-4k" mode="32">xbl_nor_LM256_atf.elf</sbl1_1>
 					<cdt>cdt-AP-MI01.3-C4_256M16_DDR4_LM256.bin</cdt>
 					<qsee>bl31.mbn</qsee>
 					<appsbl flash="nand,nand-4k" mode="32">openwrt-ipq5332-ipq53xx_32-tiny_v2_nand32-u-boot_compressed.mbn</appsbl>
@@ -586,6 +593,7 @@ SPDX-License-Identifier: ISC
 				</profile-256>
 				<profile-256 layouts="64M">
 					<sbl1 flash="nand" mode="32">xbl_nand_LM256_atf.elf</sbl1>
+					<sbl1_1 flash="nand" mode="32">xbl_nand_LM256_atf.elf</sbl1_1>
 					<cdt>cdt-AP-MI01.3-C4_256M16_DDR4_LM256.bin</cdt>
 					<qsee>bl31.mbn</qsee>
 					<appsbl flash="nand" mode="32">openwrt-ipq5332-ipq53xx_32-tiny_v2_nand32_64M-u-boot_compressed.mbn</appsbl>
@@ -850,6 +858,9 @@ SPDX-License-Identifier: ISC
 					<sbl1 flash="nand" mode="32">xbl_nand_LM256_atf.elf</sbl1>
 					<sbl1 flash="nand-4k" mode="32">xbl_nand_4K_LM256_atf.elf</sbl1>
 					<sbl1 flash="norplusnand,norplusnand-4k" mode="32">xbl_nor_LM256_atf.elf</sbl1>
+					<sbl1_1 flash="nand" mode="32">xbl_nand_LM256_atf.elf</sbl1_1>
+					<sbl1_1 flash="nand-4k" mode="32">xbl_nand_4K_LM256_atf.elf</sbl1_1>
+					<sbl1_1 flash="norplusnand,norplusnand-4k" mode="32">xbl_nor_LM256_atf.elf</sbl1_1>
 					<cdt>cdt-AP-MI01.6_512M16_DDR4_LM256.bin</cdt>
 					<qsee>bl31.mbn</qsee>
 					<appsbl flash="nand,nand-4k" mode="32">openwrt-ipq5332-ipq53xx_32-tiny_v2_nand32-u-boot_compressed.mbn</appsbl>
@@ -858,6 +869,7 @@ SPDX-License-Identifier: ISC
 				</profile-256>
 				<profile-256 layouts="64M">
 					<sbl1 flash="nand" mode="32">xbl_nand_LM256_atf.elf</sbl1>
+					<sbl1_1 flash="nand" mode="32">xbl_nand_LM256_atf.elf</sbl1_1>
 					<cdt>cdt-AP-MI01.6_512M16_DDR4_LM256.bin</cdt>
 					<qsee>bl31.mbn</qsee>
 					<appsbl flash="nand" mode="32">openwrt-ipq5332-ipq53xx_32-tiny_v2_nand32_64M-u-boot_compressed.mbn</appsbl>
@@ -1042,6 +1054,9 @@ SPDX-License-Identifier: ISC
 					<sbl1 flash="nand" mode="32">xbl_nand_LM256_atf.elf</sbl1>
 					<sbl1 flash="nand-4k" mode="32">xbl_nand_4K_LM256_atf.elf</sbl1>
 					<sbl1 flash="norplusnand,norplusnand-4k" mode="32">xbl_nor_LM256_atf.elf</sbl1>
+					<sbl1_1 flash="nand" mode="32">xbl_nand_LM256_atf.elf</sbl1_1>
+					<sbl1_1 flash="nand-4k" mode="32">xbl_nand_4K_LM256_atf.elf</sbl1_1>
+					<sbl1_1 flash="norplusnand,norplusnand-4k" mode="32">xbl_nor_LM256_atf.elf</sbl1_1>
 					<cdt>cdt-AP-MI04.1-C3_256M16_NOM_DDR4_LM256.bin</cdt>
 					<qsee>bl31.mbn</qsee>
 					<appsbl flash="nand,nand-4k" mode="32">openwrt-ipq5332-ipq53xx_32-tiny_v2_nand32-u-boot_compressed.mbn</appsbl>
@@ -1049,6 +1064,7 @@ SPDX-License-Identifier: ISC
 				</profile-256>
 				<profile-256 layouts="64M">
 					<sbl1 flash="nand" mode="32">xbl_nand_LM256_atf.elf</sbl1>
+					<sbl1_1 flash="nand" mode="32">xbl_nand_LM256_atf.elf</sbl1_1>
 					<cdt>cdt-AP-MI04.1-C3_256M16_NOM_DDR4_LM256.bin</cdt>
 					<qsee>bl31.mbn</qsee>
 					<appsbl flash="nand" mode="32">openwrt-ipq5332-ipq53xx_32-tiny_v2_nand32_64M-u-boot_compressed.mbn</appsbl>
@@ -1145,6 +1161,9 @@ SPDX-License-Identifier: ISC
 					<sbl1 flash="nand" mode="32">xbl_nand_LM256_atf.elf</sbl1>
 					<sbl1 flash="nand-4k" mode="32">xbl_nand_4K_LM256_atf.elf</sbl1>
 					<sbl1 flash="norplusnand,norplusnand-4k" mode="32">xbl_nor_LM256_atf.elf</sbl1>
+					<sbl1_1 flash="nand" mode="32">xbl_nand_LM256_atf.elf</sbl1_1>
+					<sbl1_1 flash="nand-4k" mode="32">xbl_nand_4K_LM256_atf.elf</sbl1_1>
+					<sbl1_1 flash="norplusnand,norplusnand-4k" mode="32">xbl_nor_LM256_atf.elf</sbl1_1>
 					<cdt>cdt-TB-MI03.1_256M16_TB_DDR4_LM256.bin</cdt>
 					<qsee>bl31.mbn</qsee>
 					<appsbl flash="nand,nand-4k" mode="32">openwrt-ipq5332-ipq53xx_32-tiny_v2_nand32-u-boot_compressed.mbn</appsbl>
@@ -1152,6 +1171,7 @@ SPDX-License-Identifier: ISC
 				</profile-256>
 				<profile-256 layouts="64M">
 					<sbl1 flash="nand" mode="32">xbl_nand_LM256_atf.elf</sbl1>
+					<sbl1_1 flash="nand" mode="32">xbl_nand_LM256_atf.elf</sbl1_1>
 					<cdt>cdt-TB-MI03.1_256M16_TB_DDR4_LM256.bin</cdt>
 					<qsee>bl31.mbn</qsee>
 					<appsbl flash="nand" mode="32">openwrt-ipq5332-ipq53xx_32-tiny_v2_nand32_64M-u-boot_compressed.mbn</appsbl>
@@ -1178,6 +1198,9 @@ SPDX-License-Identifier: ISC
 					<sbl1 flash="nand" mode="32">xbl_nand_LM256_atf.elf</sbl1>
 					<sbl1 flash="nand-4k" mode="32">xbl_nand_4K_LM256_atf.elf</sbl1>
 					<sbl1 flash="norplusnand,norplusnand-4k" mode="32">xbl_nor_LM256_atf.elf</sbl1>
+					<sbl1_1 flash="nand" mode="32">xbl_nand_LM256_atf.elf</sbl1_1>
+                    <sbl1_1 flash="nand-4k" mode="32">xbl_nand_4K_LM256_atf.elf</sbl1_1>
+                    <sbl1_1 flash="norplusnand,norplusnand-4k" mode="32">xbl_nor_LM256_atf.elf</sbl1_1>
 					<cdt>cdt-TB-MI05.1_256M16_TB_DDR3_LM256.bin</cdt>
 					<qsee>bl31.mbn</qsee>
 					<appsbl flash="nand,nand-4k" mode="32">openwrt-ipq5332-ipq53xx_32-tiny_v2_nand32-u-boot_compressed.mbn</appsbl>
@@ -1185,6 +1208,7 @@ SPDX-License-Identifier: ISC
 				</profile-256>
 				<profile-256 layouts="64M">
 					<sbl1 flash="nand" mode="32">xbl_nand_LM256_atf.elf</sbl1>
+					<sbl1_1 flash="nand" mode="32">xbl_nand_LM256_atf.elf</sbl1_1>
 					<cdt>cdt-TB-MI05.1_256M16_TB_DDR3_LM256.bin</cdt>
 					<qsee>bl31.mbn</qsee>
 					<appsbl flash="nand" mode="32">openwrt-ipq5332-ipq53xx_32-tiny_v2_nand32_64M-u-boot_compressed.mbn</appsbl>

@@ -35,7 +35,7 @@ SPDX-License-Identifier: ISC
 		type="7A3DF1A3-A31A-454D-BD78-DF259ED486BE"
 		bootable="false"
 		readonly="false"
-		filename=""
+		filename="xbl_emmc.elf"
 		/>
 	<partition
 		label="0:BOOTCONFIG"
