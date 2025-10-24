@@ -27,6 +27,13 @@ inDir = ""
 dtcDir = ""
 mode = ""
 
+soc_dir = ""
+attach1_dir = ""
+attach2_dir = ""
+attach3_dir = ""
+attach4_dir = ""
+attach5_dir = ""
+
 ## default mbn version
 mbn_version = "3"
 
@@ -114,6 +121,12 @@ def print_help():
     print("\t\tIf not specified bootldr binaries will not be generated")
     print("\t\tThis Argument does not take any value\n")
     print("\t\te.g python prepareSingleImage.py --genbootldr\n\n")
+
+    print("--genlicense \tWhether license blob must be generated")
+    print("\t\tIf not specified license binaries will not be generated")
+    print("\t\tThis argument will not take any values itself but it should be added in SOCs and attaches")
+    print("\t\t*.pfm files are used to generate the License blob from given path and flash specific\n")
+    print("\t\te.g python prepareSingleImage.py --genlicense --soc ./license --attach1 ./attach_license\n\n")
 
     print("--total_blocks \tTotal blocks\n\n")
     print("--flash_size \tFlash size")
@@ -318,14 +331,25 @@ def gen_bootldr():
 
 def gen_license():
     global cdir
-    global lic_dir
+    global soc_dir
+    global attach1_dir
+    global attach2_dir
+    global attach3_dir
+    global attach4_dir
+    global attach5_dir
     global flash
     global arch
     global mode
 
     for type in flash.split(","):
-        prc = subprocess.Popen(['python', srcDir + '/gen_license.py', '--arch',
-            arch, '--fltype', type, '--in', cdir, '--lic_path', lic_dir])
+        if arch == "ipq5424":
+            prc = subprocess.Popen(['python', srcDir + '/gen_license.py', '--arch',
+                arch, '--fltype', type, '--in', cdir, '--soc', soc_dir])
+        else:
+            prc = subprocess.Popen(['python', srcDir + '/gen_license.py', '--arch',
+                arch, '--fltype', type, '--in', cdir, '--soc', soc_dir,
+                '--attach1', attach1_dir, '--attach2', attach2_dir, '--attach3',
+                attach3_dir, '--attach4', attach4_dir, '--attach5', attach5_dir])
         prc.wait()
 
         if prc.returncode != 0:
@@ -490,7 +514,12 @@ def main():
     global memory
     global flash_size
     global total_blocks
-    global lic_dir
+    global soc_dir
+    global attach1_dir
+    global attach2_dir
+    global attach3_dir
+    global attach4_dir
+    global attach5_dir
 
     to_generate_cdt = "false"
     to_generate_xblcfg = "false"
@@ -513,7 +542,8 @@ def main():
                 "bootimg=", "tzimg=", "nhssimg=", "rpmimg=", "wififwimg",
                 "gencdt", "genxblcfg", "genmelf", "dtc_path=","memory=",
                 "total_blocks=", "flash_size=", "genpart", "genbootconf", "genbootconf_crc",
-                "genmbn", "lk", "genbootldr", "genlicense", "lic_path=", "help"])
+                "genmbn", "lk", "genbootldr", "genlicense", "soc=","attach1=",
+		"attach2=", "attach3=", "attach4=", "attach5=", "help"])
         except GetoptError as e:
             print_help()
             raise
@@ -590,8 +620,8 @@ def main():
                 to_generate_bootldr = "true"
             elif option == "--genlicense":
                 to_generate_license = "true"
-            elif option == "--lic_path":
-                lic_dir = value
+            elif option == "--soc":
+                soc_dir = value
 
             elif (option == "-h" or option == "--help"):
                 print_help()
@@ -654,12 +684,26 @@ def main():
                 return -1
 
         if to_generate_license == "true":
-            if os.path.exists(lic_dir) and (arch == "ipq5424" or arch == "ipq5200"):
+            if arch == "ipq5424":
                 if gen_license() != 0:
+                    print("Failed to generate license bin")
                     return -1
             else:
-                print("License directory or arch not valid")
-                return -1
+                for option, value in opts:
+                    if option == "--attach1":
+                        attach1_dir = value
+                    elif option == "--attach2":
+                        attach2_dir = value
+                    elif option == "--attach3":
+                        attach3_dir = value
+                    elif option == "--attach4":
+                        attach4_dir = value
+                    elif option == "--attach5":
+                        attach5_dir = value
+
+                if gen_license() != 0:
+                    print('Failed to generate license bin')
+                    return -1
 
         if to_generate_mbn == "true":
             if arch == "ipq807x" or arch == "ipq6018" or arch == "ipq5018" or arch == "ipq9574" or arch == "ipq5332" or arch == "ipq5424" or arch == "ipq5200":
