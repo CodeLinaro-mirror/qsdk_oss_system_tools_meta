@@ -83,10 +83,12 @@ MODE = ""
 image_type = "all"
 memory_size = "default"
 flayout = "default"
+split_by_rdp = "false"
 skip_4k_nand = "false"
 atf = "false"
 img_suffix = ""
 supported_arch = ["ipq5200", "ipq5200_64", "ipq5424", "ipq5424_64", "ipq5332", "ipq5332_64"]
+split_by_rdp_supported_arch = ["ipq5200"]
 supported_flash_type = {}
 supported_flash_type["ipq5332"] = { "nand", "nor", "tiny-nor", "emmc", "norplusnand", "norplusemmc", "tiny-nor-debug" };
 supported_flash_type["ipq5424"] = { "nor", "nand", "emmc", "norplusnand", "norplusemmc", "norplusnand-gpt", "norplusemmc-gpt" , "tiny-nor", "tiny-nor-debug" };
@@ -1192,6 +1194,7 @@ class Pack(object):
             # get machid from RDP entry
             machid = int(segment.find(".//machid").text, 0)
             machid = "%x" % machid
+            board = segment.find(".//board").text
 
             # get support layout list from RDP entry
             # and check whether it supports the requested layout, if not skip this RDP
@@ -1296,7 +1299,7 @@ class Pack(object):
                 part[1] = fname
                 print("#################", sys._getframe(0).f_code.co_name, sys._getframe(0).f_lineno, part)
 
-            id_map[machid] = { "part_info" : part_img_list , "flinfo" : images[flayout]["flinfo"] }
+            id_map[machid] = { "part_info" : part_img_list, "flinfo" : images[flayout]["flinfo"], "board" : board }
 
         return 0
 
@@ -1417,7 +1420,6 @@ class Pack(object):
         """
         self.flash_type = flash_type
         self.images_dname = images_dname
-        self.img_fname = out_fname
 
         self.__create_fnames()
         try:
@@ -1465,23 +1467,46 @@ class Pack(object):
         if not bool(machid_map):
             return 1
 
-        # generate main RDP specific flash script
-        images = []
-        ret = self.__gen_machid_flash_script(machid_map, images)
-        if ret != 0:
-            fail_img = out_fname.split("/")
-            error("Failed to pack %s" % fail_img[-1])
-        print("#################", sys._getframe(0).f_code.co_name, sys._getframe(0).f_lineno, images)
+        if split_by_rdp == "true":
+            for machid in machid_map:
+                board = machid_map[machid]["board"];
+                self.img_fname = out_fname[:-4] + "_" + board + ".img"
+                # generate main RDP specific flash script
+                images = []
+                ret = self.__gen_machid_flash_script({machid: machid_map[machid]}, images)
+                if ret != 0:
+                    fail_img = out_fname.split("/")
+                    error("Failed to pack %s" % fail_img[-1])
+                print("#################", sys._getframe(0).f_code.co_name, sys._getframe(0).f_lineno, images)
 
-        # generate main flash.scr script
-        ret = self.__gen_main_flash_script(machid_map, images)
-        print("#################", sys._getframe(0).f_code.co_name, sys._getframe(0).f_lineno, images)
-        if ret != 0:
-            images.insert(0, ImageInfo("script", "flash.scr", "script"))
-            self.__mkimage(images)
+                # generate main flash.scr script
+                ret = self.__gen_main_flash_script({machid: machid_map[machid]}, images)
+                print("#################", sys._getframe(0).f_code.co_name, sys._getframe(0).f_lineno, images)
+                if ret != 0:
+                    images.insert(0, ImageInfo("script", "flash.scr", "script"))
+                    self.__mkimage(images)
+                else:
+                    fail_img = out_fname.split("/")
+                    error("Failed to pack %s" % fail_img[-1])
         else:
-            fail_img = out_fname.split("/")
-            error("Failed to pack %s" % fail_img[-1])
+            # generate main RDP specific flash script
+            self.img_fname = out_fname
+            images = []
+            ret = self.__gen_machid_flash_script(machid_map, images)
+            if ret != 0:
+                fail_img = out_fname.split("/")
+                error("Failed to pack %s" % fail_img[-1])
+            print("#################", sys._getframe(0).f_code.co_name, sys._getframe(0).f_lineno, images)
+
+            # generate main flash.scr script
+            ret = self.__gen_main_flash_script(machid_map, images)
+            print("#################", sys._getframe(0).f_code.co_name, sys._getframe(0).f_lineno, images)
+            if ret != 0:
+                images.insert(0, ImageInfo("script", "flash.scr", "script"))
+                self.__mkimage(images)
+            else:
+                fail_img = out_fname.split("/")
+                error("Failed to pack %s" % fail_img[-1])
 
         return 0
 
@@ -1512,6 +1537,7 @@ class ArgParser(object):
         global img_suffix
         global skip_test
         global flayout
+        global split_by_rdp
         skip_test = False
 
         """Start the parsing process, and populate members with parsed value.
@@ -1522,7 +1548,7 @@ class ArgParser(object):
         cdir = os.path.abspath(os.path.dirname(""))
         if len(sys.argv) > 1:
             try:
-                opts, args = getopt(sys.argv[1:], "", ["arch=", "fltype=", "srcPath=", "inImage=", "outImage=", "image_type=", "memory=", "img_suffix=", "skip_4k_nand", "atf", "flayout="])
+                opts, args = getopt(sys.argv[1:], "", ["arch=", "fltype=", "srcPath=", "inImage=", "outImage=", "image_type=", "memory=", "img_suffix=", "skip_4k_nand", "atf", "flayout=", "split_by_rdp"])
             except GetoptError as e:
                 raise UsageError(e.msg)
 
@@ -1560,6 +1586,8 @@ class ArgParser(object):
                 elif option =="--flayout":
                     flayout = value
 
+                elif option =="--split_by_rdp":
+                    split_by_rdp = "true"
             # Verify Arguments passed by user
             # Verify arch type
             if ARCH_NAME not in supported_arch:
@@ -1569,6 +1597,9 @@ class ArgParser(object):
             if ARCH_NAME[-3:] == "_64":
                 MODE = "64"
                 ARCH_NAME = ARCH_NAME[:-3]
+
+            if ARCH_NAME in split_by_rdp_supported_arch:
+                split_by_rdp = "true"
 
             # Set flash type to default type (nand) if not given by user
             if self.flash_type == None:
@@ -1617,6 +1648,7 @@ class ArgParser(object):
         print()
         print("  --atf \t\tReplace tz with atf for QSEE partition")
         print("  --skip_4k_nand \tskip generating 4k nand images")
+        print("  --split_by_rdp \tGenerate RDP based image with respect to flash layout")
         print("  --flayout \tGenerate single image with respect to flash layout")
         print(" \t\tThis Argument does not take any value")
         print("Pack Version: %s" % version)
