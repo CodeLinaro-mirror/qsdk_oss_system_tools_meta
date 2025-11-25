@@ -48,7 +48,7 @@ SPDX-License-Identifier: ISC
 		filename=""
 		/>
 	<partition
-		label="0:HLOS"
+		label="kernel-active"
 		size_in_kb="7168"
 		type="B51F2982-3EBE-46DE-8721-EE641E1F9997"
 		bootable="false"
@@ -59,7 +59,7 @@ SPDX-License-Identifier: ISC
 		filename_64="openwrt-ipq53xx-generic-qcom_mixx-fit-uImage.itb"
 		/>
 	<partition
-		label="0:HLOS_1"
+		label="kernel-inactive"
 		size_in_kb="7168"
 		type="A71DA577-7F81-4626-B4A2-E377F9174525"
 		bootable="false"
@@ -67,7 +67,7 @@ SPDX-License-Identifier: ISC
 		filename=""
 		/>
 	<partition
-		label="rootfs"
+		label="rootfs-active"
 		size_in_kb="124928"
 		type="98D2248D-7140-449F-A954-39D67BD6C3B4"
 		bootable="false"
@@ -78,7 +78,7 @@ SPDX-License-Identifier: ISC
 		filename_64="openwrt-ipq53xx-generic-squashfs-root.img"
 		/>
 	<partition
-		label="rootfs_1"
+		label="rootfs-inactive"
 		size_in_kb="124928"
 		type="5647B280-DC2A-485D-9913-CF53AC40FA32"
 		bootable="false"
