@@ -773,7 +773,6 @@ class Pack(object):
     def __ubi_cfg_parser(self, ubi_cfg_fname, ubi_vol_info):
         ubi_cfg_file = open(ubi_cfg_fname, 'r')
 
-        vol_found = False
         print("#################", sys._getframe(0).f_code.co_name, sys._getframe(0).f_lineno)
         while True:
             line = ubi_cfg_file.readline()
@@ -820,6 +819,145 @@ class Pack(object):
         print("#################", sys._getframe(0).f_code.co_name, sys._getframe(0).f_lineno, ubi_vol_info)
         ubi_cfg_file.close()
         return 0
+
+    def __parse_size(self, size_str):
+        if size_str is None:
+            return 0
+
+        if "iB" in size_str:
+            size = int(size_str[0:-3])
+            if size_str[-3] == 'M':
+                return size * 1024 * 1024
+            elif size_str[-3] == 'K':
+                return size * 1024
+        return int(size_str)
+
+    def __get_wifi_fw_info_from_config(self, root, board_name):
+        """Get WiFi firmware info from config.xml for a specific board."""
+        wifi_fw_info = {}
+
+        if not board_name:
+            return wifi_fw_info
+
+        board_xpath = ".//data[@type='MACH_ID_BOARD_MAP']/entry[board='%s']" % board_name
+        entry = root.find(board_xpath)
+
+        if entry is not None:
+            fw_override = entry.find(".//fw_override")
+            if fw_override is not None:
+                for fw_type in ["wifi_fw", "cal_fw"]:
+                    fw_element = fw_override.find(".//%s" % fw_type)
+                    if fw_element is not None:
+                        image = fw_element.get("image")
+                        vol_size = fw_element.get("vol_size")
+                        if image and vol_size:  # Only image is there
+                            wifi_fw_info[fw_type] = {
+                                "image": image,
+                                "vol_size": vol_size
+                            }
+
+        return wifi_fw_info
+
+    def __create_board_specific_ubinize_config(self, src_config, dest_config, kernel_dtb_name, board_name, wifi_fw_info):
+        """Create board-specific ubinize config with simplified processing."""
+
+        # Read the source config
+        with open(src_config, 'r') as src_file:
+            lines = src_file.readlines()
+
+        output_lines = []
+        current_section = None
+        skip_section = False
+
+        i = 0
+        while i < len(lines):
+            line = lines[i]
+            stripped_line = line.strip()
+
+            # Handle section headers
+            if stripped_line.startswith('[') and stripped_line.endswith(']'):
+                current_section = stripped_line[1:-1]  # Remove [ and ]
+                # Check if this WiFi section should be skipped (no complete data)
+                if current_section in ['wifi_fw', 'cal_fw']:
+                    if current_section not in wifi_fw_info or not wifi_fw_info[current_section].get('image'):
+                        skip_section = True
+                        # Skip entire section until next section header
+                        while i + 1 < len(lines) and not lines[i + 1].strip().startswith('['):
+                            i += 1
+                        i += 1
+                        continue
+                    else:
+                        skip_section = False
+                else:
+                    skip_section = False
+                output_lines.append(line)
+                i += 1
+                continue
+
+            if skip_section:
+                i += 1
+                continue
+
+            # Handle KERNEL_DTB_NAME replacement
+            if "KERNEL_DTB_NAME" in line and split_by_rdp == "true":
+                dtb_name = kernel_dtb_name or board_name.lower()
+                line = line.replace("KERNEL_DTB_NAME", dtb_name)
+
+            # Handle WiFi firmware sections
+            if current_section in ['wifi_fw', 'cal_fw'] and current_section in wifi_fw_info:
+                fw_info = wifi_fw_info[current_section]
+                # Replace existing image= line
+                if stripped_line.startswith('image='):
+                    if fw_info.get('image'):
+                        output_lines.append('image=%s\n' % fw_info['image'])
+                    i += 1
+                    continue
+                # Replace existing vol_size= line
+                elif stripped_line.startswith('vol_size='):
+                    if fw_info.get('vol_size'):
+                        output_lines.append('vol_size=%s\n' % fw_info['vol_size'])
+                    else:
+                        output_lines.append(line)
+                    i += 1
+                    continue
+                # Add missing image= line after "# Source image" comment
+                elif stripped_line.startswith('# Source image') and fw_info.get('image'):
+                    output_lines.append(line)
+                    # Check if next line is already image=
+                    if i + 1 < len(lines) and not lines[i + 1].strip().startswith('image='):
+                        output_lines.append('image=%s\n' % fw_info['image'])
+                    i += 1
+                    continue
+                # Add missing vol_size= line after vol_type=
+                elif stripped_line.startswith('vol_type=') and fw_info.get('vol_size'):
+                    output_lines.append(line)
+                    # Check if vol_size= line already exists in the section
+                    has_vol_size = False
+                    for j in range(i + 1, len(lines)):
+                        next_line = lines[j].strip()
+                        if next_line.startswith('['):
+                            break
+                        if next_line.startswith('vol_size='):
+                            has_vol_size = True
+                            break
+
+                    if not has_vol_size:
+                        output_lines.append('vol_size=%s\n' % fw_info['vol_size'])
+                    i += 1
+                    continue
+
+            # Handle image= lines - add SRC_DIR prefix
+            if stripped_line.startswith('image='):
+                line = line.replace('image=', "image=" + SRC_DIR + "/")
+
+            # For all other lines, keep as-is
+            output_lines.append(line)
+            i += 1
+
+        # Write the processed config
+        with open(dest_config, 'w') as dest_file:
+            dest_file.writelines(output_lines)
+
 
     def __process_board_flash_gpt(self, ftype, images, root):
         """Extract board info from config and generate the flash script.
@@ -1196,6 +1334,15 @@ class Pack(object):
             machid = "%x" % machid
             board = segment.find(".//board").text
 
+            # Get the memory tag value from the config
+            memory_tag = segment.find(".//memory").text if segment.find(".//memory") is not None else "default"
+
+            # If memory_size is not default, check if there's a specific memory tag for it
+            if memory_size != "default":
+                memory_tag_specific = segment.find(".//memory_%s" % memory_size)
+                if memory_tag_specific is not None:
+                    memory_tag = memory_tag_specific.text
+
             # get support layout list from RDP entry
             # and check whether it supports the requested layout, if not skip this RDP
             supported_layouts = segment.find('.//layouts')
@@ -1240,14 +1387,83 @@ class Pack(object):
                 continue
 
             print("#################", sys._getframe(0).f_code.co_name, sys._getframe(0).f_lineno, machid, override_cfg)
+
+            # Get default bootldr components
+            bootldr_components = self.get_bootldr_components(root, self.flash_type, MODE, board, segment)
+
+            # Apply bootldr component overrides from profile
+            if override_cfg is not None:
+                bootldr_override = override_cfg.find(".//bootldr_components")
+                if bootldr_override is not None:
+                    for component in bootldr_override:
+                        bootldr_components[component.tag] = component.text
+
+            # Check if we need to generate a bootldr image
+            bootldr_part = None
+            for part in part_img_list:
+                if part[0] == "0:BOOTLDR":
+                    bootldr_part = part
+                    break
+
+            # Generate bootldr image if needed
+            if bootldr_part is not None and all(key in bootldr_components for key in ["qclib", "qcconfig", "tfa_bl31", "uboot", "optee"]):
+                bootldr_filename = self.generate_bootldr_image(
+                    ARCH_NAME, board, memory_tag, self.flash_type, MODE, bootldr_components
+                )
+
+                # Update the bootldr filename in part_img_list
+                bootldr_part[1] = bootldr_filename
+
             for part in part_img_list:
                 pname = part[0]
                 fname = part[1]
                 psize = part[2]
                 ptype = part[3]
 
+                # Apply DTB replacement for kernel (HLOS partition)
+                if pname.lower().replace("0:", "") == "hlos" and fname != "":
+                    if split_by_rdp == "true":
+                        if "KERNEL_DTB_NAME" in fname:
+                            kernel_dtb_name = segment.find(".//kernel_dtb_name")
+                            if kernel_dtb_name is not None:
+                                fname = fname.replace("KERNEL_DTB_NAME", kernel_dtb_name.text)
+                            else:
+                                fname = fname.replace("KERNEL_DTB_NAME", board.lower())
 
-                # get fw_override image name
+                # Apply DTB replacement for UBI root images (rootfs partition)
+                if pname.lower().replace("0:", "") == "rootfs" and fname != "" and "KERNEL_DTB_NAME" in fname:
+                    if split_by_rdp == "true":
+                        kernel_dtb_name = segment.find(".//kernel_dtb_name")
+                        if kernel_dtb_name is not None:
+                            fname = fname.replace("KERNEL_DTB_NAME", kernel_dtb_name.text)
+                        else:
+                            fname = fname.replace("KERNEL_DTB_NAME", board.lower())
+
+                if pname.lower().replace("0:", "") == "appsbl" and fname != "" and "u-boot" in fname.lower():
+                    if split_by_rdp == "true":
+                        if "UBOOT_DTB_NAME" in fname:
+                            uboot_dtb_name = segment.find(".//uboot_dtb_name")
+                            if uboot_dtb_name is not None:
+                                fname = fname.replace("UBOOT_DTB_NAME", uboot_dtb_name.text)
+                            else:
+                                fname = fname.replace("UBOOT_DTB_NAME", board.lower())
+                    else:
+                        if "UBOOT_DTB_NAME" in fname:
+                            fname = fname.replace("-UBOOT_DTB_NAME", "")
+
+                # Apply WiFi firmware overrides for eMMC partitions (board-specific)
+                if split_by_rdp == "true":
+                    fw_override = segment.find('.//fw_override')
+                    if fw_override is not None and fname == "":
+                        if pname.lower().replace("0:", "") == "wififw":
+                            wifi_fw = fw_override.find(".//wifi_fw")
+                            if wifi_fw is not None:
+                                fname = wifi_fw.get("image")
+                        elif pname.lower().replace("0:", "") == "calfw":
+                            cal_fw = fw_override.find(".//cal_fw")
+                            if cal_fw is not None:
+                                fname = cal_fw.get("image")
+
                 if override_cfg != None:
                     tag_name = pname.lower()
                     tag_name = tag_name.replace("0:","")
@@ -1287,6 +1503,7 @@ class Pack(object):
                     continue
 
                 print("#################", sys._getframe(0).f_code.co_name, sys._getframe(0).f_lineno, os.path.join(self.images_dname, fname))
+
                 if os.path.isfile(os.path.join(self.images_dname, fname)) == False:
                     print("file '%s' is not exist " % fname)
                     return 1
@@ -1303,10 +1520,14 @@ class Pack(object):
 
         return 0
 
-    def gen_ubi_root_files(self, ftype, root):
+    def gen_ubi_root_files(self, ftype, root, board_name=None, kernel_dtb_name=None):
         global SRC_DIR
         global ARCH_NAME
         global MODE
+        global split_by_rdp
+        global memory_size
+
+        print("gen_ubi_root_files called with board_name=%s, kernel_dtb_name=%s" % (board_name, kernel_dtb_name))
 
         if self.flash_type in [ "nand" , "norplusnand" , "norplusnand-gpt"]:
             nand_type = "2k"
@@ -1352,13 +1573,24 @@ class Pack(object):
 
             print("#################", sys._getframe(0).f_code.co_name, sys._getframe(0).f_lineno, UBINIZE_SRC_CFG_NAME, nand_type)
 
-            f1 = open(UBINIZE_SRC_CFG_NAME, 'r')
-            UBINIZE_CFG_NAME = SRC_DIR + "/" + ARCH_NAME + "/flash_partition/tmp-ubinize.cfg"
-            f2 = open(UBINIZE_CFG_NAME, 'w')
-            for line in f1:
-                f2.write(line.replace('image=', "image=" + SRC_DIR + "/"))
-            f1.close()
-            f2.close()
+            # Create ubinize config based on split_by_rdp mode
+            if split_by_rdp == "true":
+                # Create board-specific ubinize config filename
+                UBINIZE_CFG_NAME = SRC_DIR + "/" + ARCH_NAME + "/flash_partition/tmp-ubinize-" + board_name + ".cfg"
+                # Get WiFi firmware info from config.xml for this board
+                wifi_fw_info = self.__get_wifi_fw_info_from_config(root, board_name)
+                # Create board-specific ubinize config by copying and modifying the source config
+                self.__create_board_specific_ubinize_config(UBINIZE_SRC_CFG_NAME, UBINIZE_CFG_NAME,
+                                                           kernel_dtb_name, board_name, wifi_fw_info)
+            else:
+                # For non-split_by_rdp mode
+                UBINIZE_CFG_NAME = SRC_DIR + "/" + ARCH_NAME + "/flash_partition/tmp-ubinize.cfg"
+                f1 = open(UBINIZE_SRC_CFG_NAME, 'r')
+                f2 = open(UBINIZE_CFG_NAME, 'w')
+                for line in f1:
+                    f2.write(line.replace('image=', "image=" + SRC_DIR + "/"))
+                f1.close()
+                f2.close()
 
             part_file = SRC_DIR + "/" + ARCH_NAME + "/flash_partition/" + ftype + "-partition"+ layout_name +".xml"
             print("#################", sys._getframe(0).f_code.co_name, sys._getframe(0).f_lineno, part_file)
@@ -1385,6 +1617,29 @@ class Pack(object):
                 else:
                     return 1
 
+            # Make UBI image name board-specific
+            if UBI_IMG_NAME and split_by_rdp == "true":
+                if "KERNEL_DTB_NAME" in UBI_IMG_NAME:
+                    # Replace existing KERNEL_DTB_NAME placeholder
+                    if kernel_dtb_name:
+                        UBI_IMG_NAME = UBI_IMG_NAME.replace("KERNEL_DTB_NAME", kernel_dtb_name)
+                    else:
+                        UBI_IMG_NAME = UBI_IMG_NAME.replace("KERNEL_DTB_NAME", board_name.lower())
+                else:
+                    # Add board name to generic UBI image name
+                    if kernel_dtb_name:
+                        board_suffix = kernel_dtb_name
+                    else:
+                        board_suffix = board_name.lower()
+
+                    # Insert board name before .img extension
+                    if UBI_IMG_NAME.endswith('.img'):
+                        UBI_IMG_NAME = UBI_IMG_NAME[:-4] + '-' + board_suffix + '.img'
+                    else:
+                        UBI_IMG_NAME = UBI_IMG_NAME + '-' + board_suffix
+
+                print("#################", sys._getframe(0).f_code.co_name, sys._getframe(0).f_lineno, "UBI_IMG_NAME after board-specific naming:", UBI_IMG_NAME)
+
             if self.flash_type in ["nand-4k", "norplusnand-4k", "norplusnand-4k-gpt"]:
                 cmd = '%s -m 4096 -p 256KiB -o root.ubi %s' % ((SRC_DIR + "/ubinize") ,UBINIZE_CFG_NAME)
                 print("#################", sys._getframe(0).f_code.co_name, sys._getframe(0).f_lineno, cmd)
@@ -1409,7 +1664,115 @@ class Pack(object):
                 if ret != 0:
                     error("ubi image copy operation failed")
 
-        return ret
+        return ret, UBI_IMG_NAME if 'UBI_IMG_NAME' in locals() else None
+    def generate_bootldr_image(self, arch, board, memory_tag, flash_type, mode, components):
+        """Generate bootldr image using gen_its.py script.
+
+        arch -- string, architecture name (e.g., ipq5424)
+        board -- string, board name
+        memory_tag -- string, memory configuration tag from config.xml
+        flash_type -- string, flash type (e.g., emmc, nand)
+        mode -- string, 32 or 64 bit mode
+        components -- dict, containing paths to bootldr components
+        """
+        # Create output filename according to the pattern
+        output_name = "bootldr_%s_%s_%s_%s-bit_%s.img" % (arch, memory_tag, flash_type, mode, board)
+        #output_path = os.path.join(self.images_dname, output_name)
+        output_path = output_name
+
+        # Also create an ITS file with the same base name
+        its_name = "bootldr_%s_%s_%s_%s-bit_%s.its" % (arch, memory_tag, flash_type, mode, board)
+        its_path = os.path.join(self.images_dname, its_name)
+
+        # Prepare command for gen_its.py
+        cmd = [
+            "python",
+            os.path.join(SRC_DIR, "scripts/gen_its.py"),
+            "--arch", arch,
+            "--qclib_path", components.get("qclib", ""),
+            "--qcconfig_path", components.get("qcconfig", ""),
+            "--tfa_bl31_path", components.get("tfa_bl31", ""),
+            "--uboot_path", components.get("uboot", ""),
+            "--optee_path", components.get("optee", ""),
+            "-p", "qclib", "qcconfig",
+            "-P", "tfa_bl31", "uboot", "optee",
+            "-o", output_name,
+            "--template", "scripts/template.its"
+        ]
+
+        print("#################", sys._getframe(0).f_code.co_name, sys._getframe(0).f_lineno,
+              "Generating bootldr image:", output_name)
+        print("#################", sys._getframe(0).f_code.co_name, sys._getframe(0).f_lineno,
+              "Command:", " ".join(cmd))
+
+        try:
+            # Change to the images directory before running the command
+            current_dir = os.getcwd()
+            os.chdir(self.images_dname)
+
+            ret = subprocess.call(cmd)
+            # Change back to the original directory
+            os.chdir(current_dir)
+
+            if ret != 0:
+                error("Failed to generate bootldr image: %s" % output_name)
+            return output_name
+        except OSError as e:
+            error("Error executing gen_its.py", e)
+
+    def get_bootldr_components(self, root, flash_type, mode, board_name, board_entry):
+        """Get default bootldr components from config.xml.
+
+        root -- ElementTree root of config.xml
+        flash_type -- string, flash type (e.g., emmc, nand)
+        mode -- string, 32 or 64 bit mode
+        """
+        components = {}
+        bootldr_section = root.find(".//data[@type='BOOTLDR_COMPONENTS']")
+
+        if bootldr_section is not None:
+            # Get qclib, qcconfig, tfa_bl31, and optee components
+            for component_tag in ["qclib", "qcconfig", "tfa_bl31", "optee"]:
+                component = bootldr_section.find(".//%s" % component_tag)
+                if component is not None:
+                    components[component_tag] = component.text
+
+            # Get uboot component based on flash_type and mode
+            uboot_elements = bootldr_section.findall(".//uboot")
+            for uboot in uboot_elements:
+                flash_attr = uboot.get("flash")
+                mode_attr = uboot.get("mode")
+
+                # Check if this uboot matches our flash_type and mode
+                if flash_attr and mode_attr:
+                    flash_types = flash_attr.split(",")
+                    if flash_type in flash_types and mode_attr == mode:
+                        uboot_filename = uboot.text
+                        components["uboot"] = uboot.text
+                        uboot_dtb_name = board_entry.find(".//uboot_dtb_name")
+
+                        global ARCH_NAME
+                        if ARCH_NAME in split_by_rdp_supported_arch:
+                            dtb_name = board_name.lower()
+                            if "UBOOT_DTB_NAME" in uboot_filename:
+                                uboot_dtb_name = board_entry.find(".//uboot_dtb_name")
+                                if uboot_dtb_name is not None:
+                                    dtb_name = uboot_dtb_name.text
+                            uboot_filename = uboot_filename.replace("UBOOT_DTB_NAME", dtb_name)
+
+                        components["uboot"] = uboot_filename
+                        break
+
+        return components
+
+    def __update_ubi_filename_in_machid_map(self, machid_map, machid, ubi_img_name):
+        """Helper method to update UBI filename in machid_map."""
+        if ubi_img_name:
+            for part in machid_map[machid]["part_info"]:
+                if part[0] == "rootfs" and "ubi-root" in part[1]:
+                    part[1] = ubi_img_name
+                    print("DEBUG: Updated rootfs filename to:", ubi_img_name, "for machid:", machid)
+                    break
 
     def main_bconf(self, flash_type, images_dname, out_fname, root):
         """Start the packing process, using board config.
@@ -1427,9 +1790,10 @@ class Pack(object):
         except OSError as e:
             pass
 
-        # generate ubi root images for all the nand included flash builds
-        if self.flash_type in [ "nand" , "nand-4k", "norplusnand" , "norplusnand-4k", "norplusnand-gpt", "norplusnand-4k-gpt"]:
-            ret = self.gen_ubi_root_files(self.flash_type, root)
+        # For NAND flash types, handle ubinize processing
+        nand_flash_types = [ "nand" , "nand-4k", "norplusnand" , "norplusnand-4k", "norplusnand-gpt", "norplusnand-4k-gpt"]
+        if self.flash_type in nand_flash_types and split_by_rdp == "false":
+            ret, ubi_img_name = self.gen_ubi_root_files(self.flash_type, root)
             if ret != 0:
                 fail_img = out_fname.split("/")
                 error("Failed to pack %s" % fail_img[-1])
@@ -1467,13 +1831,50 @@ class Pack(object):
         if not bool(machid_map):
             return 1
 
+        # Handle UBI image generation for NAND flash types
+        if self.flash_type in nand_flash_types:
+            if split_by_rdp == "true":
+                # For split_by_rdp mode, generate per-board UBI files
+                for machid in machid_map:
+                    board = machid_map[machid]["board"]
+                    # Get kernel DTB name for this board
+                    kernel_dtb_name = None
+                    entries = root.findall(".//data[@type='MACH_ID_BOARD_MAP']/entry")
+                    for segment in entries:
+                        segment_machid = int(segment.find(".//machid").text, 0)
+                        segment_machid = "%x" % segment_machid
+                        if segment_machid == machid:
+                            kernel_dtb_element = segment.find(".//kernel_dtb_name")
+                            if kernel_dtb_element is not None:
+                                kernel_dtb_name = kernel_dtb_element.text
+                            break
+
+                    ret, board_ubi_img_name = self.gen_ubi_root_files(self.flash_type, root, board, kernel_dtb_name)
+                    if ret != 0:
+                        fail_img = out_fname.split("/")
+                        error("Failed to pack %s" % fail_img[-1])
+
+                    # Update the machid_map with the correct UBI image filename using helper function
+                    self.__update_ubi_filename_in_machid_map(machid_map, machid, board_ubi_img_name)
+            else:
+                # Update all machid_map entries with the correct UBI image filename
+                if 'ubi_img_name' in locals() and ubi_img_name:
+                    for machid in machid_map:
+                        self.__update_ubi_filename_in_machid_map(machid_map, machid, ubi_img_name)
+
         if split_by_rdp == "true":
             for machid in machid_map:
                 board = machid_map[machid]["board"];
-                self.img_fname = out_fname[:-4] + "_" + board + ".img"
+                self.img_fname = out_fname[:-4] + "_" + board.lower() + ".img"
+
                 # generate main RDP specific flash script
                 images = []
                 ret = self.__gen_machid_flash_script({machid: machid_map[machid]}, images)
+
+                # Debug: Print all images in the list to verify UBI filename is correct
+                print("Images list contents:")
+                for i, img_info in enumerate(images):
+                    print("Image %d: name='%s', filename='%s', type='%s'" % (i, img_info.name, img_info.filename, img_info.type))
                 if ret != 0:
                     fail_img = out_fname.split("/")
                     error("Failed to pack %s" % fail_img[-1])
@@ -1488,11 +1889,18 @@ class Pack(object):
                 else:
                     fail_img = out_fname.split("/")
                     error("Failed to pack %s" % fail_img[-1])
+
         else:
             # generate main RDP specific flash script
             self.img_fname = out_fname
             images = []
             ret = self.__gen_machid_flash_script(machid_map, images)
+
+            # Print all images in the list to verify what's being packed
+            print("Images list contents:")
+            for i, img_info in enumerate(images):
+                print("Image %d: name='%s', filename='%s', type='%s'" % (i, img_info.name, img_info.filename, img_info.type))
+
             if ret != 0:
                 fail_img = out_fname.split("/")
                 error("Failed to pack %s" % fail_img[-1])
