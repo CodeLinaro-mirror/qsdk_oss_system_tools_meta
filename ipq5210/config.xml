@@ -8,7 +8,7 @@ SPDX-License-Identifier: ISC
 
 <config>
 	<data type="ARCH">
-		<SOC>ipq5200</SOC>
+		<SOC>ipq5210</SOC>
 	</data>
 
 	<data type="TINY_NOR_PARAMETER">

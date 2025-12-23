@@ -121,8 +121,8 @@ SPDX-License-Identifier: ISC
 		bootable="false"
 		readonly="false"
 		diff_files = "true"
-		filename_32="openwrt-ipq5200-ipq54xx_32-norplusnand32-u-boot_compressed.mbn"
-		filename_64="openwrt-ipq5200-generic-norplusnand-u-boot_compressed.mbn"
+		filename_32="openwrt-ipq5210-ipq52xx_32-norplusnand32-u-boot_compressed.mbn"
+		filename_64="openwrt-ipq5210-generic-norplusnand-u-boot_compressed.mbn"
 		flash_type="nor"
 		/>
 	<partition
@@ -187,8 +187,8 @@ SPDX-License-Identifier: ISC
 		readonly="false"
 		diff_files = "true"
 		image_type = "hlos"
-		filename_32="openwrt-ipq54xx-ipq54xx_32-ubi-root.img"
-		filename_64="openwrt-ipq54xx-generic-ubi-root.img"
+		filename_32="openwrt-ipq52xx-ipq52xx_32-ubi-root.img"
+		filename_64="openwrt-ipq52xx-generic-ubi-root.img"
 		flash_type="nand"
 		/>
 	<partition
@@ -306,8 +306,8 @@ SPDX-License-Identifier: ISC
 		bootable="false"
 		readonly="false"
 		diff_files = "true"
-		filename_32="openwrt-ipq5200-ipq54xx_32-norplusmmc32-u-boot_compressed.mbn"
-		filename_64="openwrt-ipq5200-generic-norplusmmc-u-boot_compressed.mbn"
+		filename_32="openwrt-ipq5210-ipq52xx_32-norplusmmc32-u-boot_compressed.mbn"
+		filename_64="openwrt-ipq5210-generic-norplusmmc-u-boot_compressed.mbn"
 		flash_type="nor"
 		/>
 	<partition
@@ -462,8 +462,8 @@ SPDX-License-Identifier: ISC
 		bootable="false"
 		readonly="false"
 		diff_files = "true"
-		filename_32="openwrt-ipq5200-ipq54xx_32-norplusnand32-u-boot_compressed.mbn"
-		filename_64="openwrt-ipq5200-generic-norplusnand-u-boot_compressed.mbn"
+		filename_32="openwrt-ipq5210-ipq52xx_32-norplusnand32-u-boot_compressed.mbn"
+		filename_64="openwrt-ipq5210-generic-norplusnand-u-boot_compressed.mbn"
 		flash_type="nor"
 		/>
 	<partition
@@ -528,8 +528,8 @@ SPDX-License-Identifier: ISC
 		readonly="false"
 		diff_files = "true"
 		image_type = "hlos"
-		filename_32="openwrt-ipq54xx-ipq54xx_32-ubi-root-m4096-p256KiB.img"
-		filename_64="openwrt-ipq54xx-generic-ubi-root-m4096-p256KiB.img"
+		filename_32="openwrt-ipq52xx-ipq52xx_32-ubi-root-m4096-p256KiB.img"
+		filename_64="openwrt-ipq52xx-generic-ubi-root-m4096-p256KiB.img"
 		flash_type="nand"
 		/>
 	<partition
