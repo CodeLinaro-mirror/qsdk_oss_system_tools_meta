@@ -121,8 +121,8 @@ SPDX-License-Identifier: ISC
 		bootable="false"
 		readonly="false"
 		diff_files = "true"
-		filename_32="openwrt-ipq9679-ipq96xx_32-norplusnand32-u-boot_compressed.mbn"
-		filename_64="openwrt-ipq9679-generic-norplusnand-u-boot_compressed.mbn"
+		filename_32="openwrt-ipq9650-ipq96xx_32-norplusnand32-u-boot_compressed.mbn"
+		filename_64="openwrt-ipq9650-generic-norplusnand-u-boot_compressed.mbn"
 		flash_type="nor"
 		/>
 	<partition
@@ -306,8 +306,8 @@ SPDX-License-Identifier: ISC
 		bootable="false"
 		readonly="false"
 		diff_files = "true"
-		filename_32="openwrt-ipq9679-ipq96xx_32-norplusmmc32-u-boot_compressed.mbn"
-		filename_64="openwrt-ipq9679-generic-norplusmmc-u-boot_compressed.mbn"
+		filename_32="openwrt-ipq9650-ipq96xx_32-norplusmmc32-u-boot_compressed.mbn"
+		filename_64="openwrt-ipq9650-generic-norplusmmc-u-boot_compressed.mbn"
 		flash_type="nor"
 		/>
 	<partition
@@ -462,8 +462,8 @@ SPDX-License-Identifier: ISC
 		bootable="false"
 		readonly="false"
 		diff_files = "true"
-		filename_32="openwrt-ipq9679-ipq96xx_32-norplusnand32-u-boot_compressed.mbn"
-		filename_64="openwrt-ipq9679-generic-norplusnand-u-boot_compressed.mbn"
+		filename_32="openwrt-ipq9650-ipq96xx_32-norplusnand32-u-boot_compressed.mbn"
+		filename_64="openwrt-ipq9650-generic-norplusnand-u-boot_compressed.mbn"
 		flash_type="nor"
 		/>
 	<partition

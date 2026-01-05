@@ -43,7 +43,7 @@ SPDX-License-Identifier: ISC
 			<attr>0xFF</attr>
 			<attr>0x00</attr>
 			<attr>0xFF</attr>
-			<img_name type="string">nand-system-partition-ipq9679.bin</img_name>
+			<img_name type="string">nand-system-partition-ipq9650.bin</img_name>
 		</partition>
 		<partition>
 			<name length="16" type="string">0:ART</name>
@@ -147,8 +147,8 @@ SPDX-License-Identifier: ISC
 			<attr>0xFF</attr>
 			<attr>0x00</attr>
 			<attr>0xFF</attr>
-			<img_name mode="32" type="string">openwrt-ipq9679-ipq96xx_32-nand32-u-boot_compressed.mbn</img_name>
-			<img_name mode="64" type="string">openwrt-ipq9679-generic-nand-u-boot_compressed.mbn</img_name>
+			<img_name mode="32" type="string">openwrt-ipq9650-ipq96xx_32-nand32-u-boot_compressed.mbn</img_name>
+			<img_name mode="64" type="string">openwrt-ipq9650-generic-nand-u-boot_compressed.mbn</img_name>
 		</partition>
 		<partition>
 			<name length="16" type="string">0:APPSBL_1</name>

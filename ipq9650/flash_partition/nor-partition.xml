@@ -33,7 +33,7 @@ SPDX-License-Identifier: ISC
 			<attr>64</attr>
 			<attr>32</attr>
 			<attr>0xFF</attr>
-			<img_name type="string">nor-system-partition-ipq9679.bin</img_name>
+			<img_name type="string">nor-system-partition-ipq9650.bin</img_name>
 		</partition>
 		<partition>
 			<name length="16" type="string">0:QSEE</name>
