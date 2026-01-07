@@ -36,13 +36,14 @@ class TemplateManager:
     """
     Unified class for handling ITS template operations, supporting both conditional and non-conditional templates.
     """
-    def __init__(self, template_path, output_path=None):
+    def __init__(self, template_path, output_path=None, temp_files_list=None):
         """
         Initialize the TemplateManager.
 
         Args:
             template_path: Path to the template ITS file
             output_path: Path to save the processed ITS file (optional for non-conditional templates)
+            temp_files_list: List to track temporary files created during execution (optional)
         """
         self.template_path = template_path
         self.output_path = output_path
@@ -58,6 +59,7 @@ class TemplateManager:
         }
         self.placeholders = {}
         self.is_conditional = True
+        self.temp_files_list = temp_files_list
 
     def load_template(self):
         """
@@ -147,11 +149,15 @@ class TemplateManager:
             print("Error: Template content not loaded")
             return False
 
+        temp_path = None
+        temp_file_added = False
+
         try:
             # Create a more secure temporary file name using PID and hash of template content
             # This reduces predictability while using only existing imports
             content_hash = hash(self.template_content) & 0x7FFFFFFF  # Ensure positive hash
             temp_path = f"temp_template_{os.getpid()}_{content_hash}.its"
+            abs_temp_path = os.path.join(os.getcwd(), temp_path)
 
             # Extract header content before /dts-v1/; directive
             header_content = ""
@@ -189,6 +195,15 @@ class TemplateManager:
             with open(temp_path, 'w') as temp_file:
                 temp_file.write(processed_content)
 
+            # Add this temporary file to the tracking list if available
+            if hasattr(self, 'temp_files_list') and self.temp_files_list is not None and isinstance(self.temp_files_list, list):
+                try:
+                    self.temp_files_list.append(abs_temp_path)
+                    temp_file_added = True
+                except Exception as e:
+                    print(f"Warning: Failed to add {abs_temp_path} to tracking list: {e}")
+                    print(f"Note: Untracked temporary file created: {abs_temp_path}")
+
             # Use cpp to process the #if directives
             try:
                 result = subprocess.run(
@@ -202,8 +217,7 @@ class TemplateManager:
                 if result.returncode != 0:
                     print(f"Error: cpp preprocessing failed with return code {result.returncode}")
                     print(f"STDERR: {result.stderr}")
-                    os.unlink(temp_path)
-                    return False
+                    raise RuntimeError("cpp preprocessing failed")
 
                 # Write the preprocessed content to the output file with header
                 with open(self.output_path, 'w') as f:
@@ -215,16 +229,34 @@ class TemplateManager:
 
                 print(f"Generated ITS file: {self.output_path}")
 
-                # Clean up the temporary file
-                os.unlink(temp_path)
-
                 return True
             except (subprocess.SubprocessError, Exception) as e:
-                os.unlink(temp_path)
-                return handle_error("preprocessing template", e, False)
+                handle_error("preprocessing template", e, False)
+                raise  # Re-raise to be caught by outer try-except
 
         except (IOError, OSError, Exception) as e:
             return handle_error("processing template", e, False)
+        finally:
+            # Clean up the temporary file in all cases if it exists
+            if temp_path:
+                # Only attempt operations if the file exists
+                if os.path.exists(temp_path):
+                    try:
+                        # First delete the file
+                        os.unlink(temp_path)
+
+                        # If deletion succeeds, remove from tracking list
+                        if hasattr(self, 'temp_files_list') and self.temp_files_list is not None:
+                            if abs_temp_path in self.temp_files_list:
+                                self.temp_files_list.remove(abs_temp_path)
+                    except Exception as e:
+                        print(f"Warning: Failed to clean up temporary file {temp_path}: {e}")
+                else:
+                    # File doesn't exist but might be in tracking list
+                    if hasattr(self, 'temp_files_list') and self.temp_files_list is not None:
+                        if abs_temp_path in self.temp_files_list:
+                            self.temp_files_list.remove(abs_temp_path)
+                            print(f"Warning: Removed non-existent file {temp_path} from tracking")
 
     def save(self, output_path=None):
         """
@@ -414,7 +446,7 @@ class ElfParser:
     """
     Class for parsing ELF/MBN files and extracting necessary information.
     """
-    def __init__(self, input_file, component_name, output_dir):
+    def __init__(self, input_file, component_name, output_dir, temp_files_list=None):
         """
         Initialize the ElfParser.
 
@@ -422,6 +454,7 @@ class ElfParser:
             input_file: Path to the input ELF/MBN file
             component_name: Name of the component (used for output file naming)
             output_dir: Directory where output files will be saved
+            temp_files_list: List to track temporary files created (optional)
         """
         self.input_file = input_file
         self.component_name = component_name
@@ -430,6 +463,7 @@ class ElfParser:
         self.entry_point = None
         self.arch = None
         self.output_dir = output_dir
+        self.temp_files_list = temp_files_list
 
     def parse(self):
         """
@@ -449,6 +483,15 @@ class ElfParser:
         load_info = []
         load_info_filename = os.path.join(self.output_dir, f"{self.component_name}_load_addresses.txt")
         meta_filename = os.path.join(self.output_dir, f"{self.component_name}_meta_segments.bin")
+
+        # Track temporary files if a list was provided
+        if self.temp_files_list is not None and isinstance(self.temp_files_list, list):
+            try:
+                self.temp_files_list.append(load_info_filename)
+                self.temp_files_list.append(meta_filename)
+            except Exception as e:
+                print(f"Warning: Failed to add files to tracking list: {e}")
+                print(f"Note: Untracked temporary files created: {load_info_filename}, {meta_filename}")
 
         # Use nested context managers to ensure proper cleanup of all resources
         try:
@@ -496,6 +539,13 @@ class ElfParser:
                                 try:
                                     with open(load_filename, 'wb') as load_file:
                                         load_file.write(file_buff)
+                                    # Track this temporary file if a list was provided
+                                    if self.temp_files_list is not None and isinstance(self.temp_files_list, list):
+                                        try:
+                                            self.temp_files_list.append(load_filename)
+                                        except Exception as e:
+                                            print(f"Warning: Failed to add {load_filename} to tracking list: {e}")
+                                            print(f"Note: Untracked temporary file created: {load_filename}")
                                 except (IOError, OSError) as e:
                                     return handle_error(f"writing load segment file {load_filename}", e)
                                 except Exception as e:
@@ -590,6 +640,7 @@ class FitImageGenerator:
         self.args = args
         self.template_manager = None
         self.parsers = {}
+        self.temp_files = []  # List to track temporary files created during execution
 
         # Extract directory and filename from args.output
         output_dir, output_filename = os.path.split(args.output)
@@ -641,7 +692,7 @@ class FitImageGenerator:
 
         # Parse each input file
         for file_path, component_name in input_files:
-            parser = ElfParser(file_path, component_name, self.output_dir)
+            parser = ElfParser(file_path, component_name, self.output_dir, self.temp_files)
             if not parser.parse():
                 return False
             self.parsers[component_name] = parser
@@ -656,7 +707,7 @@ class FitImageGenerator:
             bool: True if the operation was successful, False otherwise
         """
         # Create the template manager
-        self.template_manager = TemplateManager(self.args.template, self.its_file)
+        self.template_manager = TemplateManager(self.args.template, self.its_file, self.temp_files)
         if not self.template_manager.load_template():
             return False
 
@@ -702,6 +753,8 @@ class FitImageGenerator:
                 self.template_manager.set_placeholder("FDT_PATH", dtb_basename)
 
                 print(f"Copied DTB file to output directory: {dtb_basename}")
+
+                # Don't track DTB file as temporary since it's a user-provided file
             except FileNotFoundError:
                 print(f"Error: Source DTB file does not exist: {self.args.dtb_path}")
                 return False
@@ -772,39 +825,22 @@ class FitImageGenerator:
     def cleanup_temporary_files(self):
         """
         Clean up temporary files created during the FIT image generation process.
+        Only deletes files that were specifically created by this script execution.
 
         Returns:
             bool: True if the operation was successful, False otherwise
         """
-        preserve_files = [os.path.basename(self.its_file), os.path.basename(self.img_file)]
+        if not self.temp_files:
+            print("No temporary files to clean up")
+            return True
 
-        # Add DTB file to preserve_files if provided
-        if self.args.dtb_path:
-            dtb_basename = os.path.basename(self.args.dtb_path)
-            preserve_files.append(dtb_basename)
-
-        try:
-            file_list = os.listdir(self.output_dir)
-        except (IOError, OSError, Exception) as e:
-            return handle_error("listing files in output directory", e, False)
-
-        for filename in file_list:
-            # Validate filename before processing
-            if not validate_filename(filename):
-                print(f"Warning: Skipping file with invalid name: {filename}")
-                continue
-
-            file_path = os.path.join(self.output_dir, filename)
-
-            if os.path.isdir(file_path) or filename in preserve_files:
-                continue
-
-            if filename.endswith(".txt") or filename.endswith(".bin"):
+        for file_path in self.temp_files:
+            if os.path.exists(file_path):
                 try:
                     os.remove(file_path)
-                    print(f"Deleted temporary file: {filename}")
+                    print(f"Deleted temporary file: {os.path.basename(file_path)}")
                 except (IOError, OSError, Exception) as e:
-                    return handle_error(f"deleting temporary file {filename}", e, False)
+                    return handle_error(f"deleting temporary file {file_path}", e, False)
 
         return True
 
