@@ -16,6 +16,13 @@ import struct
 
 ARCH_NAME = ''
 
+# Architecture-specific configuration
+ARCH_CONFIG = {
+    "ipq5424": {"elf_address": "0x08CEE800", "align": None},
+    "ipq5210": {"elf_address": "0x08CAC800", "align": "0x40"},
+    "ipq9650": {"elf_address": "0x08CE4800", "align": "0x40"}
+}
+
 cdir = os.path.dirname("")
 cdir = os.path.abspath(cdir)
 
@@ -78,9 +85,10 @@ def main():
     global dtcDir
 
     memory_profile = "default"
+    genqccfg = False
     if len(sys.argv) > 1:
         try:
-            opts, args = getopt(sys.argv[1:], "c:o:m:", "dtc_path=")
+            opts, args = getopt(sys.argv[1:], "c:o:m:", ["dtc_path=", "genqccfg"])
         except GetoptError as e:
             print("config file and output path are needed to generate xblcfg files")
             raise
@@ -93,6 +101,8 @@ def main():
                 memory_profile = value
             elif option == "--dtc_path":
                 dtcDir =  value
+            elif option == "--genqccfg":
+                genqccfg = True
     else:
         print("config file and output path are needed to generate xblcfg files")
         return -1
@@ -104,8 +114,22 @@ def main():
     board = None
     arch = root.find(".//data[@type='ARCH']/SOC")
     ARCH_NAME = str(arch.text)
+    print(ARCH_NAME)
 
-    srcDir = '$$/' + ARCH_NAME + '/xblconfig_json'
+    # First validate architecture is supported
+    if ARCH_NAME not in ARCH_CONFIG:
+        print("ERROR: Unsupported architecture {0}".format(ARCH_NAME))
+        return -1
+
+    # Validate genqccfg flag: can only be false/not mentioned for ipq5424
+    if ARCH_NAME != "ipq5424" and not genqccfg:
+        print("ERROR: --genqccfg flag is required for {0} architecture".format(ARCH_NAME))
+        return -1
+
+    if ARCH_NAME == "ipq5424" and not genqccfg:
+        srcDir = '$$/' + ARCH_NAME + '/xblconfig_json'
+    else:
+        srcDir = '$$/' + ARCH_NAME + '/qcconfig_json'
     srcDir = srcDir.replace('$$', cdir)
     if not os.path.exists(srcDir):
         os.makedirs(srcDir)
@@ -114,7 +138,10 @@ def main():
     xblconfigtool_path = xblconfigtool_path.replace('$$', cdir)
     xblconfigtool_gen = '$$/scripts/XBLConfig/GenXBLConfig.py'
     xblconfigtool_gen = xblconfigtool_gen.replace('$$', cdir)
-    xblconfig_path = '$$/xbl_config.elf'
+    if ARCH_NAME == "ipq5424" and not genqccfg:
+        xblconfig_path = '$$/xbl_config.elf'
+    else:
+        xblconfig_path = '$$/qc_config.elf'
     xblconfig_path = xblconfig_path.replace('$$', cdir)
     xblconfig_json = '$$/create_xbl_config.json'
     xblconfig_json = xblconfig_json.replace('$$', srcDir)
@@ -139,13 +166,33 @@ def main():
         # add support to generate the xbl cust dtb
         print("Generating xbl cust dtb")
         dtcBin = os.path.join(dtcDir, "dtc")
-        cmd = [dtcBin, '-@', '-O', 'dtb', '-o', srcDir + "/" + "xbl-cust-marina-1.0.dtb", cdir + "/ipq5424/xbl_config/xbl-cust-marina-1.0.dts"]
+
+        dts_file = None
+        dtb_file = None
+
+        if ARCH_NAME == "ipq5424" and not genqccfg:
+            dts_file = cdir + "/ipq5424/xbl_config/xbl-cust-marina-1.0.dts"
+            dtb_file = srcDir + "/" + "xbl-cust-marina-1.0.dtb"
+        else:
+            dts_file = cdir + "/" + ARCH_NAME + "/qc_config/qc-cust-" + ARCH_NAME + "-1.0.dts"
+            dtb_file = srcDir + "/" + "qc-cust-" + ARCH_NAME + "-1.0.dtb"
+
+        if dts_file and not os.path.isfile(dts_file):
+            print('ERROR: DTS file not found: {0}'.format(dts_file))
+            return -1
+
+        cmd = [dtcBin, '-@', '-O', 'dtb', '-o', dtb_file, dts_file]
         print(cmd)
         prc = subprocess.Popen(cmd, cwd=cdir)
         prc.wait()
         if prc.returncode != 0:
             print('ERROR: unable to generate dtb')
             return prc.returncode
+
+    if ARCH_NAME == "ipq5424" and not genqccfg:
+        config_name = "xblconfig-"
+    else:
+        config_name = "qcconfig-"
 
     if ARCH_NAME != "ipq806x":
         entries = root.findall("./data[@type='MACH_ID_BOARD_MAP']/entry")
@@ -188,11 +235,15 @@ def main():
                 #copy the cdt bin
                 shutil.copy2(cdir+'/'+cdt_bin, srcDir);
 
-                out_xblconfig = "xblconfig-" + name_suffix
+                out_xblconfig = config_name + name_suffix
                 outfile_xblconfig = os.path.join(srcDir, out_xblconfig )
 
                 print('Generating xblconfig')
-                cmd = ['python', xblconfigtool_gen, '-i', outfile_json, '-fELF', '-o', outfile_xblconfig, '--tools_path', xblconfigtool_path, '--elf-address', '0x08CEE800', '-b', srcDir]
+                config = ARCH_CONFIG[ARCH_NAME]
+                cmd = ['python', xblconfigtool_gen, '-i', outfile_json, '-fELF', '-o', outfile_xblconfig,
+                       '--tools_path', xblconfigtool_path, '--elf-address', config['elf_address'], '-b', srcDir]
+                if config['align']:
+                    cmd.extend(['--align', config['align']])
                 print(cmd)
                 prc = subprocess.Popen(cmd, cwd=cdir)
                 prc.wait()
@@ -202,7 +253,7 @@ def main():
 
                 outfile_xblconfig = os.path.join(srcDir,'raw', out_xblconfig + ".elf")
             else:
-                out_xblconfig = "xblconfig-" + name_suffix
+                out_xblconfig = config_name + name_suffix
                 outfile_xblconfig =  cdir + "/" + out_xblconfig + "_raw.elf"
                 shutil.copyfile(XBL_CONFIG_RAW_ELF, outfile_xblconfig)
                 ret = update_CDT_segment(outfile_xblconfig, cdt_bin)

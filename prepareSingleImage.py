@@ -76,13 +76,20 @@ def print_help():
 
     print("--genxblcfg \tWhether xbl_config binaries to be generated")
     print("\t\tIf not specified xbl_config binary will not be generated")
-    print("\t\tThis is currently used/needed only for IPQ5424/IPQ5210")
+    print("\t\tThis is currently used/needed only for IPQ5424")
     print("\t\tThis Argument does not take any value\n")
     print("\t\te.g python prepareSingleImage.py --genxblcfg\n\n")
 
+    print("--genqccfg \tWhether qc_config binaries to be generated")
+    print("\t\tIf not specified qc_config binary will not be generated")
+    print("\t\tThis is currently used/needed only for IPQ5210/IPQ9650")
+    print("\t\tThis Argument does not take any value\n")
+    print("\t\te.g python prepareSingleImage.py --genqccfg\n\n")
+
     print("--dtc_path \tdtc binary path")
-    print("\t\tThis option dependes on '--genxblcfg'\n")
+    print("\t\tThis option can be used with '--genxblcfg' and '--genqccfg'\n")
     print("\t\te.g python prepareSingleImage.py --genxblcfg --dtc_path /usr/bin\n\n")
+    print("\t\te.g python prepareSingleImage.py --genqccfg --dtc_path /usr/bin\n\n")
 
     print("--genmelf \tWhether merged elf of xbl_sc and tme-l patch to be generated")
     print("\t\tIf not specified merged elf will not be generated")
@@ -194,8 +201,8 @@ def gen_xblcfg():
     global dtcDir
 
     xblconfig_path = srcDir + '/gen_xblconfig_bin.py'
-
     data_retention_xblcfg_path = cdir + "/data_retention_xblcfg"
+
     if not os.path.exists(data_retention_xblcfg_path):
         dts_file_path = cdir + "/" + arch + "/xbl_config/*"
         sed_cmd = "sed -i.bak -e 's/ddr_retention_en = <0>/ddr_retention_en = <1>/g' " + dts_file_path
@@ -220,6 +227,56 @@ def gen_xblcfg():
 
     if prc.returncode != 0:
         print('ERROR: unable to create xbl_config binary')
+        return prc.returncode
+    return 0
+
+def gen_qccfg():
+    global srcDir
+    global configDir
+    global memory
+    global dtcDir
+
+    xblconfig_path = srcDir + '/gen_xblconfig_bin.py'
+    data_retention_qccfg_path = cdir + "/data_retention_qccfg"
+
+    if not os.path.exists(data_retention_qccfg_path):
+        dts_file_path = cdir + "/" + arch + "/qc_config/*"
+        sed_cmd = "sed -i.bak -e 's/ddr_retention_en = <0>/ddr_retention_en = <1>/g' " + dts_file_path
+        ret = os.system(sed_cmd)
+        if ret != 0:
+            print('ERROR: unable to modify dts files for data retention')
+            return -1
+
+        prc = subprocess.Popen(['python', xblconfig_path, '-c', configDir, '-o', inDir, '-m', memory, '--dtc_path', dtcDir, '--genqccfg'], cwd=cdir)
+        prc.wait()
+
+        if prc.returncode != 0:
+            print('ERROR: unable to create qc_config binary')
+            return prc.returncode
+
+        try:
+            os.makedirs(data_retention_qccfg_path)
+        except OSError as e:
+            print('ERROR: unable to create directory {0}: {1}'.format(data_retention_qccfg_path, e))
+            return -1
+
+        copy_cmd = "cp -rf " + cdir + "/qcconfig-* " + data_retention_qccfg_path
+        ret = os.system(copy_cmd)
+        if ret != 0:
+            print('ERROR: unable to copy qcconfig files')
+            return -1
+
+        sed_cmd = "sed -i.bak -e 's/ddr_retention_en = <1>/ddr_retention_en = <0>/g' " + dts_file_path
+        ret = os.system(sed_cmd)
+        if ret != 0:
+            print('ERROR: unable to restore dts files')
+            return -1
+
+    prc = subprocess.Popen(['python', xblconfig_path, '-c', configDir, '-o', inDir, '-m', memory, '--dtc_path', dtcDir, '--genqccfg'], cwd=cdir)
+    prc.wait()
+
+    if prc.returncode != 0:
+        print('ERROR: unable to create qc_config binary')
         return prc.returncode
     return 0
 
@@ -534,6 +591,7 @@ def main():
 
     to_generate_cdt = "false"
     to_generate_xblcfg = "false"
+    to_generate_qccfg = "false"
     to_generate_melf = "false"
     to_generate_part = "false"
     to_generate_bootconf = "false"
@@ -551,7 +609,7 @@ def main():
         try:
             opts, args = getopt(sys.argv[1:], "h", ["arch=", "fltype=", "in=",
                 "bootimg=", "tzimg=", "nhssimg=", "rpmimg=", "wififwimg",
-                "gencdt", "genxblcfg", "genmelf", "dtc_path=","memory=",
+                "gencdt", "genxblcfg", "genqccfg", "genmelf", "dtc_path=","memory=",
                 "total_blocks=", "flash_size=", "genpart", "genbootconf", "genbootconf_crc",
                 "genmbn", "lk", "genbootldr", "genlicense", "soc=","attach1=",
 		"attach2=", "attach3=", "attach4=", "attach5=", "help"])
@@ -609,6 +667,8 @@ def main():
                 to_generate_cdt = "true"
             elif option == "--genxblcfg":
                 to_generate_xblcfg = "true"
+            elif option == "--genqccfg":
+                to_generate_qccfg = "true"
             elif option == "--genmelf":
                 to_generate_melf = "true"
             elif option == "--memory":
@@ -672,6 +732,10 @@ def main():
 
         if to_generate_xblcfg == "true":
             if gen_xblcfg() != 0:
+                return -1
+
+        if to_generate_qccfg == "true":
+            if gen_qccfg() != 0:
                 return -1
 
         if to_generate_melf == "true":
