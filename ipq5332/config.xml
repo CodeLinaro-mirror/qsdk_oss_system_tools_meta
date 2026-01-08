@@ -287,6 +287,70 @@ SPDX-License-Identifier: ISC
 			</fw_override>
 		</entry>
 		<entry>
+			<machid>0x8060501</machid>
+			<board>AP-MI01.2-QCE2204</board>
+			<memory>512M16_DDR4</memory>
+			<memory_2048>1024M16_DDR4</memory_2048>
+			<memory_3072>2048M16_DDR4</memory_3072>
+			<data_retention>false</data_retention>
+			<layouts>default,256M,64M</layouts>
+			<fw_override>
+				<profile-default layouts="default,256M">
+					<cdt>cdt-AP-MI01.2-QCE2204_512M16_DDR4.bin</cdt>
+					<wififw>wifi_fw_ipq5332_qcn9224_v2_single_dualmac_squashfs.img</wififw>
+				</profile-default>
+				<profile-2048 layouts="default,256M">
+					<cdt>cdt-AP-MI01.2-QCE2204_1024M16_DDR4.bin</cdt>
+					<wififw>wifi_fw_ipq5332_qcn9224_v2_single_dualmac_squashfs.img</wififw>
+				</profile-2048>
+				<profile-3072 layouts="default,256M">
+					<cdt>cdt-AP-MI01.2-QCE2204_2048M16_DDR4.bin</cdt>
+					<wififw>wifi_fw_ipq5332_qcn9224_v2_single_dualmac_squashfs.img</wififw>
+				</profile-3072>
+				<profile-512 layouts="default,256M">
+					<cdt>cdt-AP-MI01.2-QCE2204_512M16_DDR4_LM512.bin</cdt>
+					<wififw>wifi_fw_ipq5332_qcn9224_v2_single_dualmac_squashfs.img</wififw>
+				</profile-512>
+				<profile-256 layouts="default">
+					<sbl1 flash="nand" mode="32">xbl_nand_LM256_atf.elf</sbl1>
+					<sbl1 flash="nand-4k" mode="32">xbl_nand_4K_LM256_atf.elf</sbl1>
+					<sbl1 flash="norplusnand,norplusnand-4k" mode="32">xbl_nor_LM256_atf.elf</sbl1>
+					<sbl1_1 flash="nand" mode="32">xbl_nand_LM256_atf.elf</sbl1_1>
+					<sbl1_1 flash="nand-4k" mode="32">xbl_nand_4K_LM256_atf.elf</sbl1_1>
+					<sbl1_1 flash="norplusnand,norplusnand-4k" mode="32">xbl_nor_LM256_atf.elf</sbl1_1>
+					<cdt>cdt-AP-MI01.2-QCE2204_512M16_DDR4_LM256.bin</cdt>
+					<qsee>bl31.mbn</qsee>
+					<appsbl flash="nand,nand-4k" mode="32">openwrt-ipq5332-ipq53xx_32-tiny_v2_nand32-u-boot_compressed.mbn</appsbl>
+					<appsbl flash="norplusnand,norplusnand-4k" mode="32">openwrt-ipq5332-ipq53xx_32-tiny_v2_norplusnand32-u-boot_compressed.mbn</appsbl>
+					<wififw>wifi_fw_ipq5332_qcn9224_v2_squashfs.img</wififw>
+				</profile-256>
+				<profile-256 layouts="64M">
+					<sbl1 flash="nand" mode="32">xbl_nand_LM256_atf.elf</sbl1>
+					<sbl1_1 flash="nand" mode="32">xbl_nand_LM256_atf.elf</sbl1_1>
+					<cdt>cdt-AP-MI01.2-QCE2204_512M16_DDR4_LM256.bin</cdt>
+					<qsee>bl31.mbn</qsee>
+					<appsbl flash="nand" mode="32">openwrt-ipq5332-ipq53xx_32-tiny_v2_nand32_64M-u-boot_compressed.mbn</appsbl>
+					<wififw>wifi_fw_ipq5332_qcn9224_v2_squashfs.img</wififw>
+				</profile-256>
+				<profile-open layouts="default,256M">
+					<cdt>cdt-AP-MI01.2-QCE2204_512M16_DDR4.bin</cdt>
+					<wififw>wifi_fw_ipq5332_qcn9224_v2_single_dualmac_squashfs.img</wififw>
+				</profile-open>
+				<profile-2048open layouts="default,256M">
+					<cdt>cdt-AP-MI01.2-QCE2204_1024M16_DDR4.bin</cdt>
+					<wififw>wifi_fw_ipq5332_qcn9224_v2_single_dualmac_squashfs.img</wififw>
+				</profile-2048open>
+				<profile-3072open layouts="default,256M">
+					<cdt>cdt-AP-MI01.2-QCE2204_2048M16_DDR4.bin</cdt>
+					<wififw>wifi_fw_ipq5332_qcn9224_v2_single_dualmac_squashfs.img</wififw>
+				</profile-3072open>
+				<profile-512open layouts="default,256M">
+					<cdt>cdt-AP-MI01.2-QCE2204_512M16_DDR4_LM512.bin</cdt>
+					<wififw>wifi_fw_ipq5332_qcn9224_v2_single_dualmac_squashfs.img</wififw>
+				</profile-512open>
+			</fw_override>
+		</entry>
+		<entry>
 			<machid>0x8060201</machid>
 			<board>AP-MI01.2-C2</board>
 			<memory>512M16_DDR4</memory>
