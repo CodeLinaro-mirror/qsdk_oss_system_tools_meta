@@ -8,6 +8,7 @@ import itertools
 import os
 import subprocess
 import sys
+import glob
 from getopt import getopt
 from getopt import GetoptError
 
@@ -387,6 +388,11 @@ def gen_mbn():
                 inDir + "/openwrt-" + arch + img_str + "norplusmmc32" + "-u-boot_signed.mbn", \
                 inDir + "/openwrt-" + arch + img_str + "nand32" + "-u-boot_signed.mbn", \
                 inDir + "/openwrt-" + arch + img_str + "norplusnand32" + "-u-boot_signed.mbn"]
+        for fname in glob.glob(inDir + "/openwrt-" + arch + img_str + "*-u-boot-*.elf"):
+            if "stripped" in fname or "unstripped" in fname or "wrapped" in fname or "spl" in fname:
+                continue
+            img_path.append(fname)
+
     elif mode == "64":
         img_str = "-generic-"
         img_path = [inDir + "/openwrt-" + arch + img_str + "mmc" + "-u-boot.elf", \
@@ -397,6 +403,11 @@ def gen_mbn():
                 inDir + "/openwrt-" + arch + img_str + "norplusmmc" + "-u-boot_signed.mbn", \
                 inDir + "/openwrt-" + arch + img_str + "nand" + "-u-boot_signed.mbn", \
                 inDir + "/openwrt-" + arch + img_str + "norplusnand" + "-u-boot_signed.mbn"]
+
+        for fname in glob.glob(inDir + "/openwrt-" + arch + img_str + "*-u-boot-*.elf"):
+            if "stripped" in fname or "unstripped" in fname or "wrapped" in fname or "spl" in fname:
+                continue
+            img_path.append(fname)
 
     if mbn_version == "3":
         if os.path.exists(u_boot_2016_path):
