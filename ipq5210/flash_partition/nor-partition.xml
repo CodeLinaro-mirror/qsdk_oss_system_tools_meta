@@ -22,7 +22,7 @@ SPDX-License-Identifier: ISC
 			<attr>0xFF</attr>
 			<attr>0x00</attr>
 			<attr>0xFF</attr>
-			<img_name type="string">xbl_s.melf</img_name>
+			<img_name type="string">u-boot-spl.melf</img_name>
 		</partition>
 		<partition>
 			<name length="16" type="string">0:MIBIB</name>
@@ -36,37 +36,24 @@ SPDX-License-Identifier: ISC
 			<img_name type="string">nor-system-partition-ipq5210.bin</img_name>
 		</partition>
 		<partition>
-			<name length="16" type="string">0:QSEE</name>
-			<size_kb length="4">1472</size_kb>
+			<name length="16" type="string">0:ART</name>
+			<size_kb length="4">1536</size_kb>
 			<pad_kb length="2">0</pad_kb>
 			<which_flash length="2">0</which_flash>
 			<attr>0xFF</attr>
 			<attr>0xFF</attr>
 			<attr>0x00</attr>
 			<attr>0xFF</attr>
-			<img_name type="string">tz.mbn</img_name>
 		</partition>
 		<partition>
-			<name length="16" type="string">0:DEVCFG</name>
-			<size_kb length="4">64</size_kb>
+			<name length="16" type="string">0:BOOTLDR</name>
+			<size_kb length="4">4352</size_kb>
 			<pad_kb length="2">0</pad_kb>
 			<which_flash length="2">0</which_flash>
 			<attr>0xFF</attr>
 			<attr>0xFF</attr>
 			<attr>0x00</attr>
 			<attr>0xFF</attr>
-			<img_name type="string">devcfg.mbn</img_name>
-		</partition>
-		<partition>
-			<name length="16" type="string">0:XBLCONFIG</name>
-			<size_kb length="4">64</size_kb>
-			<pad_kb length="2">0</pad_kb>
-			<which_flash length="2">0</which_flash>
-			<attr>0xFF</attr>
-			<attr>0xFF</attr>
-			<attr>0x00</attr>
-			<attr>0xFF</attr>
-			<img_name type="string">xbl_config.elf</img_name>
 		</partition>
 		<partition>
 			<name length="16" type="string">0:APPSBLENV</name>
@@ -79,28 +66,8 @@ SPDX-License-Identifier: ISC
 			<attr>0xFF</attr>
 		</partition>
 		<partition>
-			<name length="16" type="string">0:APPSBL</name>
-			<size_kb length="4">640</size_kb>
-			<pad_kb length="2">0</pad_kb>
-			<which_flash length="2">0</which_flash>
-			<attr>0xFF</attr>
-			<attr>0xFF</attr>
-			<attr>0x00</attr>
-			<attr>0xFF</attr>
-		</partition>
-		<partition>
 			<name length="16" type="string">0:TRAINING</name>
 			<size_kb length="4">512</size_kb>
-			<pad_kb length="2">0</pad_kb>
-			<which_flash length="2">0</which_flash>
-			<attr>0xFF</attr>
-			<attr>0xFF</attr>
-			<attr>0x00</attr>
-			<attr>0xFF</attr>
-		</partition>
-		<partition>
-			<name length="16" type="string">0:ART</name>
-			<size_kb length="4">1024</size_kb>
 			<pad_kb length="2">0</pad_kb>
 			<which_flash length="2">0</which_flash>
 			<attr>0xFF</attr>
@@ -127,8 +94,8 @@ SPDX-License-Identifier: ISC
 			<attr>0xFF</attr>
 			<attr>0x00</attr>
 			<attr>0xFF</attr>
-			<img_name mode="32" type="string" image_type="hlos">openwrt-ipq52xx-ipq52xx_32-qcom_hmxx-fit-uImage.itb</img_name>
-			<img_name mode="64" type="string" image_type="hlos">openwrt-ipq52xx-generic-qcom_hmxx-fit-uImage.itb</img_name>
+			<img_name mode="32" type="string" image_type="hlos">openwrt-ipq52xx-ipq52xx_32-qcom_KERNEL_DTB_NAME-fit-uImage.itb</img_name>
+			<img_name mode="64" type="string" image_type="hlos">openwrt-ipq52xx-generic-qcom_KERNEL_DTB_NAME-fit-uImage.itb</img_name>
 		</partition>
 		<partition>
 			<name length="16" type="string">rootfs</name>

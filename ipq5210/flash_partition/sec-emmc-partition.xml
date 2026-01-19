@@ -29,7 +29,7 @@ SPDX-License-Identifier: ISC
 		readonly="false"
 		image_type = "hlos"
 		optional="true"
-		filename="wifi_fw_ipq5210_qcn9224_v2_squashfs.img"
+		filename=""
 		/>
 	<partition
 		label="0:WIFIFW_1"
@@ -47,8 +47,8 @@ SPDX-License-Identifier: ISC
 		readonly="false"
 		diff_files = "true"
 		image_type = "hlos"
-		filename_32="openwrt-ipq52xx-ipq52xx_32-qcom_hmxx-fit-uImage.itb"
-		filename_64="openwrt-ipq52xx-generic-qcom_hmxx-fit-uImage.itb"
+		filename_32="openwrt-ipq52xx-ipq52xx_32-qcom_KERNEL_DTB_NAME-fit-uImage.itb"
+		filename_64="openwrt-ipq52xx-generic-qcom_KERNEL_DTB_NAME-fit-uImage.itb"
 		/>
 	<partition
 		label="0:HLOS_1"
