@@ -285,53 +285,128 @@ def gen_melf():
     global configDir
     global memory
     global dtcDir
+    global arch
 
-    xbl_img_dict = {'xbl_sc.elf'           : 'xbl_s.melf',
-                    'xbl_sc_atf.elf'       : 'xbl_s_atf.melf',
-                    'xbl_sc_flashless.elf' : 'xbl_s_flashless.melf',
-                    'xbl_sc_devprg.elf'    : 'xbl_s_devprg.melf'}
+    # Check if this is IPQ5424 chipset (only IPQ5424 uses xbl_sc.elf)
+    if arch == "ipq5424" or arch == "ipq5424_64":
+        # IPQ5424: Use xbl_sc.elf with multiple variants
+        xbl_img_dict = {'xbl_sc.elf'           : 'xbl_s.melf',
+                        'xbl_sc_atf.elf'       : 'xbl_s_atf.melf',
+                        'xbl_sc_flashless.elf' : 'xbl_s_flashless.melf',
+                        'xbl_sc_devprg.elf'    : 'xbl_s_devprg.melf'}
 
-    # create melf
-    script_path = inDir + '/create_multielf.py'
-    for xbl_elf, xbl_melf in xbl_img_dict.items():
-        # XBL ATF is optional, skip if not present in input directory
-        if 'atf' in xbl_elf and os.path.isfile(inDir+"/"+xbl_elf) == False:
-            print('Optional image - xbl_sc_atf.elf file not present, skipping xbl_s_atf.melf binary')
-        else:
-            prc = subprocess.Popen(['python', script_path, '-f', inDir+"/"+xbl_elf+","+ inDir+"/tmel-ipq54xx-patch.elf", '-o', inDir+"/"+xbl_melf], cwd=cdir)
-            prc.wait()
-            if prc.returncode != 0:
-                print('ERROR: unable to create xbl_s.melf binary')
-                return prc.returncode
-
-    # create nand melf
-    script_path = inDir + '/Gen_xbl_nand_elf.py'
-    xbl_nand_input_img_list = ['xbl_s.melf', 'xbl_s_atf.melf']
-    xbl_nand_cmd_list       = ['NAND_2K', 'NAND_4K']
-
-    # Generate XBL 2K and 4K nand images
-    for xbl_nand_cmd in xbl_nand_cmd_list:
-        for xbl_nand_input_img in xbl_nand_input_img_list:
-            # Get output image name
-            if xbl_nand_cmd == 'NAND_2K':
-                xbl_nand_output_img = xbl_nand_input_img.replace('xbl_s', 'xbl_s_nand')
-                xbl_nand_intermediate = 'xbl_nand.elf'
-            else:
-                xbl_nand_output_img = xbl_nand_input_img.replace('xbl_s', 'xbl_s_nand_4K')
-                xbl_nand_intermediate = 'xbl_nand_4K.elf'
-
+        # create melf
+        script_path = inDir + '/create_multielf.py'
+        for xbl_elf, xbl_melf in xbl_img_dict.items():
             # XBL ATF is optional, skip if not present in input directory
-            if 'atf' in xbl_nand_input_img and os.path.isfile(inDir+"/"+xbl_nand_input_img) == False:
-                print('skipping '+xbl_nand_output_img+' binary')
+            if 'atf' in xbl_elf and os.path.isfile(inDir+"/"+xbl_elf) == False:
+                print('Optional image - xbl_sc_atf.elf file not present, skipping xbl_s_atf.melf binary')
             else:
-                # create NAND melf
-                prc = subprocess.Popen(['python',script_path, inDir+"/"+xbl_nand_input_img, '-f', xbl_nand_cmd,'-o', inDir ], cwd=cdir)
+                prc = subprocess.Popen(['python', script_path, '-f', inDir+"/"+xbl_elf+","+ inDir+"/tmel-ipq54xx-patch.elf", '-o', inDir+"/"+xbl_melf], cwd=cdir)
                 prc.wait()
                 if prc.returncode != 0:
-                    print('ERROR: unable to create '+xbl_nand_output_img+' binary')
+                    print('ERROR: unable to create xbl_s.melf binary')
                     return prc.returncode
+
+        # create nand melf
+        script_path = inDir + '/Gen_xbl_nand_elf.py'
+        xbl_nand_input_img_list = ['xbl_s.melf', 'xbl_s_atf.melf']
+        xbl_nand_cmd_list       = ['NAND_2K', 'NAND_4K']
+
+        # Generate XBL 2K and 4K nand images
+        for xbl_nand_cmd in xbl_nand_cmd_list:
+            for xbl_nand_input_img in xbl_nand_input_img_list:
+                # Get output image name
+                if xbl_nand_cmd == 'NAND_2K':
+                    xbl_nand_output_img = xbl_nand_input_img.replace('xbl_s', 'xbl_s_nand')
+                    xbl_nand_intermediate = 'xbl_nand.elf'
                 else:
-                    os.rename(os.path.join(inDir, xbl_nand_intermediate), os.path.join(inDir, xbl_nand_output_img));
+                    xbl_nand_output_img = xbl_nand_input_img.replace('xbl_s', 'xbl_s_nand_4K')
+                    xbl_nand_intermediate = 'xbl_nand_4K.elf'
+
+                # XBL ATF is optional, skip if not present in input directory
+                if 'atf' in xbl_nand_input_img and os.path.isfile(inDir+"/"+xbl_nand_input_img) == False:
+                    print('skipping '+xbl_nand_output_img+' binary')
+                else:
+                    # create NAND melf
+                    prc = subprocess.Popen(['python',script_path, inDir+"/"+xbl_nand_input_img, '-f', xbl_nand_cmd,'-o', inDir ], cwd=cdir)
+                    prc.wait()
+                    if prc.returncode != 0:
+                        print('ERROR: unable to create '+xbl_nand_output_img+' binary')
+                        return prc.returncode
+                    else:
+                        os.rename(os.path.join(inDir, xbl_nand_intermediate), os.path.join(inDir, xbl_nand_output_img));
+    else:
+        # IPQ5210 and other chipsets: Use u-boot-spl.mbn
+        uboot_spl_mbn = 'u-boot-spl.mbn'
+        uboot_spl_melf = 'u-boot-spl.melf'
+
+        # Check if u-boot-spl.mbn exists
+        if not os.path.isfile(inDir+"/"+uboot_spl_mbn):
+            print('ERROR: u-boot-spl.mbn file not present in input directory')
+            return -1
+
+        # Determine TME patch file based on architecture
+        # Map architecture to TME patch file naming convention
+        tme_patch_map = {
+            'ipq5210': 'tmel-ipq52xx-patch.elf',
+            'ipq5210_64': 'tmel-ipq52xx-patch.elf',
+            # Add more architectures here as needed
+            # 'ipq9650': 'tmel-ipq96xx-patch.elf',
+        }
+
+        tme_patch_file = tme_patch_map.get(arch, None)
+
+        if not tme_patch_file:
+            print('ERROR: No TME patch file mapping defined for architecture: ' + arch)
+            return -1
+
+        if not os.path.isfile(inDir+"/"+tme_patch_file):
+            print('ERROR: TME patch file not present in input directory: ' + tme_patch_file)
+            return -1
+
+        # create melf from u-boot-spl.mbn with TME patch
+        script_path = inDir + '/create_multielf.py'
+        print('Creating u-boot-spl.melf from u-boot-spl.mbn with TME patch: ' + tme_patch_file)
+        prc = subprocess.Popen(['python', script_path, '-f', inDir+"/"+uboot_spl_mbn+","+ inDir+"/"+tme_patch_file, '-o', inDir+"/"+uboot_spl_melf], cwd=cdir)
+        prc.wait()
+        if prc.returncode != 0:
+            print('ERROR: unable to create u-boot-spl.melf binary')
+            return prc.returncode
+
+        # create nand melf from u-boot-spl.melf
+        script_path = inDir + '/Gen_xbl_nand_elf.py'
+        spl_nand_input_img = 'u-boot-spl.melf'
+        spl_nand_cmd_list = ['NAND_2K', 'NAND_4K']
+
+        # Generate U-Boot SPL 2K and 4K nand images
+        for spl_nand_cmd in spl_nand_cmd_list:
+            # Get output image name and intermediate file name
+            if spl_nand_cmd == 'NAND_2K':
+                spl_nand_output_img = 'u-boot-spl_nand.melf'
+                spl_nand_intermediate = 'spl_nand.elf'
+            else:
+                spl_nand_output_img = 'u-boot-spl_nand_4K.melf'
+                spl_nand_intermediate = 'spl_nand_4K.elf'
+
+            print('Creating '+spl_nand_output_img+' from '+spl_nand_input_img)
+            # create NAND melf
+            prc = subprocess.Popen(['python', script_path, inDir+"/"+spl_nand_input_img, '-f', spl_nand_cmd, '-o', inDir], cwd=cdir)
+            prc.wait()
+            if prc.returncode != 0:
+                print('ERROR: unable to create '+spl_nand_output_img+' binary')
+                return prc.returncode
+            else:
+                # The Gen_xbl_nand_elf.py script generates xbl_nand.elf or xbl_nand_4K.elf
+                # We need to rename it to use spl naming convention
+                if spl_nand_cmd == 'NAND_2K':
+                    old_intermediate = 'xbl_nand.elf'
+                else:
+                    old_intermediate = 'xbl_nand_4K.elf'
+
+                # Rename from xbl_nand*.elf to final output name
+                if os.path.exists(os.path.join(inDir, old_intermediate)):
+                    os.rename(os.path.join(inDir, old_intermediate), os.path.join(inDir, spl_nand_output_img))
 
     return 0
 
@@ -424,6 +499,7 @@ def gen_mbn():
     bootconfig_path = srcDir + '/elftombn.py'
     print("Converting u-boot elf to mbn ...")
     u_boot_2016_path=inDir + "/openwrt-" + arch + "-u-boot.elf"
+    u_boot_spl_path=inDir + "/u-boot-spl.elf"
     tiny_path=inDir + "/openwrt-" + arch + "_tiny" + "-u-boot.elf"
     tiny_nor_path=inDir + "/openwrt-" + arch + "_tiny_nor" + "-u-boot.elf"
     img_flag = 1
@@ -532,12 +608,17 @@ def gen_mbn():
         if os.path.exists(tiny_nor_path):
             prc = subprocess.Popen(['python', bootconfig_path, '-a', arch, '-f', inDir + "/openwrt-" + arch + "_tiny_nor" + "-u-boot.elf", '-o', inDir + "/openwrt-" + arch + "_tiny_nor" + "-u-boot.mbn", '-v', "6"], cwd=cdir)
 
+        if os.path.exists(u_boot_spl_path):
+            print("Converting u-boot-spl.elf to u-boot-spl.mbn ...")
+            prc = subprocess.Popen(['python', bootconfig_path, '-a', arch, '-f', inDir + "/u-boot-spl.elf", '-o', inDir + "/u-boot-spl.mbn", '-v', mbn_version, '-s', "0"], cwd=cdir)
+            img_flag = 0
+
     if(img_flag):
         print("u-boot image is not available")
         print("Failed to create mbn!")
         return -1
 
-    if os.path.exists(u_boot_2016_path) or os.path.exists(tiny_path):
+    if os.path.exists(u_boot_2016_path) or os.path.exists(tiny_path) or os.path.exists(u_boot_spl_path):
         prc.wait()
 
         if prc.returncode != 0:
