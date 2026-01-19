@@ -122,6 +122,20 @@ SPDX-License-Identifier: ISC
 		</entry>
 	</data>
 
+	<data type="BOOTLDR_COMPONENTS">
+		<qclib>QCLib.elf</qclib>
+		<tfa_bl31>bl31.mbn</tfa_bl31>
+		<optee>tee-pager_v2.mbn</optee>
+		<uboot flash="emmc" mode="32">openwrt-ipq5210-ipq52xx_32-mmc32-u-boot-UBOOT_DTB_NAME.mbn</uboot>
+		<uboot flash="emmc" mode="64">openwrt-ipq5210-generic-mmc-u-boot-UBOOT_DTB_NAME.mbn</uboot>
+		<uboot flash="nand,nand-4k" mode="32">openwrt-ipq5210-ipq52xx_32-nand32-u-boot-UBOOT_DTB_NAME.mbn</uboot>
+		<uboot flash="nand,nand-4k" mode="64">openwrt-ipq5210-generic-nand-u-boot-UBOOT_DTB_NAME.mbn</uboot>
+		<uboot flash="norplusnand,norplusnand-gpt,norplusnand-4k,norplusnand-4k-gpt" mode="32">openwrt-ipq5210-ipq52xx_32-norplusnand32-u-boot-UBOOT_DTB_NAME.mbn</uboot>
+		<uboot flash="norplusnand,norplusnand-gpt,norplusnand-4k,norplusnand-4k-gpt" mode="64">openwrt-ipq5210-generic-norplusnand-u-boot-UBOOT_DTB_NAME.mbn</uboot>
+		<uboot flash="norplusemmc" mode="32">openwrt-ipq5210-ipq52xx_32-norplusemmc32-u-boot-UBOOT_DTB_NAME.mbn</uboot>
+		<uboot flash="norplusemmc" mode="64">openwrt-ipq5210-generic-norplusemmc-u-boot-UBOOT_DTB_NAME.mbn</uboot>
+	</data>
+
 	<data type="MACH_ID_BOARD_MAP">
 		<entry>
 			<machid>0xF060000</machid>
@@ -129,16 +143,65 @@ SPDX-License-Identifier: ISC
 			<memory>512M16_DDR4</memory>
 			<memory_2048>1024M16_DDR4</memory_2048>
 			<layouts>default,vendor</layouts>
+			<uboot_dtb_name>emulation</uboot_dtb_name>
+			<kernel_dtb_name>emulation-fbc</kernel_dtb_name>
 			<fw_override>
 				<profile-2048 layouts="default,vendor">
-					<xblconfig>qcconfig-HM-EMU_1024M16_DDR4_LM512.elf</xblconfig>
+					<bootldr_components>
+						<qcconfig>qcconfig-HM-EMU_1024M16_DDR4_LM512.elf</qcconfig>
+					</bootldr_components>
 				</profile-2048>
 				<profile-default layouts="default,vendor">
-					<xblconfig>qcconfig-HM-EMU_512M16_DDR4.elf</xblconfig>
+					<bootldr_components>
+						<qcconfig>qcconfig-HM-EMU_512M16_DDR4.elf</qcconfig>
+					</bootldr_components>
 				</profile-default>
 				<profile-512 layouts="default,vendor">
-					<xblconfig>qcconfig-HM-EMU_512M16_DDR4_LM512.elf</xblconfig>
+					<bootldr_components>
+						<qcconfig>qcconfig-HM-EMU_512M16_DDR4_LM512.elf</qcconfig>
+					</bootldr_components>
 				</profile-512>
+			</fw_override>
+		</entry>
+		<entry>
+			<machid>0x8080000</machid>
+			<board>RDP497</board>
+			<memory>128M16_DDR4</memory>
+			<layouts>default,vendor</layouts>
+			<fw_override>
+				<profile-128 layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP497_128M16_DDR4.elf</qcconfig>
+					</bootldr_components>
+				</profile-128>
+				<profile-default layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP497_256M16_DDR4.elf</qcconfig>
+					</bootldr_components>
+				</profile-default>
+			</fw_override>
+		</entry>
+		<entry>
+			<machid>0x8080100</machid>
+			<board>RDP498</board>
+			<memory>256M16_DDR4</memory>
+			<layouts>default,vendor</layouts>
+			<fw_override>
+				<profile-default layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP498_256M16_DDR4.elf</qcconfig>
+					</bootldr_components>
+				</profile-default>
+				<profile-512 layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP498_256M16_DDR4_LM512.elf</qcconfig>
+					</bootldr_components>
+				</profile-512>
+				<profile-256 layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP498_256M16_DDR4_LM256.elf</qcconfig>
+					</bootldr_components>
+				</profile-256>
 			</fw_override>
 		</entry>
 	</data>
