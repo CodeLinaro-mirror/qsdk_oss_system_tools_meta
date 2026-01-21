@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+===========================================================================
+Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
+SPDX-License-Identifier: ISC
+===========================================================================
+-->
+
+<config>
+	<data type="ARCH">
+		<SOC>ipq5210</SOC>
+	</data>
+
+	<data type="TINY_NOR_PARAMETER">
+		<entry layout="default">
+			<page_size>256</page_size>
+			<pages_per_block>16</pages_per_block>
+			<total_block>4096</total_block>
+		</entry>
+	</data>
+
+	<data type="NOR_PARAMETER">
+		<entry layout="default">
+			<page_size>256</page_size>
+			<pages_per_block>256</pages_per_block>
+			<total_block>256</total_block>
+		</entry>
+	</data>
+
+	<data type="NAND_PARAMETER">
+		<entry type="2k" layout="default">
+			<page_size>2048</page_size>
+			<pages_per_block>64</pages_per_block>
+			<total_block>4096</total_block>
+		</entry>
+		<entry type="4k" layout="default">
+			<page_size>4096</page_size>
+			<pages_per_block>64</pages_per_block>
+			<total_block>4096</total_block>
+		</entry>
+	</data>
+
+	<data type="EMMC_PARAMETER">
+		<entry layout="default">
+			<entry physical_partition="0">
+				<total_block>15269888</total_block>
+				<partition_mbn>emmc_gpt_main.bin</partition_mbn>
+				<partition_mbn_backup>emmc_gpt_backup.bin</partition_mbn_backup>
+			</entry>
+		</entry>
+		<entry layout="vendor">
+			<entry physical_partition="0" gpt_type="user">
+				<total_block>15269888</total_block>
+				<partition_mbn>emmc_user_gpt_main.bin</partition_mbn>
+				<partition_mbn_backup>emmc_user_gpt_backup.bin</partition_mbn_backup>
+			</entry>
+			<entry physical_partition="1" gpt_type="boot0">
+				<total_block>8192</total_block>
+				<partition_mbn>emmc_boot_gpt_main.bin</partition_mbn>
+				<partition_mbn_backup>emmc_boot_gpt_backup.bin</partition_mbn_backup>
+			</entry>
+		</entry>
+	</data>
+
+	<data type="NORPLUSNAND_PARAMETER">
+		<entry type="2k" layout="default">
+			<page_size>256</page_size>
+			<pages_per_block>256</pages_per_block>
+			<total_block>256</total_block>
+			<nand_page_size>2048</nand_page_size>
+			<nand_pages_per_block>64</nand_pages_per_block>
+			<nand_total_block>4096</nand_total_block>
+		</entry>
+		<entry type="4k" layout="default">
+			<page_size>256</page_size>
+			<pages_per_block>256</pages_per_block>
+			<total_block>256</total_block>
+			<nand_page_size>4096</nand_page_size>
+			<nand_pages_per_block>64</nand_pages_per_block>
+			<nand_total_block>4096</nand_total_block>
+		</entry>
+	</data>
+
+	<data type="NORPLUSEMMC_PARAMETER">
+		<entry layout="default">
+			<entry physical_partition="0">
+				<page_size>256</page_size>
+				<page_size_flash>512</page_size_flash>
+				<pages_per_block>256</pages_per_block>
+				<total_block>256</total_block>
+				<emmc_total_block>15269888</emmc_total_block>
+				<partition_mbn>nemmc_gpt_main.bin</partition_mbn>
+				<partition_mbn_backup>nemmc_gpt_backup.bin</partition_mbn_backup>
+			</entry>
+		</entry>
+	</data>
+
+	<data type="NORPLUSNAND-GPT_PARAMETER">
+		<entry type="2k" layout="default">
+			<entry physical_partition="0">
+				<total_block>8192</total_block>
+				<partition_mbn>norplusnand_gpt_main.bin</partition_mbn>
+				<partition_mbn_backup>norplusnand_gpt_backup.bin</partition_mbn_backup>
+			</entry>
+		</entry>
+		<entry type="4k" layout="default">
+			<entry physical_partition="2">
+				<total_block>8192</total_block>
+				<partition_mbn>norplusnand_4k_gpt_main.bin</partition_mbn>
+				<partition_mbn_backup>norplusnand_4k_gpt_backup.bin</partition_mbn_backup>
+			</entry>
+		</entry>
+	</data>
+
+	<data type="NORPLUSEMMC-GPT_PARAMETER">
+		<entry layout="default">
+			<entry physical_partition="1">
+				<total_block>8192</total_block>
+				<partition_mbn>norplusemmc_gpt_main.bin</partition_mbn>
+				<partition_mbn_backup>norplusemmc_gpt_backup.bin</partition_mbn_backup>
+			</entry>
+		</entry>
+	</data>
+
+	<data type="MACH_ID_BOARD_MAP">
+		<entry>
+			<machid>0xF060000</machid>
+			<board>MA-EMU</board>
+			<memory>256M32_DDR4</memory>
+			<memory_2048>512M32_DDR4</memory_2048>
+			<memory_8192>2048M32_DDR4</memory_8192>
+			<layouts>default,vendor</layouts>
+			<fw_override>
+				<profile-8192 layouts="default,vendor">
+					<xblconfig>xblconfig-MA-EMU_2048M32_DDR4.elf</xblconfig>
+				</profile-8192>
+				<profile-2048 layouts="default,vendor">
+					<xblconfig>xblconfig-MA-EMU_512M32_DDR4.elf</xblconfig>
+				</profile-2048>
+				<profile-default layouts="default,vendor">
+					<xblconfig>xblconfig-MA-EMU_256M32_DDR4.elf</xblconfig>
+				</profile-default>
+				<profile-512 layouts="default,vendor">
+					<xblconfig>xblconfig-MA-EMU_256M32_DDR4_LM512.elf</xblconfig>
+				</profile-512>
+			</fw_override>
+		</entry>
+	</data>
+</config>

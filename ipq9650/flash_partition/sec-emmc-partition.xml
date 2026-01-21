@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+===========================================================================
+Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
+SPDX-License-Identifier: ISC
+===========================================================================
+-->
+
+<configuration>
+	<parser_instructions>
+		<!-- NOTE: entries here are used by the parser when generating output -->
+		<!-- NOTE: each filename must be on it's own line as in variable=value-->
+		WRITE_PROTECT_BOUNDARY_IN_KB    = 65536
+		GROW_LAST_PARTITION_TO_FILL_DISK= false
+	</parser_instructions>
+
+<!-- NOTE: "physical_partition" are listed in order and apply to devices such as eMMC cards that have (for example) 3 physical partitions -->
+<!-- This is physical partition 0 -->
+	<physical_partition ref="norplusemmc">
+	<!-- NOTE: Define information for each partition, which will be created in order listed here -->
+	<!-- NOTE: Place all "readonly=true" partitions side by side for optimum space usage -->
+	<!-- NOTE: If OPTIMIZE_READONLY_PARTITIONS=true, then partitions won't be in the order listed here -->
+	<!--       they will instead be placed side by side at the beginning of the disk -->
+	<partition
+		label="0:WIFIFW"
+		size_in_kb="16384"
+		type="5911fd72-35be-424e-975d-69c957ad3a43"
+		bootable="false"
+		readonly="false"
+		image_type = "hlos"
+		optional="true"
+		filename="wifi_fw_ipq9650_qcn9224_v2_squashfs.img"
+		/>
+	<partition
+		label="0:WIFIFW_1"
+		size_in_kb="16384"
+		type="a640a4e3-6aeb-4d83-81a0-dfeae6b7d1a5"
+		bootable="false"
+		readonly="false"
+		filename=""
+		/>
+	<partition
+		label="0:HLOS"
+		size_in_kb="7168"
+		type="B51F2982-3EBE-46DE-8721-EE641E1F9997"
+		bootable="false"
+		readonly="false"
+		diff_files = "true"
+		image_type = "hlos"
+		filename_32="openwrt-ipq96xx-ipq96xx_32-qcom_maxx-fit-uImage.itb"
+		filename_64="openwrt-ipq96xx-generic-qcom_maxx-fit-uImage.itb"
+		/>
+	<partition
+		label="0:HLOS_1"
+		size_in_kb="7168"
+		type="A71DA577-7F81-4626-B4A2-E377F9174525"
+		bootable="false"
+		readonly="false"
+		filename=""
+		/>
+	<partition
+		label="rootfs"
+		size_in_kb="124928"
+		type="98D2248D-7140-449F-A954-39D67BD6C3B4"
+		bootable="false"
+		readonly="false"
+		diff_files="true"
+		image_type = "hlos"
+		filename_32="openwrt-ipq96xx-ipq96xx_32-squashfs-root.img"
+		filename_64="openwrt-ipq96xx-generic-squashfs-root.img"
+		/>
+	<partition
+		label="rootfs_1"
+		size_in_kb="124928"
+		type="5647B280-DC2A-485D-9913-CF53AC40FA32"
+		bootable="false"
+		readonly="false"
+		filename=""
+		/>
+	<partition
+		label="0:CALFW"
+		size_in_kb="2048"
+		type="19a6dc0c-bf65-2f27-6763-e2d2df7356e0"
+		bootable="false"
+		readonly="false"
+		image_type = "hlos"
+		optional="true"
+		filename=""
+		/>
+	<partition
+		label="0:CALFW_1"
+		size_in_kb="2048"
+		type="5521e301-b498-5479-87b5-98adf1dadf6b"
+		bootable="false"
+		readonly="false"
+		filename=""
+		/>
+	</physical_partition>
+</configuration>

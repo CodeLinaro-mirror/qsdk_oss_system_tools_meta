@@ -87,17 +87,17 @@ split_by_rdp = "false"
 skip_4k_nand = "false"
 atf = "false"
 img_suffix = ""
-supported_arch = ["ipq5200", "ipq5200_64", "ipq5424", "ipq5424_64", "ipq5332", "ipq5332_64"]
-split_by_rdp_supported_arch = ["ipq5200"]
+supported_arch = ["ipq5210", "ipq5210_64", "ipq5424", "ipq5424_64", "ipq5332", "ipq5332_64"]
+split_by_rdp_supported_arch = ["ipq5210"]
 supported_flash_type = {}
 supported_flash_type["ipq5332"] = { "nand", "nor", "tiny-nor", "emmc", "norplusnand", "norplusemmc", "tiny-nor-debug" };
 supported_flash_type["ipq5424"] = { "nor", "nand", "emmc", "norplusnand", "norplusemmc", "norplusnand-gpt", "norplusemmc-gpt" , "tiny-nor", "tiny-nor-debug" };
-supported_flash_type["ipq5200"] = { "nor", "nand", "emmc", "norplusnand", "norplusemmc", "norplusnand-gpt", "norplusemmc-gpt" };
+supported_flash_type["ipq5210"] = { "nor", "nand", "emmc", "norplusnand", "norplusemmc", "norplusnand-gpt", "norplusemmc-gpt" };
 gpt_flash = ["nor-gpt", "emmc"]
 soc_hw_versions = {}
 soc_hw_versions["ipq5332"] = { 0x201A0100, 0x201A0101 };
 soc_hw_versions["ipq5424"] = { 0xE0010100 };
-soc_hw_versions["ipq5200"] = { 0xE0030100 };
+soc_hw_versions["ipq5210"] = { 0xE0030100 };
 
 #
 # Python 2.6 and earlier did not have OrderedDict use the backport
@@ -1705,7 +1705,7 @@ def main():
 
         parser.out_fname = flash_type + "-" + ARCH_NAME + MODE_APPEND + suffix
 
-        if ARCH_NAME == "ipq5424" or ARCH_NAME == "ipq5200":
+        if ARCH_NAME == "ipq5424" or ARCH_NAME == "ipq5210":
             if flash_type == "norplusnand-gpt":
                 parser.out_fname = "norplusnand-" + ARCH_NAME + MODE_APPEND + suffix
             elif flash_type == "norplusnand-4k-gpt":
