@@ -125,6 +125,18 @@ def print_help():
     print("\t\tThis option depends on '--genmbn'\n")
     print("\t\te.g python prepareSingleImage.py --genmbn --lk\n\n")
 
+    print("--gentfambn \t\tWhether tfa elf to be converted to mbn")
+    print("\t\tIf not specified tfa mbn will not be generated")
+    print("\t\tThis is currently used/needed only for IPQ5210, IPQ9650")
+    print("\t\tThis Argument does not take any value")
+    print("\t\te.g python prepareSingleImage.py --gentfambn\n\n")
+
+    print("--genopteembn \t\tWhether optee elf to be converted to mbn")
+    print("\t\tIf not specified optee mbn will not be generated")
+    print("\t\tThis is currently used/needed only for IPQ5210, IPQ9650")
+    print("\t\tThis Argument does not take any value")
+    print("\t\te.g python prepareSingleImage.py --genopteembn\n\n")
+
     print("--genbootldr \tWhether bootldr binaries to be generated")
     print("\t\tIf not specified bootldr binaries will not be generated")
     print("\t\tThis Argument does not take any value\n")
@@ -646,6 +658,36 @@ def gen_lk_mbn():
         print("LK .mbn file is created")
         return 0
 
+def gen_tfa_mbn():
+    global srcDir
+
+    bootconfig_path = srcDir + '/elftombn.py'
+    print("Converting TF-A elf to mbn ...")
+    prc = subprocess.Popen(['python', bootconfig_path, '-f', inDir + "/bl31.elf", '-o', inDir + "/bl31.mbn", '-v', "7", '-s', "30"], cwd=cdir)
+    prc.wait()
+
+    if prc.returncode != 0:
+        print('ERROR: Unable to convert TF-A .elf to .mbn')
+        return prc.returncode
+    else:
+        print("TF-A .mbn file is created")
+        return 0
+
+def gen_optee_mbn():
+    global srcDir
+
+    bootconfig_path = srcDir + '/elftombn.py'
+    print("Converting OPTEE elf to mbn ...")
+    prc = subprocess.Popen(['python', bootconfig_path, '-f', inDir + "/tee-pager_v2.elf", '-o', inDir + "/tee-pager_v2.mbn", '-v', "7", '-s', "204"], cwd=cdir)
+    prc.wait()
+
+    if prc.returncode != 0:
+        print('ERROR: Unable to convert OPTEE .elf to .mbn')
+        return prc.returncode
+    else:
+        print("OPTEE .mbn file is created")
+        return 0
+
 def main():
     global flash
     global arch
@@ -679,6 +721,8 @@ def main():
     to_generate_bootconf_crc = "false"
     to_generate_mbn = "false"
     to_generate_lk_mbn = "false"
+    to_gen_tfa_mbn = "false"
+    to_gen_optee_mbn = "false"
     to_generate_bootldr = "false"
     to_generate_license = "false"
     memory = "default"
@@ -692,7 +736,7 @@ def main():
                 "bootimg=", "tzimg=", "nhssimg=", "rpmimg=", "wififwimg",
                 "gencdt", "genxblcfg", "genqccfg", "genmelf", "dtc_path=","memory=",
                 "total_blocks=", "flash_size=", "genpart", "genbootconf", "genbootconf_crc",
-                "genmbn", "lk", "genbootldr", "genlicense", "soc=","attach1=",
+                "genmbn", "lk", "genbootldr", "genlicense", "gentfambn", "genopteembn", "soc=","attach1=",
 		"attach2=", "attach3=", "attach4=", "attach5=", "help"])
         except GetoptError as e:
             print_help()
@@ -772,6 +816,10 @@ def main():
                 to_generate_bootldr = "true"
             elif option == "--genlicense":
                 to_generate_license = "true"
+            elif option == "--gentfambn":
+                to_gen_tfa_mbn = "true"
+            elif option == "--genopteembn":
+                to_gen_optee_mbn = "true"
             elif option == "--soc":
                 soc_dir = value
 
@@ -874,6 +922,13 @@ def main():
             else:
                 print("Invalid arch \"" + arch + "\" for mbn conversion")
                 print("--genmbn is needed/used only for ipq807x, ipq6018, ipq5018, ipq9574, ipq5332, ipq5424 and ipq5210 type")
+
+        if to_gen_tfa_mbn == "true" and gen_tfa_mbn() != 0:
+            return -1
+
+        if to_gen_optee_mbn == "true" and gen_optee_mbn() != 0:
+            return -1
+
         return 0
     else:
         print_help()
