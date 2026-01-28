@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # ==========================================================================
 # Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
 # SPDX-License-Identifier: ISC
@@ -23,6 +22,9 @@
 #
 # Note: All component paths (qclib_path, qcconfig_path, tfa_bl31_path, uboot_path, optee_path) are required.
 # The script will always process templates with conditional statements (#define) and replace placeholders.
+# This script is compatible with both Python 2.7 and Python 3.
+
+from __future__ import print_function
 
 import os
 import argparse
@@ -31,6 +33,7 @@ import subprocess
 import shutil
 import re
 import sys
+import errno
 
 class TemplateManager:
     """
@@ -73,9 +76,9 @@ class TemplateManager:
                 self.template_content = f.read()
             return True
         except (IOError, OSError) as e:
-            return handle_error(f"loading template file {self.template_path}", e)
+            return handle_error("loading template file {0}".format(self.template_path), e)
         except Exception as e:
-            return handle_error(f"loading template file {self.template_path}", e)
+            return handle_error("loading template file {0}".format(self.template_path), e)
 
     def add_component_data(self, component_name, parser):
         """
@@ -105,7 +108,7 @@ class TemplateManager:
             component_name: Name of the component
             available: Whether the component is available
         """
-        define_name = f'HAVE_{component_name.upper()}'
+        define_name = 'HAVE_{0}'.format(component_name.upper())
         if define_name in self.component_defines:
             self.component_defines[define_name] = 1 if available else 0
 
@@ -130,12 +133,12 @@ class TemplateManager:
         for component_name, data in self.component_data.items():
             # Set entry point
             entry_point = data['entry_point']
-            self.set_placeholder(f"{component_name.upper()}_ENTRY_ADDR", entry_point)
+            self.set_placeholder("{0}_ENTRY_ADDR".format(component_name.upper()), entry_point)
 
             # Set load addresses for each segment
             for i, segment in enumerate(data['load_segments'], 1):
                 load_addr = segment["load_address"]
-                self.set_placeholder(f"{component_name.upper()}_{i}_LOAD_ADDR", load_addr)
+                self.set_placeholder("{0}_{1}_LOAD_ADDR".format(component_name.upper(), i), load_addr)
         return True
 
     def process_conditional_template(self):
@@ -156,7 +159,7 @@ class TemplateManager:
             # Create a more secure temporary file name using PID and hash of template content
             # This reduces predictability while using only existing imports
             content_hash = hash(self.template_content) & 0x7FFFFFFF  # Ensure positive hash
-            temp_path = f"temp_template_{os.getpid()}_{content_hash}.its"
+            temp_path = "temp_template_{0}_{1}.its".format(os.getpid(), content_hash)
             abs_temp_path = os.path.join(os.getcwd(), temp_path)
 
             # Extract header content before /dts-v1/; directive
@@ -183,8 +186,8 @@ class TemplateManager:
 
             # Replace #define values
             for define_name, define_value in self.component_defines.items():
-                pattern = f'#define {define_name} 0'
-                replacement = f'#define {define_name} {define_value}'
+                pattern = '#define {0} 0'.format(define_name)
+                replacement = '#define {0} {1}'.format(define_name, define_value)
                 processed_content = processed_content.replace(pattern, replacement)
 
             # Replace placeholders
@@ -201,23 +204,27 @@ class TemplateManager:
                     self.temp_files_list.append(abs_temp_path)
                     temp_file_added = True
                 except Exception as e:
-                    print(f"Warning: Failed to add {abs_temp_path} to tracking list: {e}")
-                    print(f"Note: Untracked temporary file created: {abs_temp_path}")
+                    print("Warning: Failed to add {0} to tracking list: {1}".format(abs_temp_path, e))
+                    print("Note: Untracked temporary file created: {0}".format(abs_temp_path))
 
             # Use cpp to process the #if directives
             try:
-                result = subprocess.run(
-                    ['cpp', '-P', '-nostdinc', '-undef', temp_path],
-                    capture_output=True,
-                    text=True,
-                    shell=False,
-                    check=False
+                # Create a temporary file for the preprocessed output
+                preprocessed_output_path = temp_path + ".preprocessed"
+
+                # Use subprocess.call() instead of Popen
+                returncode = subprocess.call(
+                    ['cpp', '-P', '-nostdinc', '-undef', temp_path, '-o', preprocessed_output_path],
+                    shell=False
                 )
 
-                if result.returncode != 0:
-                    print(f"Error: cpp preprocessing failed with return code {result.returncode}")
-                    print(f"STDERR: {result.stderr}")
+                if returncode != 0:
+                    print("Error: cpp preprocessing failed with return code {0}".format(returncode))
                     raise RuntimeError("cpp preprocessing failed")
+
+                # Read the preprocessed content
+                with open(preprocessed_output_path, 'r') as preprocessed_file:
+                    preprocessed_content = preprocessed_file.read()
 
                 # Write the preprocessed content to the output file with header
                 with open(self.output_path, 'w') as f:
@@ -225,9 +232,14 @@ class TemplateManager:
                     if header_content:
                         f.write(header_content)
                         f.write('\n')  # Add extra newline for separation
-                    f.write(result.stdout)
 
-                print(f"Generated ITS file: {self.output_path}")
+                    f.write(preprocessed_content)
+
+                # Clean up the temporary preprocessed file
+                if os.path.exists(preprocessed_output_path):
+                    os.unlink(preprocessed_output_path)
+
+                print("Generated ITS file: {0}".format(self.output_path))
 
                 return True
             except (subprocess.SubprocessError, Exception) as e:
@@ -250,13 +262,13 @@ class TemplateManager:
                             if abs_temp_path in self.temp_files_list:
                                 self.temp_files_list.remove(abs_temp_path)
                     except Exception as e:
-                        print(f"Warning: Failed to clean up temporary file {temp_path}: {e}")
+                        print("Warning: Failed to clean up temporary file {0}: {1}".format(temp_path, e))
                 else:
                     # File doesn't exist but might be in tracking list
                     if hasattr(self, 'temp_files_list') and self.temp_files_list is not None:
                         if abs_temp_path in self.temp_files_list:
                             self.temp_files_list.remove(abs_temp_path)
-                            print(f"Warning: Removed non-existent file {temp_path} from tracking")
+                            print("Warning: Removed non-existent file {0} from tracking".format(temp_path))
 
     def save(self, output_path=None):
         """
@@ -317,7 +329,7 @@ def handle_error(operation_name, e, default_return=False):
         The default return value (usually False or empty list/dict)
     """
     error_type = "Error" if isinstance(e, (IOError, OSError)) else "Unexpected error"
-    print(f"{error_type} in {operation_name}: {e}")
+    print("{0} in {1}: {2}".format(error_type, operation_name, e))
     return default_return
 
 def validate_path(path):
@@ -414,9 +426,12 @@ def validate_filename(filename):
         # Ensure filename doesn't start with a dot (hidden file)
         if filename.startswith('.'):
             return False
+        # Ensure filename doesn't contain consecutive dots
+        if '..' in filename:
+            return False
         # Ensure filename doesn't contain any potentially dangerous characters
-        # Use fullmatch to ensure the entire string matches the pattern
-        return bool(re.fullmatch(r'[a-zA-Z0-9_\-\.]+', filename))
+        # Use match with ^ and $ to ensure the entire string matches the pattern
+        return bool(re.match(r'^[a-zA-Z0-9_\-\.]+$', filename))
     except (IOError, OSError, Exception) as e:
         return handle_error("validating filename", e, False)
 
@@ -474,15 +489,16 @@ class ElfParser:
         """
         # Create output directory if it doesn't exist
         try:
-            os.makedirs(self.output_dir, exist_ok=True)
-        except (IOError, OSError) as e:
-            return handle_error("creating output directory", e)
+            os.makedirs(self.output_dir)
+        except OSError as e:
+            if e.errno != errno.EEXIST:
+                return handle_error("creating output directory", e)
         except Exception as e:
             return handle_error("creating output directory", e)
 
         load_info = []
-        load_info_filename = os.path.join(self.output_dir, f"{self.component_name}_load_addresses.txt")
-        meta_filename = os.path.join(self.output_dir, f"{self.component_name}_meta_segments.bin")
+        load_info_filename = os.path.join(self.output_dir, "{0}_load_addresses.txt".format(self.component_name))
+        meta_filename = os.path.join(self.output_dir, "{0}_meta_segments.bin".format(self.component_name))
 
         # Track temporary files if a list was provided
         if self.temp_files_list is not None and isinstance(self.temp_files_list, list):
@@ -490,8 +506,8 @@ class ElfParser:
                 self.temp_files_list.append(load_info_filename)
                 self.temp_files_list.append(meta_filename)
             except Exception as e:
-                print(f"Warning: Failed to add files to tracking list: {e}")
-                print(f"Note: Untracked temporary files created: {load_info_filename}, {meta_filename}")
+                print("Warning: Failed to add files to tracking list: {0}".format(e))
+                print("Note: Untracked temporary files created: {0}, {1}".format(load_info_filename, meta_filename))
 
         # Use nested context managers to ensure proper cleanup of all resources
         try:
@@ -507,7 +523,7 @@ class ElfParser:
                         else:
                             self.arch = "arm"
 
-                        load_info.append(f"arch: {self.arch}")
+                        load_info.append("arch: {0}".format(self.arch))
 
                         null_segment_count = 1
                         load_segment_count = 1
@@ -528,13 +544,13 @@ class ElfParser:
                                 # Only add entry to load_info for the first NULL segment
                                 if null_segment_count == 1:
                                     self.entry_point = elf_header.e_entry
-                                    load_info.append(f"{self.component_name}_meta_segments.bin: 0x{self.entry_point:X}")
+                                    load_info.append("{0}_meta_segments.bin: 0x{1:X}".format(self.component_name, self.entry_point))
 
                                 null_segment_count += 1
 
                             # Handle LOAD segments
                             if curr_phdr.p_type == 0x1 and curr_phdr.p_memsz > 0 and curr_phdr.p_filesz > 0:
-                                load_filename = os.path.join(self.output_dir, f"{self.component_name}_{load_segment_count}_load_segment.bin")
+                                load_filename = os.path.join(self.output_dir, "{0}_{1}_load_segment.bin".format(self.component_name, load_segment_count))
 
                                 try:
                                     with open(load_filename, 'wb') as load_file:
@@ -544,20 +560,20 @@ class ElfParser:
                                         try:
                                             self.temp_files_list.append(load_filename)
                                         except Exception as e:
-                                            print(f"Warning: Failed to add {load_filename} to tracking list: {e}")
-                                            print(f"Note: Untracked temporary file created: {load_filename}")
+                                            print("Warning: Failed to add {0} to tracking list: {1}".format(load_filename, e))
+                                            print("Note: Untracked temporary file created: {0}".format(load_filename))
                                 except (IOError, OSError) as e:
-                                    return handle_error(f"writing load segment file {load_filename}", e)
+                                    return handle_error("writing load segment file {0}".format(load_filename), e)
                                 except Exception as e:
-                                    return handle_error(f"writing load segment file {load_filename}", e)
+                                    return handle_error("writing load segment file {0}".format(load_filename), e)
 
                                 load_address = curr_phdr.p_vaddr
                                 segment_info = {
                                     'filename': os.path.basename(load_filename),
-                                    'load_address': f"0x{load_address:X}"
+                                    'load_address': "0x{0:X}".format(load_address)
                                 }
                                 self.load_segments.append(segment_info)
-                                load_info.append(f"{os.path.basename(load_filename)}: 0x{load_address:X}")
+                                load_info.append("{0}: 0x{1:X}".format(os.path.basename(load_filename), load_address))
                                 load_segment_count += 1
 
                     # Write load info file in a separate context manager
@@ -565,12 +581,12 @@ class ElfParser:
                         with open(load_info_filename, 'w') as info_file:
                             info_file.write("\n".join(load_info))
                     except (IOError, OSError) as e:
-                        return handle_error(f"writing load info file {load_info_filename}", e)
+                        return handle_error("writing load info file {0}".format(load_info_filename), e)
                     except Exception as e:
-                        return handle_error(f"writing load info file {load_info_filename}", e)
+                        return handle_error("writing load info file {0}".format(load_info_filename), e)
 
-                    print(f"Splitted {self.component_name} into separate bins")
-                    print(f"Saved load addresses to {self.component_name}_load_addresses.txt\n")
+                    print("Splitted {0} into separate bins".format(self.component_name))
+                    print("Saved load addresses to {0}_load_addresses.txt\n".format(self.component_name))
 
                 except (IOError, OSError) as e:
                     return handle_error("processing meta file operations", e)
@@ -579,8 +595,8 @@ class ElfParser:
 
             # Add meta segment info
             self.meta_segments = [{
-                'filename': f"{self.component_name}_meta_segments.bin",
-                'entry_point': f"0x{self.entry_point:X}" if self.entry_point else "0x00000000"
+                'filename': "{0}_meta_segments.bin".format(self.component_name),
+                'entry_point': "0x{0:X}".format(self.entry_point) if self.entry_point else "0x00000000"
             }]
 
             return True  # Success
@@ -614,7 +630,7 @@ class ElfParser:
         Returns:
             str: Entry point address as a hex string
         """
-        return f"0x{self.entry_point:X}" if self.entry_point else "0x00000000"
+        return "0x{0:X}".format(self.entry_point) if self.entry_point else "0x00000000"
 
     def get_architecture(self):
         """
@@ -656,9 +672,9 @@ class FitImageGenerator:
         # For .its file, remove extension if present and add .its
         filename_root, filename_ext = os.path.splitext(output_filename)
         if filename_ext:  # If there's an extension, remove it
-            its_filename = f"{filename_root}.its"
+            its_filename = "{0}.its".format(filename_root)
         else:  # If no extension, just add .its
-            its_filename = f"{output_filename}.its"
+            its_filename = "{0}.its".format(output_filename)
 
         self.its_file = os.path.join(self.output_dir, its_filename)
 
@@ -671,9 +687,10 @@ class FitImageGenerator:
         """
         # Create output directory if it doesn't exist
         try:
-            os.makedirs(self.output_dir, exist_ok=True)
-        except (IOError, OSError) as e:
-            return handle_error("creating output directory", e)
+            os.makedirs(self.output_dir)
+        except OSError as e:
+            if e.errno != errno.EEXIST:
+                return handle_error("creating output directory", e)
         except Exception as e:
             return handle_error("creating output directory", e)
 
@@ -727,9 +744,9 @@ class FitImageGenerator:
             pre_components = [comp for comp in default_pre if comp in self.parsers]
             post_components = [comp for comp in default_post if comp in self.parsers]
 
-            print(f"Using default configuration:")
-            print(f"Pre-DDR components: {pre_components}")
-            print(f"Post-DDR components: {post_components}\n")
+            print("Using default configuration:")
+            print("Pre-DDR components: {0}".format(pre_components))
+            print("Post-DDR components: {0}\n".format(post_components))
         else:
             # Use custom configuration
             if self.args.pre:
@@ -752,14 +769,14 @@ class FitImageGenerator:
                 self.template_manager.set_component_availability("FDT", True)
                 self.template_manager.set_placeholder("FDT_PATH", dtb_basename)
 
-                print(f"Copied DTB file to output directory: {dtb_basename}")
+                print("Copied DTB file to output directory: {0}".format(dtb_basename))
 
                 # Don't track DTB file as temporary since it's a user-provided file
             except FileNotFoundError:
-                print(f"Error: Source DTB file does not exist: {self.args.dtb_path}")
+                print("Error: Source DTB file does not exist: {0}".format(self.args.dtb_path))
                 return False
             except PermissionError:
-                print(f"Error: Permission denied accessing DTB file: {self.args.dtb_path}")
+                print("Error: Permission denied accessing DTB file: {0}".format(self.args.dtb_path))
                 return False
             except (IOError, OSError) as e:
                 return handle_error("copying DTB file", e, False)
@@ -767,7 +784,7 @@ class FitImageGenerator:
         # Set meta load address placeholder with defensive programming
         meta_load_addr = arch_meta_load_addr.get(self.args.arch)
         if meta_load_addr is None:
-            print(f"Error: Unsupported architecture '{self.args.arch}'. Supported architectures: {list(arch_meta_load_addr.keys())}")
+            print("Error: Unsupported architecture '{0}'. Supported architectures: {1}".format(self.args.arch, list(arch_meta_load_addr.keys())))
             return False
         self.template_manager.set_placeholder("META_LOAD_ADDR", meta_load_addr)
 
@@ -797,26 +814,19 @@ class FitImageGenerator:
             bool: True if the operation was successful, False otherwise
         """
         try:
-            # Explicitly set shell=False for security
-            result = subprocess.run(
+            # Use subprocess.call() instead of Popen
+            returncode = subprocess.call(
                 ['mkimage', '-E', '-f', os.path.basename(self.its_file), os.path.basename(self.img_file)],
                 cwd=self.output_dir,
-                capture_output=True,
-                text=True,
-                shell=False,  # Explicitly set shell=False to prevent command injection
-                check=False   # Don't raise exception on non-zero return code, we'll handle it manually
+                shell=False  # Explicitly set shell=False to prevent command injection
             )
 
-            # Print output regardless of success/failure for debugging purposes
-            print("STDOUT:\n", result.stdout)
-            print("STDERR:\n", result.stderr)
-
             # Check return code to determine if command was successful
-            if result.returncode != 0:
-                print(f"Error: mkimage command failed with return code {result.returncode}")
+            if returncode != 0:
+                print("Error: mkimage command failed with return code {0}".format(returncode))
                 return False
             else:
-                print(f"Successfully created FIT image: {self.img_file}")
+                print("Successfully created FIT image: {0}".format(self.img_file))
         except (subprocess.SubprocessError, Exception) as e:
             return handle_error("executing mkimage command", e, False)
 
@@ -838,9 +848,9 @@ class FitImageGenerator:
             if os.path.exists(file_path):
                 try:
                     os.remove(file_path)
-                    print(f"Deleted temporary file: {os.path.basename(file_path)}")
+                    print("Deleted temporary file: {0}".format(os.path.basename(file_path)))
                 except (IOError, OSError, Exception) as e:
-                    return handle_error(f"deleting temporary file {file_path}", e, False)
+                    return handle_error("deleting temporary file {0}".format(file_path), e, False)
 
         return True
 
@@ -900,7 +910,7 @@ def main():
 
     # Validate template path
     if not validate_path(args.template):
-        print(f"Error: Invalid template path '{args.template}'. Path contains invalid characters or directory traversal attempts.")
+        print("Error: Invalid template path '{0}'. Path contains invalid characters or directory traversal attempts.".format(args.template))
         return False
 
     # Validate output path
@@ -910,12 +920,12 @@ def main():
     if output_dir:
         success, normalized_path = sanitize_path(output_dir)
         if not success:
-            print(f"Error: Invalid output directory path '{output_dir}'. Path contains invalid characters or directory traversal attempts.")
+            print("Error: Invalid output directory path '{0}'. Path contains invalid characters or directory traversal attempts.".format(output_dir))
             return False
 
     # Validate output file base name if provided
     if output_file_base and not validate_filename(output_file_base):
-        print(f"Error: Invalid output file base name '{output_file_base}'. Only alphanumeric characters, underscores, hyphens, and periods are allowed.")
+        print("Error: Invalid output file base name '{0}'. Only alphanumeric characters, underscores, hyphens, and periods are allowed.".format(output_file_base))
         return False
 
     # Validate all input file paths
@@ -931,7 +941,7 @@ def main():
             # Validate and sanitize the path
             success, normalized_path = sanitize_path(file_path)
             if not success:
-                print(f"Error: Invalid file path '{file_path}' for {arg_name}. Path contains invalid characters or directory traversal attempts.")
+                print("Error: Invalid file path '{0}' for {1}. Path contains invalid characters or directory traversal attempts.".format(file_path, arg_name))
                 return False
 
             # Update the argument with the normalized path
