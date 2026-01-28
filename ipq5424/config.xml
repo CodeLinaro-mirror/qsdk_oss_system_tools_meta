@@ -215,6 +215,29 @@ SPDX-License-Identifier: ISC
 
 		</entry>
 		<entry>
+			<machid>0x8070004</machid>
+			<board>AP-MR01.2</board>
+			<memory>512M32_DDR4</memory>
+			<memory_2048>512M32_DDR4</memory_2048>
+			<memory_8192>2048M32_DDR4</memory_8192>
+			<layouts>default,vendor</layouts>
+			<fw_override>
+				<profile-8192 layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR01.2_2048M32_DDR4.elf</xblconfig>
+				</profile-8192>
+				<profile-2048 layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR01.2_512M32_DDR4.elf</xblconfig>
+				</profile-2048>
+				<profile-default layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR01.2_512M32_DDR4.elf</xblconfig>
+				</profile-default>
+				<profile-512 layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR01.2_512M32_DDR4_LM512.elf</xblconfig>
+				</profile-512>
+			</fw_override>
+
+		</entry>
+		<entry>
 			<machid>0x8070003</machid>
 			<board>AP-MR01.3</board>
 			<memory>512M32_DDR4</memory>
@@ -233,6 +256,29 @@ SPDX-License-Identifier: ISC
 				</profile-default>
 				<profile-512 layouts="default,vendor">
 					<xblconfig>xblconfig-AP-MR01.3_512M32_DDR4_LM512.elf</xblconfig>
+				</profile-512>
+			</fw_override>
+
+		</entry>
+		<entry>
+			<machid>0x8070005</machid>
+			<board>AP-MR01.1-QCE2204</board>
+			<memory>512M32_DDR4</memory>
+			<memory_2048>512M32_DDR4</memory_2048>
+			<memory_8192>2048M32_DDR4</memory_8192>
+			<layouts>default,vendor</layouts>
+			<fw_override>
+				<profile-8192 layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR01.1-QCE2204_2048M32_DDR4.elf</xblconfig>
+				</profile-8192>
+				<profile-2048 layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR01.1-QCE2204_512M32_DDR4.elf</xblconfig>
+				</profile-2048>
+				<profile-default layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR01.1-QCE2204_512M32_DDR4.elf</xblconfig>
+				</profile-default>
+				<profile-512 layouts="default,vendor">
+					<xblconfig>xblconfig-AP-MR01.1-QCE2204_512M32_DDR4_LM512.elf</xblconfig>
 				</profile-512>
 			</fw_override>
 

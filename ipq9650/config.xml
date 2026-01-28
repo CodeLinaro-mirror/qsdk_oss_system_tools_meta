@@ -126,22 +126,22 @@ SPDX-License-Identifier: ISC
 		<entry>
 			<machid>0xF060000</machid>
 			<board>JU-EMU</board>
-			<memory>256M32_DDR4</memory>
+			<memory>512M32_DDR4</memory>
 			<memory_2048>512M32_DDR4</memory_2048>
 			<memory_8192>2048M32_DDR4</memory_8192>
 			<layouts>default,vendor</layouts>
 			<fw_override>
 				<profile-8192 layouts="default,vendor">
-					<xblconfig>xblconfig-JU-EMU_2048M32_DDR4.elf</xblconfig>
+					<xblconfig>qcconfig-JU-EMU_2048M32_DDR4.elf</xblconfig>
 				</profile-8192>
 				<profile-2048 layouts="default,vendor">
-					<xblconfig>xblconfig-JU-EMU_512M32_DDR4.elf</xblconfig>
+					<xblconfig>qcconfig-JU-EMU_512M32_DDR4.elf</xblconfig>
 				</profile-2048>
 				<profile-default layouts="default,vendor">
-					<xblconfig>xblconfig-JU-EMU_256M32_DDR4.elf</xblconfig>
+					<xblconfig>qcconfig-JU-EMU_512M32_DDR4.elf</xblconfig>
 				</profile-default>
 				<profile-512 layouts="default,vendor">
-					<xblconfig>xblconfig-JU-EMU_256M32_DDR4_LM512.elf</xblconfig>
+					<xblconfig>qcconfig-JU-EMU_256M32_DDR4_LM512.elf</xblconfig>
 				</profile-512>
 			</fw_override>
 		</entry>
