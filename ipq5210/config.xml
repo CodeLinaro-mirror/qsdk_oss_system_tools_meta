@@ -38,6 +38,11 @@ SPDX-License-Identifier: ISC
 			<pages_per_block>64</pages_per_block>
 			<total_block>4096</total_block>
 		</entry>
+		<entry type="2k" layout="128M">
+			<page_size>2048</page_size>
+			<pages_per_block>64</pages_per_block>
+			<total_block>1024</total_block>
+		</entry>
 	</data>
 
 	<data type="EMMC_PARAMETER">
@@ -142,21 +147,21 @@ SPDX-License-Identifier: ISC
 			<board>HM-EMU</board>
 			<memory>512M16_DDR4</memory>
 			<memory_2048>1024M16_DDR4</memory_2048>
-			<layouts>default,vendor</layouts>
+			<layouts>default,vendor,128M</layouts>
 			<uboot_dtb_name>emulation</uboot_dtb_name>
 			<kernel_dtb_name>emulation-fbc</kernel_dtb_name>
 			<fw_override>
-				<profile-2048 layouts="default,vendor">
+				<profile-2048 layouts="default,vendor,128M">
 					<bootldr_components>
 						<qcconfig>qcconfig-HM-EMU_1024M16_DDR4_LM512.elf</qcconfig>
 					</bootldr_components>
 				</profile-2048>
-				<profile-default layouts="default,vendor">
+				<profile-default layouts="default,vendor,128M">
 					<bootldr_components>
 						<qcconfig>qcconfig-HM-EMU_512M16_DDR4.elf</qcconfig>
 					</bootldr_components>
 				</profile-default>
-				<profile-512 layouts="default,vendor">
+				<profile-512 layouts="default,vendor,128M">
 					<bootldr_components>
 						<qcconfig>qcconfig-HM-EMU_512M16_DDR4_LM512.elf</qcconfig>
 					</bootldr_components>
