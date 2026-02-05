@@ -132,8 +132,8 @@ SPDX-License-Identifier: ISC
 		<uboot flash="nand,nand-4k" mode="64">openwrt-ipq5210-generic-nand-u-boot-UBOOT_DTB_NAME.mbn</uboot>
 		<uboot flash="norplusnand,norplusnand-gpt,norplusnand-4k,norplusnand-4k-gpt" mode="32">openwrt-ipq5210-ipq52xx_32-norplusnand32-u-boot-UBOOT_DTB_NAME.mbn</uboot>
 		<uboot flash="norplusnand,norplusnand-gpt,norplusnand-4k,norplusnand-4k-gpt" mode="64">openwrt-ipq5210-generic-norplusnand-u-boot-UBOOT_DTB_NAME.mbn</uboot>
-		<uboot flash="norplusemmc" mode="32">openwrt-ipq5210-ipq52xx_32-norplusemmc32-u-boot-UBOOT_DTB_NAME.mbn</uboot>
-		<uboot flash="norplusemmc" mode="64">openwrt-ipq5210-generic-norplusemmc-u-boot-UBOOT_DTB_NAME.mbn</uboot>
+		<uboot flash="norplusemmc" mode="32">openwrt-ipq5210-ipq52xx_32-norplusmmc32-u-boot-UBOOT_DTB_NAME.mbn</uboot>
+		<uboot flash="norplusemmc" mode="64">openwrt-ipq5210-generic-norplusmmc-u-boot-UBOOT_DTB_NAME.mbn</uboot>
 	</data>
 
 	<data type="MACH_ID_BOARD_MAP">

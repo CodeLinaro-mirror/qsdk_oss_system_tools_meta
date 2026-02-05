@@ -1335,6 +1335,7 @@ class Pack(object):
             machid = int(segment.find(".//machid").text, 0)
             machid = "%x" % machid
             board = segment.find(".//board").text
+            kernel_dtb_element = segment.findtext(".//kernel_dtb_name")
 
             # Get the memory tag value from the config
             memory_tag = segment.find(".//memory").text if segment.find(".//memory") is not None else "default"
@@ -1402,10 +1403,13 @@ class Pack(object):
 
             # Check if we need to generate a bootldr image
             bootldr_part = None
+            rootfs_part = None
             for part in part_img_list:
+                if part[0] == "rootfs" and "ubi-root" in part[1]:
+                    rootfs_part = part
+
                 if part[0] == "0:BOOTLDR":
                     bootldr_part = part
-                    break
 
             # Generate bootldr image if needed
             if bootldr_part is not None and all(key in bootldr_components for key in ["qclib", "qcconfig", "tfa_bl31", "uboot", "optee"]):
@@ -1415,6 +1419,16 @@ class Pack(object):
 
                 # Update the bootldr filename in part_img_list
                 bootldr_part[1] = bootldr_filename
+
+            # Handle UBI image generation for NAND flash types
+            if rootfs_part is not None and split_by_rdp == "true" and self.flash_type in nand_flash_types:
+                ret, board_ubi_img_name = self.gen_ubi_root_files(self.flash_type, root, board, kernel_dtb_element)
+                if ret != 0:
+                    fail_img = out_fname.split("/")
+                    error("Failed to pack %s" % fail_img[-1])
+
+                # Update the ubi filename in part_img_list
+                rootfs_part[1] = board_ubi_img_name
 
             for part in part_img_list:
                 pname = part[0]
@@ -1767,14 +1781,6 @@ class Pack(object):
 
         return components
 
-    def __update_ubi_filename_in_machid_map(self, machid_map, machid, ubi_img_name):
-        """Helper method to update UBI filename in machid_map."""
-        if ubi_img_name:
-            for part in machid_map[machid]["part_info"]:
-                if part[0] == "rootfs" and "ubi-root" in part[1]:
-                    part[1] = ubi_img_name
-                    break
-
     def main_bconf(self, flash_type, images_dname, out_fname, root):
         """Start the packing process, using board config.
 
@@ -1792,6 +1798,7 @@ class Pack(object):
             pass
 
         # For NAND flash types, handle ubinize processing
+        global nand_flash_types
         nand_flash_types = [ "nand" , "nand-4k", "norplusnand" , "norplusnand-4k", "norplusnand-gpt", "norplusnand-4k-gpt"]
         if self.flash_type in nand_flash_types and split_by_rdp == "false":
             ret, ubi_img_name = self.gen_ubi_root_files(self.flash_type, root)
@@ -1831,37 +1838,6 @@ class Pack(object):
 
         if not bool(machid_map):
             return 1
-
-        # Handle UBI image generation for NAND flash types
-        if self.flash_type in nand_flash_types:
-            if split_by_rdp == "true":
-                # For split_by_rdp mode, generate per-board UBI files
-                for machid in machid_map:
-                    board = machid_map[machid]["board"]
-                    # Get kernel DTB name for this board
-                    kernel_dtb_name = None
-                    entries = root.findall(".//data[@type='MACH_ID_BOARD_MAP']/entry")
-                    for segment in entries:
-                        segment_machid = int(segment.find(".//machid").text, 0)
-                        segment_machid = "%x" % segment_machid
-                        if segment_machid == machid:
-                            kernel_dtb_element = segment.find(".//kernel_dtb_name")
-                            if kernel_dtb_element is not None:
-                                kernel_dtb_name = kernel_dtb_element.text
-                            break
-
-                    ret, board_ubi_img_name = self.gen_ubi_root_files(self.flash_type, root, board, kernel_dtb_name)
-                    if ret != 0:
-                        fail_img = out_fname.split("/")
-                        error("Failed to pack %s" % fail_img[-1])
-
-                    # Update the machid_map with the correct UBI image filename using helper function
-                    self.__update_ubi_filename_in_machid_map(machid_map, machid, board_ubi_img_name)
-            else:
-                # Update all machid_map entries with the correct UBI image filename
-                if 'ubi_img_name' in locals() and ubi_img_name:
-                    for machid in machid_map:
-                        self.__update_ubi_filename_in_machid_map(machid_map, machid, ubi_img_name)
 
         if split_by_rdp == "true":
             for machid in machid_map:
