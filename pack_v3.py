@@ -87,17 +87,19 @@ split_by_rdp = "false"
 skip_4k_nand = "false"
 atf = "false"
 img_suffix = ""
-supported_arch = ["ipq5210", "ipq5210_64", "ipq5424", "ipq5424_64", "ipq5332", "ipq5332_64"]
-split_by_rdp_supported_arch = ["ipq5210"]
+supported_arch = ["ipq9650_64", "ipq9650", "ipq5210", "ipq5210_64", "ipq5424", "ipq5424_64", "ipq5332", "ipq5332_64"]
+split_by_rdp_supported_arch = ["ipq5210", "ipq9650"]
 supported_flash_type = {}
 supported_flash_type["ipq5332"] = { "nand", "nor", "tiny-nor", "emmc", "norplusnand", "norplusemmc", "tiny-nor-debug" };
 supported_flash_type["ipq5424"] = { "nor", "nand", "emmc", "norplusnand", "norplusemmc", "norplusnand-gpt", "norplusemmc-gpt" , "tiny-nor", "tiny-nor-debug" };
 supported_flash_type["ipq5210"] = { "nor", "nand", "emmc", "norplusnand", "norplusemmc", "norplusnand-gpt", "norplusemmc-gpt" };
+supported_flash_type["ipq9650"] = { "nor", "nand", "emmc", "norplusnand", "norplusemmc", "norplusnand-gpt", "norplusemmc-gpt" };
 gpt_flash = ["nor-gpt", "emmc"]
 soc_hw_versions = {}
 soc_hw_versions["ipq5332"] = { 0x201A0100, 0x201A0101 };
 soc_hw_versions["ipq5424"] = { 0xE0010100 };
 soc_hw_versions["ipq5210"] = { 0xE0030100 };
+soc_hw_versions["ipq9650"] = { 0xE0020100 };
 
 #
 # Python 2.6 and earlier did not have OrderedDict use the backport
@@ -1676,7 +1678,7 @@ class Pack(object):
         components -- dict, containing paths to bootldr components
         """
         # Create output filename according to the pattern
-        output_name = "bootldr_%s_%s_%s_%s-bit_%s.img" % (arch, memory_tag, flash_type, mode, board)
+        output_name = "bootldr_%s_%s_%s_%s-bit_%s.itb" % (arch, memory_tag, flash_type, mode, board)
         #output_path = os.path.join(self.images_dname, output_name)
         output_path = output_name
 
@@ -1771,7 +1773,6 @@ class Pack(object):
             for part in machid_map[machid]["part_info"]:
                 if part[0] == "rootfs" and "ubi-root" in part[1]:
                     part[1] = ubi_img_name
-                    print("DEBUG: Updated rootfs filename to:", ubi_img_name, "for machid:", machid)
                     break
 
     def main_bconf(self, flash_type, images_dname, out_fname, root):
@@ -2113,7 +2114,7 @@ def main():
 
         parser.out_fname = flash_type + "-" + ARCH_NAME + MODE_APPEND + suffix
 
-        if ARCH_NAME == "ipq5424" or ARCH_NAME == "ipq5210":
+        if ARCH_NAME == "ipq5424" or ARCH_NAME == "ipq5210" or ARCH_NAME == "ipq9650":
             if flash_type == "norplusnand-gpt":
                 parser.out_fname = "norplusnand-" + ARCH_NAME + MODE_APPEND + suffix
             elif flash_type == "norplusnand-4k-gpt":
