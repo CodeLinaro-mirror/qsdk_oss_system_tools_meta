@@ -867,10 +867,6 @@ def main():
             if gen_qccfg() != 0:
                 return -1
 
-        if to_generate_melf == "true":
-            if gen_melf() != 0:
-                return -1
-
         if to_generate_bootconf == "true":
             if gen_bootconfig(0) != 0:
                 return -1
@@ -922,6 +918,10 @@ def main():
             else:
                 print("Invalid arch \"" + arch + "\" for mbn conversion")
                 print("--genmbn is needed/used only for ipq807x, ipq6018, ipq5018, ipq9574, ipq5332, ipq5424 and ipq5210 type")
+
+        if to_generate_melf == "true":
+            if gen_melf() != 0:
+                return -1
 
         if to_gen_tfa_mbn == "true" and gen_tfa_mbn() != 0:
             return -1
