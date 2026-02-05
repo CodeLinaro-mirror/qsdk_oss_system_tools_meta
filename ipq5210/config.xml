@@ -176,7 +176,7 @@ SPDX-License-Identifier: ISC
 				</profile-128>
 				<profile-default layouts="default,vendor">
 					<bootldr_components>
-						<qcconfig>qcconfig-RDP497_256M16_DDR4.elf</qcconfig>
+						<qcconfig>qcconfig-RDP497_128M16_DDR4.elf</qcconfig>
 					</bootldr_components>
 				</profile-default>
 			</fw_override>
