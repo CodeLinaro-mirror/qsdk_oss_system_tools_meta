@@ -24,7 +24,7 @@ SPDX-License-Identifier: ISC
 	<!--       they will instead be placed side by side at the beginning of the disk -->
 
 	<partition
-		label="0:XBL"
+		label="0:SPL"
 		size_in_kb="832"
 		type="DEA0BA2C-CBDD-4805-B4F9-F428251C3E98"
 		bootable="false"
@@ -33,7 +33,7 @@ SPDX-License-Identifier: ISC
 		flash_type="nor"
 		/>
 	<partition
-		label="0:XBL_1"
+		label="0:SPL_1"
 		size_in_kb="832"
 		type="7A3DF1A3-A31A-454D-BD78-DF259ED486BE"
 		bootable="false"
@@ -126,7 +126,7 @@ SPDX-License-Identifier: ISC
 	<!-- NOTE: If OPTIMIZE_READONLY_PARTITIONS=true, then partitions won't be in the order listed here -->
 	<!--       they will instead be placed side by side at the beginning of the disk -->
 	<partition
-		label="0:XBL"
+		label="0:SPL"
 		size_in_kb="832"
 		type="DEA0BA2C-CBDD-4805-B4F9-F428251C3E98"
 		bootable="false"
@@ -135,7 +135,7 @@ SPDX-License-Identifier: ISC
 		flash_type="nor"
 		/>
 	<partition
-		label="0:XBL_1"
+		label="0:SPL_1"
 		size_in_kb="832"
 		type="7A3DF1A3-A31A-454D-BD78-DF259ED486BE"
 		bootable="false"
@@ -199,7 +199,7 @@ SPDX-License-Identifier: ISC
 	<!--       they will instead be placed side by side at the beginning of the disk -->
 
 	<partition
-		label="0:XBL"
+		label="0:SPL"
 		size_in_kb="832"
 		type="DEA0BA2C-CBDD-4805-B4F9-F428251C3E98"
 		bootable="false"
@@ -208,7 +208,7 @@ SPDX-License-Identifier: ISC
 		flash_type="nor"
 		/>
 	<partition
-		label="0:XBL_1"
+		label="0:SPL_1"
 		size_in_kb="832"
 		type="7A3DF1A3-A31A-454D-BD78-DF259ED486BE"
 		bootable="false"
