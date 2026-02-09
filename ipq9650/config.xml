@@ -31,12 +31,12 @@ SPDX-License-Identifier: ISC
 		<entry type="2k" layout="default">
 			<page_size>2048</page_size>
 			<pages_per_block>64</pages_per_block>
-			<total_block>4096</total_block>
+			<total_block>2048</total_block>
 		</entry>
 		<entry type="4k" layout="default">
 			<page_size>4096</page_size>
 			<pages_per_block>64</pages_per_block>
-			<total_block>4096</total_block>
+			<total_block>1024</total_block>
 		</entry>
 	</data>
 
@@ -188,19 +188,40 @@ SPDX-License-Identifier: ISC
 		<entry>
 			<machid>0x8090100</machid>
 			<board>RDP489</board>
-			<memory>512M32_DDR4</memory>
+			<memory>1024M32_DDR4</memory>
 			<layouts>default,vendor</layouts>
 			<fw_override>
 				<profile-default layouts="default,vendor">
 					<bootldr_components>
-						<qcconfig>qcconfig-RDP489_256M16_DDR4.elf</qcconfig>
+						<qcconfig>qcconfig-RDP489_1024M32_DDR4.elf</qcconfig>
 					</bootldr_components>
 				</profile-default>
-				<profile-512 layouts="default,vendor">
+			</fw_override>
+		</entry>
+		<entry>
+			<machid>0x1090000</machid>
+			<board>DB.JU01</board>
+			<memory>2048M32_DDR5</memory>
+			<layouts>default,vendor</layouts>
+			<fw_override>
+				<profile-default layouts="default,vendor">
 					<bootldr_components>
-						<qcconfig>qcconfig-RDP489_256M16_DDR4.elf</qcconfig>
+						<qcconfig>qcconfig-DB.JU01_2048M32_DDR5.elf</qcconfig>
 					</bootldr_components>
-				</profile-512>
+				</profile-default>
+			</fw_override>
+		</entry>
+		<entry>
+			<machid>0x1090100</machid>
+			<board>DB.JU02</board>
+			<memory>1024M32_DDR4</memory>
+			<layouts>default,vendor</layouts>
+			<fw_override>
+				<profile-default layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-DB.JU02_1024M32_DDR4.elf</qcconfig>
+					</bootldr_components>
+				</profile-default>
 			</fw_override>
 		</entry>
 	</data>
