@@ -153,7 +153,7 @@ SPDX-License-Identifier: ISC
 			<fw_override>
 				<profile-2048 layouts="default,vendor,128M">
 					<bootldr_components>
-						<qcconfig>qcconfig-HM-EMU_1024M16_DDR4_LM512.elf</qcconfig>
+						<qcconfig>qcconfig-HM-EMU_1024M16_DDR4.elf</qcconfig>
 					</bootldr_components>
 				</profile-2048>
 				<profile-default layouts="default,vendor,128M">
@@ -171,42 +171,213 @@ SPDX-License-Identifier: ISC
 		<entry>
 			<machid>0x8080000</machid>
 			<board>RDP497</board>
-			<memory>128M16_DDR4</memory>
+			<memory_128>64M16_DDR3</memory_128>
 			<layouts>default,vendor</layouts>
 			<fw_override>
 				<profile-128 layouts="default,vendor">
 					<bootldr_components>
-						<qcconfig>qcconfig-RDP497_128M16_DDR4.elf</qcconfig>
+						<qcconfig>qcconfig-RDP497_64M16_DDR3_LM128.elf</qcconfig>
 					</bootldr_components>
 				</profile-128>
-				<profile-default layouts="default,vendor">
-					<bootldr_components>
-						<qcconfig>qcconfig-RDP497_128M16_DDR4.elf</qcconfig>
-					</bootldr_components>
-				</profile-default>
 			</fw_override>
 		</entry>
 		<entry>
 			<machid>0x8080100</machid>
 			<board>RDP498</board>
-			<memory>256M16_DDR4</memory>
+			<memory>512M16_DDR4</memory>
 			<layouts>default,vendor</layouts>
 			<fw_override>
-				<profile-default layouts="default,vendor">
-					<bootldr_components>
-						<qcconfig>qcconfig-RDP498_256M16_DDR4.elf</qcconfig>
-					</bootldr_components>
-				</profile-default>
-				<profile-512 layouts="default,vendor">
-					<bootldr_components>
-						<qcconfig>qcconfig-RDP498_256M16_DDR4_LM512.elf</qcconfig>
-					</bootldr_components>
-				</profile-512>
+				<wifi_fw image="wifi_fw_qcn9224_v2_dualmac_squashfs.img" vol_size="7168KiB"/>
+				<cal_fw image="WLAN_CALDB_qcn9224_v2_merged_compressed.img" vol_size="2MiB"/>
 				<profile-256 layouts="default,vendor">
 					<bootldr_components>
-						<qcconfig>qcconfig-RDP498_256M16_DDR4_LM256.elf</qcconfig>
+						<qcconfig>qcconfig-RDP498_512M16_DDR4_LM256.elf</qcconfig>
 					</bootldr_components>
 				</profile-256>
+				<profile-512 layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP498_512M16_DDR4_LM512.elf</qcconfig>
+					</bootldr_components>
+				</profile-512>
+				<profile-default layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP498_512M16_DDR4.elf</qcconfig>
+					</bootldr_components>
+				</profile-default>
+			</fw_override>
+		</entry>
+		<entry>
+			<machid>0x8080101</machid>
+			<board>RDP500</board>
+			<memory>512M16_DDR4</memory>
+			<layouts>default,vendor</layouts>
+			<fw_override>
+				<wifi_fw image="wifi_fw_qcn9224_v2_dualmac_squashfs.img" vol_size="7168KiB"/>
+				<cal_fw image="WLAN_CALDB_qcn9224_v2_merged_compressed.img" vol_size="2MiB"/>
+				<profile-256 layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP500_512M16_DDR4_LM256.elf</qcconfig>
+					</bootldr_components>
+				</profile-256>
+				<profile-512 layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP500_512M16_DDR4_LM512.elf</qcconfig>
+					</bootldr_components>
+				</profile-512>
+				<profile-default layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP500_512M16_DDR4.elf</qcconfig>
+					</bootldr_components>
+				</profile-default>
+			</fw_override>
+		</entry>
+		<entry>
+			<machid>0x8080102</machid>
+			<board>RDP501</board>
+			<memory>512M16_DDR4</memory>
+			<layouts>default,vendor</layouts>
+			<fw_override>
+				<wifi_fw image="wifi_fw_qcn9224_v2_dualmac_squashfs.img" vol_size="7168KiB"/>
+				<cal_fw image="WLAN_CALDB_qcn9224_v2_merged_compressed.img" vol_size="2MiB"/>
+				<profile-256 layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP501_512M16_DDR4_LM256.elf</qcconfig>
+					</bootldr_components>
+				</profile-256>
+				<profile-512 layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP501_512M16_DDR4_LM512.elf</qcconfig>
+					</bootldr_components>
+				</profile-512>
+				<profile-default layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP501_512M16_DDR4.elf</qcconfig>
+					</bootldr_components>
+				</profile-default>
+			</fw_override>
+		</entry>
+		<entry>
+			<machid>0x8080200</machid>
+			<board>RDP499</board>
+			<memory>512M16_DDR4</memory>
+			<layouts>default,vendor</layouts>
+			<fw_override>
+				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="7168KiB"/>
+				<profile-256 layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP499_512M16_DDR4_LM256.elf</qcconfig>
+					</bootldr_components>
+				</profile-256>
+				<profile-512 layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP499_512M16_DDR4_LM512.elf</qcconfig>
+					</bootldr_components>
+				</profile-512>
+				<profile-default layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP499_512M16_DDR4.elf</qcconfig>
+					</bootldr_components>
+				</profile-default>
+			</fw_override>
+		</entry>
+		<entry>
+			<machid>0x8080201</machid>
+			<board>RDP502</board>
+			<memory>512M16_DDR4</memory>
+			<layouts>default,vendor</layouts>
+			<fw_override>
+				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="7168KiB"/>
+				<profile-256 layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP502_512M16_DDR4_LM256.elf</qcconfig>
+					</bootldr_components>
+				</profile-256>
+				<profile-512 layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP502_512M16_DDR4_LM512.elf</qcconfig>
+					</bootldr_components>
+				</profile-512>
+				<profile-default layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP502_512M16_DDR4.elf</qcconfig>
+					</bootldr_components>
+				</profile-default>
+			</fw_override>
+		</entry>
+		<entry>
+			<machid>0x8080202</machid>
+			<board>RDP503</board>
+			<memory>512M16_DDR4</memory>
+			<layouts>default,vendor</layouts>
+			<fw_override>
+				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="7168KiB"/>
+				<profile-256 layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP503_512M16_DDR4_LM256.elf</qcconfig>
+					</bootldr_components>
+				</profile-256>
+				<profile-512 layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP503_512M16_DDR4_LM512.elf</qcconfig>
+					</bootldr_components>
+				</profile-512>
+				<profile-default layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP503_512M16_DDR4.elf</qcconfig>
+					</bootldr_components>
+				</profile-default>
+			</fw_override>
+		</entry>
+		<entry>
+			<machid>0x8080203</machid>
+			<board>RDP504</board>
+			<memory>512M16_DDR4</memory>
+			<layouts>default,vendor</layouts>
+			<fw_override>
+				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="7168KiB"/>
+				<profile-256 layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP504_512M16_DDR4_LM256.elf</qcconfig>
+					</bootldr_components>
+				</profile-256>
+				<profile-512 layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP504_512M16_DDR4_LM512.elf</qcconfig>
+					</bootldr_components>
+				</profile-512>
+				<profile-default layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP504_512M16_DDR4.elf</qcconfig>
+					</bootldr_components>
+				</profile-default>
+			</fw_override>
+		</entry>
+		<entry>
+			<machid>0x1080000</machid>
+			<board>DB-HM01.1</board>
+			<memory>1024M16_DDR4</memory>
+			<layouts>default,vendor</layouts>
+			<fw_override>
+				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="7168KiB"/>
+				<profile-default layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-DB-HM01.1_1024M16_DDR4.elf</qcconfig>
+					</bootldr_components>
+				</profile-default>
+			</fw_override>
+		</entry>
+		<entry>
+			<machid>0x1080100</machid>
+			<board>DB-HM02.1</board>
+			<memory_512>256M16_DDR3</memory_512>
+			<layouts>default,vendor</layouts>
+			<fw_override>
+				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="7168KiB"/>
+				<profile-512 layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-DB-HM02.1_256M16_DDR3_LM512.elf</qcconfig>
+					</bootldr_components>
+				</profile-512>
 			</fw_override>
 		</entry>
 	</data>
