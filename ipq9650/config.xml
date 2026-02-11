@@ -146,82 +146,115 @@ SPDX-License-Identifier: ISC
 			<layouts>default,vendor</layouts>
 			<fw_override>
 				<profile-8192 layouts="default,vendor">
-					<xblconfig>qcconfig-JU-EMU_2048M32_DDR4.elf</xblconfig>
+					<bootldr_components>
+						<qcconfig>qcconfig-JU-EMU_2048M32_DDR4.elf</qcconfig>
+					</bootldr_components>
 				</profile-8192>
 				<profile-2048 layouts="default,vendor">
-					<xblconfig>qcconfig-JU-EMU_512M32_DDR4.elf</xblconfig>
+					<bootldr_components>
+						<qcconfig>qcconfig-JU-EMU_512M32_DDR4.elf</qcconfig>
+					</bootldr_components>
 				</profile-2048>
 				<profile-default layouts="default,vendor">
-					<xblconfig>qcconfig-JU-EMU_512M32_DDR4.elf</xblconfig>
+					<bootldr_components>
+						<qcconfig>qcconfig-JU-EMU_512M32_DDR4.elf</qcconfig>
+					</bootldr_components>
 				</profile-default>
 				<profile-512 layouts="default,vendor">
-					<xblconfig>qcconfig-JU-EMU_256M32_DDR4_LM512.elf</xblconfig>
+					<bootldr_components>
+						<qcconfig>qcconfig-JU-EMU_256M32_DDR4_LM512.elf</qcconfig>
+					</bootldr_components>
 				</profile-512>
 			</fw_override>
 		</entry>
 		<entry>
 			<machid>0x8090000</machid>
 			<board>RDP488</board>
-			<memory>2048M32_DDR5</memory>
+			<memory>1024M32_DDR5</memory>
 			<layouts>default,vendor</layouts>
 			<fw_override>
 				<profile-default layouts="default,vendor">
 					<bootldr_components>
-						<qcconfig>qcconfig-RDP488_2048M32_DDR5.elf</qcconfig>
+						<qcconfig>qcconfig-RDP488_1024M32_DDR5.elf</qcconfig>
 					</bootldr_components>
 				</profile-default>
+				<profile-512 layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP488_1024M32_DDR5_LM512.elf</qcconfig>
+					</bootldr_components>
+				</profile-512>
 			</fw_override>
 		</entry>
 		<entry>
 			<machid>0x8090001</machid>
 			<board>RDP506</board>
-			<memory>2048M32_DDR5</memory>
+			<memory>1024M32_DDR5</memory>
 			<layouts>default,vendor</layouts>
 			<fw_override>
 				<profile-default layouts="default,vendor">
 					<bootldr_components>
-						<qcconfig>qcconfig-RDP506_2048M32_DDR5.elf</qcconfig>
+						<qcconfig>qcconfig-RDP506_1024M32_DDR5.elf</qcconfig>
 					</bootldr_components>
 				</profile-default>
+				<profile-512 layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP506_1024M32_DDR5_LM512.elf</qcconfig>
+					</bootldr_components>
+				</profile-512>
 			</fw_override>
 		</entry>
 		<entry>
 			<machid>0x8090100</machid>
 			<board>RDP489</board>
-			<memory>1024M32_DDR4</memory>
+			<memory>256M32_DDR4</memory>
 			<layouts>default,vendor</layouts>
 			<fw_override>
 				<profile-default layouts="default,vendor">
 					<bootldr_components>
-						<qcconfig>qcconfig-RDP489_1024M32_DDR4.elf</qcconfig>
+						<qcconfig>qcconfig-RDP489_256M32_DDR4.elf</qcconfig>
 					</bootldr_components>
 				</profile-default>
+				<profile-512 layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP489_256M32_DDR4_LM512.elf</qcconfig>
+					</bootldr_components>
+				</profile-512>
 			</fw_override>
 		</entry>
 		<entry>
 			<machid>0x1090000</machid>
-			<board>DB.JU01</board>
-			<memory>2048M32_DDR5</memory>
+			<board>DB-JU01</board>
+			<memory>1024M32_DDR5</memory>
 			<layouts>default,vendor</layouts>
 			<fw_override>
 				<profile-default layouts="default,vendor">
 					<bootldr_components>
-						<qcconfig>qcconfig-DB.JU01_2048M32_DDR5.elf</qcconfig>
+						<qcconfig>qcconfig-DB-JU01_1024M32_DDR5.elf</qcconfig>
 					</bootldr_components>
 				</profile-default>
+				<profile-512 layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-DB-JU01_1024M32_DDR5_LM512.elf</qcconfig>
+					</bootldr_components>
+				</profile-512>
 			</fw_override>
 		</entry>
 		<entry>
 			<machid>0x1090100</machid>
-			<board>DB.JU02</board>
-			<memory>1024M32_DDR4</memory>
+			<board>DB-JU02</board>
+			<memory>256M32_DDR4</memory>
 			<layouts>default,vendor</layouts>
 			<fw_override>
 				<profile-default layouts="default,vendor">
 					<bootldr_components>
-						<qcconfig>qcconfig-DB.JU02_1024M32_DDR4.elf</qcconfig>
+						<qcconfig>qcconfig-DB-JU02_256M32_DDR4.elf</qcconfig>
 					</bootldr_components>
 				</profile-default>
+				<profile-512 layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-DB-JU02_256M32_DDR4_LM512.elf</qcconfig>
+					</bootldr_components>
+				</profile-512>
 			</fw_override>
 		</entry>
 	</data>
