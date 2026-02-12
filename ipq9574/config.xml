@@ -147,6 +147,15 @@ SPDX-License-Identifier: ISC
 			<bootconfig_type>1</bootconfig_type>
 		</entry>
 		<entry>
+			<machid>0x8050702</machid>
+			<board>AP-AL02-C8-QCE1204</board>
+			<spi_nand>false</spi_nand>
+			<memory>256M32_DDR4</memory>
+			<wififw_type>2</wififw_type>
+			<data_retention>false</data_retention>
+			<bootconfig_type>1</bootconfig_type>
+		</entry>
+		<entry>
 			<machid>0x8050002</machid>
 			<board>AP-AL03-C1</board>
 			<spi_nand>false</spi_nand>
