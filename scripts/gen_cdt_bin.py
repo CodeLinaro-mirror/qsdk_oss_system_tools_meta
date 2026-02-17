@@ -127,6 +127,11 @@ def main():
             if memory == None:
                 memory = entry.find(".//memory")
 
+            # Gracefully skip RDP entries that don't have default memory profile
+            if memory == None:
+                print("WARNING: Skipping RDP entry %s - no memory configuration found for profile '%s'" % (board.text, memory_profile))
+                continue
+
             set_props = None
             print(("%s  %s  %s" % (machid.text, board.text, memory.text)))
             set_props = "\n\t  0x02, 0x0" + machid.text[2] + ", 0x" + \
@@ -206,7 +211,7 @@ def main():
                         # overwritting Bit 18 for qcn9160 on pcie2
                         boot_settings.text = str(int(boot_settings.text) | 262144)
 
-            if memory_profile == '256' or memory_profile == '512':
+            if memory_profile == '128' or memory_profile == '256' or memory_profile == '512':
                 config_memory_organization = memory.text.split('_', 1)[0]
                 config_memory_type = memory.text.split('_', 1)[1]
                 print("!!!!!!!!!!!############!!!!!!!!!!!")
