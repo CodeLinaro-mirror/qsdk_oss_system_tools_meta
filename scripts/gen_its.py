@@ -14,7 +14,7 @@
 #                  --qcconfig_path xblconfig-DB-MR01.1_512M32_DDR4_align64.elf \
 #                  --tfa_bl31_path bl31.mbn \
 #                  --uboot_path openwrt-ipq5200-generic-mmc-u-boot.mbn \
-#                  --optee_path tee-pager_v2.mbn \
+#                  --optee_path tee-raw.mbn \
 #                  --dtb_path u-boot.dtb \
 #                  --output ./new_out/boot_loader.img
 #

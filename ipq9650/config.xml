@@ -125,7 +125,7 @@ SPDX-License-Identifier: ISC
 	<data type="BOOTLDR_COMPONENTS">
 		<qclib>QCLib.elf</qclib>
 		<tfa_bl31>bl31.mbn</tfa_bl31>
-		<optee>tee-pager_v2.mbn</optee>
+		<optee>tee-raw.mbn</optee>
 		<uboot flash="emmc" mode="32">openwrt-ipq9650-ipq96xx_32-mmc32-u-boot-UBOOT_DTB_NAME.mbn</uboot>
 		<uboot flash="emmc" mode="64">openwrt-ipq9650-generic-mmc-u-boot-UBOOT_DTB_NAME.mbn</uboot>
 		<uboot flash="nand,nand-4k" mode="32">openwrt-ipq9650-ipq96xx_32-nand32-u-boot-UBOOT_DTB_NAME.mbn</uboot>
