@@ -31,12 +31,12 @@ SPDX-License-Identifier: ISC
 		<entry type="2k" layout="default">
 			<page_size>2048</page_size>
 			<pages_per_block>64</pages_per_block>
-			<total_block>4096</total_block>
+			<total_block>2048</total_block>
 		</entry>
 		<entry type="4k" layout="default">
 			<page_size>4096</page_size>
 			<pages_per_block>64</pages_per_block>
-			<total_block>4096</total_block>
+			<total_block>1024</total_block>
 		</entry>
 		<entry type="2k" layout="128M">
 			<page_size>2048</page_size>
