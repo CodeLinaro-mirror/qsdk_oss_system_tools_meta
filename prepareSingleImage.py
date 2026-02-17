@@ -680,15 +680,25 @@ def gen_optee_mbn():
 
     bootconfig_path = srcDir + '/elftombn.py'
     print("Converting OPTEE elf to mbn ...")
-    prc = subprocess.Popen(['python', bootconfig_path, '-f', inDir + "/tee-pager_v2.elf", '-o', inDir + "/tee-pager_v2.mbn", '-v', "7", '-s', "204"], cwd=cdir)
-    prc.wait()
 
-    if prc.returncode != 0:
-        print('ERROR: Unable to convert OPTEE .elf to .mbn')
-        return prc.returncode
-    else:
-        print("OPTEE .mbn file is created")
-        return 0
+    optee_files = ['tee-pager_v2.elf', 'tee-raw.elf', 'tee-raw_lm.elf']
+
+    for elf_file in optee_files:
+        elf_path = inDir + "/" + elf_file
+        mbn_path = inDir + "/" + elf_file.replace('.elf', '.mbn')
+
+        if os.path.exists(elf_path):
+            prc = subprocess.Popen(['python', bootconfig_path, '-f', elf_path, '-o', mbn_path, '-v', "7", '-s', "204"], cwd=cdir)
+            prc.wait()
+
+            if prc.returncode != 0:
+                print('WARNING: Unable to convert ' + elf_file + ' to .mbn')
+            else:
+                print("Converted " + elf_file.replace('.elf', '.mbn'))
+        else:
+            print("Skipping " + elf_file)
+
+    return 0
 
 def main():
     global flash
