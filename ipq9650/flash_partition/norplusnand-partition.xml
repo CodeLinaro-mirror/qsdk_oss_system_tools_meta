@@ -15,7 +15,7 @@ SPDX-License-Identifier: ISC
 	<partitions>
 <!-- NOR Partition Informations -->
 		<partition>
-			<name length="16" type="string">0:XBL</name>
+			<name length="16" type="string">0:SPL</name>
 			<size_kb length="4">896</size_kb>
 			<pad_kb length="2">0</pad_kb>
 			<which_flash length="2">0</which_flash>

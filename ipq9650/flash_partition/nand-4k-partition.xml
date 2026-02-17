@@ -14,7 +14,7 @@ SPDX-License-Identifier: ISC
 	<partition_version length="4">0x4</partition_version>
 	<partitions>
 		<partition>
-			<name length="16" type="string">0:XBL</name>
+			<name length="16" type="string">0:SPL</name>
 			<size_kb length="4">768</size_kb>
 			<pad_kb length="2">768</pad_kb>
 			<which_flash length="2">0</which_flash>
@@ -25,7 +25,7 @@ SPDX-License-Identifier: ISC
 			<img_name type="string">u-boot-spl_nand_4K.melf</img_name>
 		</partition>
 		<partition>
-			<name length="16" type="string">0:XBL_1</name>
+			<name length="16" type="string">0:SPL_1</name>
 			<size_kb length="4">1024</size_kb>
 			<pad_kb length="2">768</pad_kb>
 			<which_flash length="2">0</which_flash>
