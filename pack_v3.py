@@ -911,7 +911,7 @@ class Pack(object):
                 # Replace existing image= line
                 if stripped_line.startswith('image='):
                     if fw_info.get('image'):
-                        output_lines.append('image=%s\n' % fw_info['image'])
+                        output_lines.append('image=%s/%s\n' % (SRC_DIR, fw_info['image']))
                     i += 1
                     continue
                 # Replace existing vol_size= line
@@ -927,7 +927,7 @@ class Pack(object):
                     output_lines.append(line)
                     # Check if next line is already image=
                     if i + 1 < len(lines) and not lines[i + 1].strip().startswith('image='):
-                        output_lines.append('image=%s\n' % fw_info['image'])
+                        output_lines.append('image=%s/%s\n' % (SRC_DIR, fw_info['image']))
                     i += 1
                     continue
                 # Add missing vol_size= line after vol_type=

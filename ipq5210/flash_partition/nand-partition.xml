@@ -15,8 +15,8 @@ SPDX-License-Identifier: ISC
 	<partitions>
 		<partition>
 			<name length="16" type="string">0:SPL</name>
-			<size_kb length="4">768</size_kb>
-			<pad_kb length="2">768</pad_kb>
+			<size_kb length="4">512</size_kb>
+			<pad_kb length="2">512</pad_kb>
 			<which_flash length="2">0</which_flash>
 			<attr>0xFF</attr>
 			<attr>0xFF</attr>
@@ -26,8 +26,8 @@ SPDX-License-Identifier: ISC
 		</partition>
 		<partition>
 			<name length="16" type="string">0:SPL_1</name>
-			<size_kb length="4">768</size_kb>
-			<pad_kb length="2">768</pad_kb>
+			<size_kb length="4">512</size_kb>
+			<pad_kb length="2">512</pad_kb>
 			<which_flash length="2">0</which_flash>
 			<attr>0xFF</attr>
 			<attr>0xFF</attr>
@@ -37,7 +37,7 @@ SPDX-License-Identifier: ISC
 		<partition>
 			<name length="16" type="string">0:MIBIB</name>
 			<size_kb length="4">512</size_kb>
-			<pad_kb length="2">512</pad_kb>
+			<pad_kb length="2">256</pad_kb>
 			<which_flash length="2">0</which_flash>
 			<attr>0xFF</attr>
 			<attr>0xFF</attr>
@@ -48,7 +48,7 @@ SPDX-License-Identifier: ISC
 		<partition>
 			<name length="16" type="string">0:ART</name>
 			<size_kb length="4">2048</size_kb>
-			<pad_kb length="2">1024</pad_kb>
+			<pad_kb length="2">512</pad_kb>
 			<which_flash length="2">0</which_flash>
 			<attr>0xFF</attr>
 			<attr>0xFF</attr>
@@ -57,8 +57,8 @@ SPDX-License-Identifier: ISC
 		</partition>
 		<partition>
 			<name length="16" type="string">0:BOOTLDR</name>
-			<size_kb length="4">4352</size_kb>
-			<pad_kb length="2">4352</pad_kb>
+			<size_kb length="4">3584</size_kb>
+			<pad_kb length="2">1536</pad_kb>
 			<which_flash length="2">0</which_flash>
 			<attr>0xFF</attr>
 			<attr>0xFF</attr>
@@ -67,8 +67,8 @@ SPDX-License-Identifier: ISC
 		</partition>
 		<partition>
 			<name length="16" type="string">0:BOOTLDR_1</name>
-			<size_kb length="4">4352</size_kb>
-			<pad_kb length="2">4352</pad_kb>
+			<size_kb length="4">3584</size_kb>
+			<pad_kb length="2">1536</pad_kb>
 			<which_flash length="2">0</which_flash>
 			<attr>0xFF</attr>
 			<attr>0xFF</attr>
