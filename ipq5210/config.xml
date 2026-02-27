@@ -103,14 +103,14 @@ SPDX-License-Identifier: ISC
 	<data type="NORPLUSNAND-GPT_PARAMETER">
 		<entry type="2k" layout="default">
 			<entry physical_partition="0">
-				<total_block>8192</total_block>
+				<total_block>4096</total_block>
 				<partition_mbn>norplusnand_gpt_main.bin</partition_mbn>
 				<partition_mbn_backup>norplusnand_gpt_backup.bin</partition_mbn_backup>
 			</entry>
 		</entry>
 		<entry type="4k" layout="default">
 			<entry physical_partition="2">
-				<total_block>8192</total_block>
+				<total_block>4096</total_block>
 				<partition_mbn>norplusnand_4k_gpt_main.bin</partition_mbn>
 				<partition_mbn_backup>norplusnand_4k_gpt_backup.bin</partition_mbn_backup>
 			</entry>
@@ -120,7 +120,7 @@ SPDX-License-Identifier: ISC
 	<data type="NORPLUSEMMC-GPT_PARAMETER">
 		<entry layout="default">
 			<entry physical_partition="1">
-				<total_block>8192</total_block>
+				<total_block>4096</total_block>
 				<partition_mbn>norplusemmc_gpt_main.bin</partition_mbn>
 				<partition_mbn_backup>norplusemmc_gpt_backup.bin</partition_mbn_backup>
 			</entry>
