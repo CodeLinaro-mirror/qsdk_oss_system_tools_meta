@@ -176,6 +176,7 @@ SPDX-License-Identifier: ISC
 			<fw_override>
 				<profile-128 layouts="default,vendor">
 					<bootldr_components>
+						<optee>tee-raw_lm.mbn</optee>
 						<qcconfig>qcconfig-RDP497_64M16_DDR3_LM128.elf</qcconfig>
 					</bootldr_components>
 				</profile-128>
@@ -191,6 +192,7 @@ SPDX-License-Identifier: ISC
 				<cal_fw image="WLAN_CALDB_qcn9224_v2_merged_compressed.img" vol_size="2MiB"/>
 				<profile-256 layouts="default,vendor">
 					<bootldr_components>
+						<optee>tee-raw_lm.mbn</optee>
 						<qcconfig>qcconfig-RDP498_512M16_DDR4_LM256.elf</qcconfig>
 					</bootldr_components>
 				</profile-256>
@@ -216,6 +218,7 @@ SPDX-License-Identifier: ISC
 				<cal_fw image="WLAN_CALDB_qcn9224_v2_merged_compressed.img" vol_size="2MiB"/>
 				<profile-256 layouts="default,vendor">
 					<bootldr_components>
+						<optee>tee-raw_lm.mbn</optee>
 						<qcconfig>qcconfig-RDP500_512M16_DDR4_LM256.elf</qcconfig>
 					</bootldr_components>
 				</profile-256>
@@ -241,6 +244,7 @@ SPDX-License-Identifier: ISC
 				<cal_fw image="WLAN_CALDB_qcn9224_v2_merged_compressed.img" vol_size="2MiB"/>
 				<profile-256 layouts="default,vendor">
 					<bootldr_components>
+						<optee>tee-raw_lm.mbn</optee>
 						<qcconfig>qcconfig-RDP501_512M16_DDR4_LM256.elf</qcconfig>
 					</bootldr_components>
 				</profile-256>
@@ -265,6 +269,7 @@ SPDX-License-Identifier: ISC
 				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="7168KiB"/>
 				<profile-256 layouts="default,vendor">
 					<bootldr_components>
+						<optee>tee-raw_lm.mbn</optee>
 						<qcconfig>qcconfig-RDP499_512M16_DDR4_LM256.elf</qcconfig>
 					</bootldr_components>
 				</profile-256>
@@ -289,6 +294,7 @@ SPDX-License-Identifier: ISC
 				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="7168KiB"/>
 				<profile-256 layouts="default,vendor">
 					<bootldr_components>
+						<optee>tee-raw_lm.mbn</optee>
 						<qcconfig>qcconfig-RDP502_512M16_DDR4_LM256.elf</qcconfig>
 					</bootldr_components>
 				</profile-256>
@@ -313,6 +319,7 @@ SPDX-License-Identifier: ISC
 				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="7168KiB"/>
 				<profile-256 layouts="default,vendor">
 					<bootldr_components>
+						<optee>tee-raw_lm.mbn</optee>
 						<qcconfig>qcconfig-RDP503_512M16_DDR4_LM256.elf</qcconfig>
 					</bootldr_components>
 				</profile-256>
@@ -337,6 +344,7 @@ SPDX-License-Identifier: ISC
 				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="7168KiB"/>
 				<profile-256 layouts="default,vendor">
 					<bootldr_components>
+						<optee>tee-raw_lm.mbn</optee>
 						<qcconfig>qcconfig-RDP504_512M16_DDR4_LM256.elf</qcconfig>
 					</bootldr_components>
 				</profile-256>
