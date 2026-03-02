@@ -147,21 +147,21 @@ SPDX-License-Identifier: ISC
 			<board>HM-EMU</board>
 			<memory>512M16_DDR4</memory>
 			<memory_2048>1024M16_DDR4</memory_2048>
-			<layouts>default,vendor,128M</layouts>
+			<layouts>default,vendor</layouts>
 			<uboot_dtb_name>emulation</uboot_dtb_name>
 			<kernel_dtb_name>emulation-fbc</kernel_dtb_name>
 			<fw_override>
-				<profile-2048 layouts="default,vendor,128M">
+				<profile-2048 layouts="default,vendor">
 					<bootldr_components>
 						<qcconfig>qcconfig-HM-EMU_1024M16_DDR4.elf</qcconfig>
 					</bootldr_components>
 				</profile-2048>
-				<profile-default layouts="default,vendor,128M">
+				<profile-default layouts="default,vendor">
 					<bootldr_components>
 						<qcconfig>qcconfig-HM-EMU_512M16_DDR4.elf</qcconfig>
 					</bootldr_components>
 				</profile-default>
-				<profile-512 layouts="default,vendor,128M">
+				<profile-512 layouts="default,vendor">
 					<bootldr_components>
 						<qcconfig>qcconfig-HM-EMU_512M16_DDR4_LM512.elf</qcconfig>
 					</bootldr_components>
@@ -172,9 +172,9 @@ SPDX-License-Identifier: ISC
 			<machid>0x8080000</machid>
 			<board>RDP497</board>
 			<memory_128>64M16_DDR3</memory_128>
-			<layouts>default,vendor</layouts>
+			<layouts>default,vendor,128M</layouts>
 			<fw_override>
-				<profile-128 layouts="default,vendor">
+				<profile-128 layouts="default,vendor,128M">
 					<bootldr_components>
 						<optee>tee-raw_lm.mbn</optee>
 						<qcconfig>qcconfig-RDP497_64M16_DDR3_LM128.elf</qcconfig>
