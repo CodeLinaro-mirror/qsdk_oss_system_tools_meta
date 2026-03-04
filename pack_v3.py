@@ -1631,7 +1631,7 @@ class Pack(object):
                         UBI_IMG_NAME = partition.attrib['filename_' + MODE]
                     print("#################", sys._getframe(0).f_code.co_name, sys._getframe(0).f_lineno, UBI_IMG_NAME)
                 else:
-                    return 1
+                    return 1, None
 
             # Make UBI image name board-specific
             if UBI_IMG_NAME and split_by_rdp == "true":
@@ -1841,8 +1841,19 @@ class Pack(object):
 
         if split_by_rdp == "true":
             for machid in machid_map:
-                board = machid_map[machid]["board"];
-                self.img_fname = out_fname[:-4] + "_" + board.lower() + ".img"
+                board = machid_map[machid]["board"]
+
+                # Use board name for directory
+                dir_name = board.lower()
+
+                # Create board-specific subdirectory
+                board_out_dir = os.path.join(os.path.dirname(out_fname), dir_name)
+                if not os.path.exists(board_out_dir):
+                    os.makedirs(board_out_dir)
+
+                # Output filename for  board subdirectory
+                base_fname = os.path.basename(out_fname)
+                self.img_fname = os.path.join(board_out_dir, base_fname[:-4] + "_" + board.lower() + ".img")
 
                 # generate main RDP specific flash script
                 images = []
