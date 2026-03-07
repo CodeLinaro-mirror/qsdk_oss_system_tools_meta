@@ -353,26 +353,6 @@ SPDX-License-Identifier: ISC
 			</fw_override>
 		</entry>
 		<entry>
-			<machid>0x8080300</machid>
-			<board>RDP505</board>
-			<memory>256M16_DDR3</memory>
-			<layouts>default,vendor</layouts>
-			<fw_override>
-				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="7168KiB"/>
-				<profile-256 layouts="default,vendor">
-					<bootldr_components>
-						<optee>tee-raw_lm.mbn</optee>
-						<qcconfig>qcconfig-RDP505_256M16_DDR3_LM256.elf</qcconfig>
-					</bootldr_components>
-				</profile-256>
-				<profile-512 layouts="default,vendor">
-					<bootldr_components>
-						<qcconfig>qcconfig-RDP505_256M16_DDR3_LM512.elf</qcconfig>
-					</bootldr_components>
-				</profile-512>
-			</fw_override>
-		</entry>
-		<entry>
 			<machid>0x1080000</machid>
 			<board>DB-HM01.1</board>
 			<memory>1024M16_DDR4</memory>
