@@ -25,7 +25,7 @@ SPDX-License-Identifier: ISC
 
 	<partition
 		label="0:SPL"
-		size_in_kb="832"
+		size_in_kb="1024"
 		type="DEA0BA2C-CBDD-4805-B4F9-F428251C3E98"
 		bootable="false"
 		readonly="false"
@@ -34,7 +34,7 @@ SPDX-License-Identifier: ISC
 		/>
 	<partition
 		label="0:SPL_1"
-		size_in_kb="832"
+		size_in_kb="1024"
 		type="7A3DF1A3-A31A-454D-BD78-DF259ED486BE"
 		bootable="false"
 		readonly="false"
@@ -52,7 +52,7 @@ SPDX-License-Identifier: ISC
 		/>
 	<partition
 		label="0:BOOTLDR"
-		size_in_kb="4352"
+		size_in_kb="4608"
 		type="A053AA7F-40B8-4B1C-BA08-2F68AC71A4F4"
 		bootable="false"
 		readonly="false"
@@ -62,7 +62,7 @@ SPDX-License-Identifier: ISC
 		/>
 	<partition
 		label="0:BOOTLDR_1"
-		size_in_kb="4352"
+		size_in_kb="4608"
 		type="A6DD74A1-C8BF-4DBC-AE39-62B8E78C4038"
 		bootable="false"
 		readonly="false"
@@ -80,8 +80,17 @@ SPDX-License-Identifier: ISC
 		/>
 	<partition
 		label="0:LICENSE"
-		size_in_kb="128"
+		size_in_kb="512"
 		type="a7a81a61-66ce-c908-f4a2-82d39d2aff57"
+		bootable="false"
+		readonly="false"
+		filename=""
+		flash_type="nor"
+		/>
+	<partition
+		label="0:DPR"
+		size_in_kb="64"
+		type="e6e98da2-e22a-4d12-ab33-169e7deaa507"
 		bootable="false"
 		readonly="false"
 		filename=""
@@ -98,7 +107,7 @@ SPDX-License-Identifier: ISC
 		/>
 	<partition
 		label="rootfs"
-		size_in_kb="104960"
+		size_in_kb="122368"
 		type="98D2248D-7140-449F-A954-39D67BD6C3B4"
 		bootable="false"
 		readonly="false"
@@ -110,7 +119,7 @@ SPDX-License-Identifier: ISC
 		/>
 	<partition
 		label="rootfs_1"
-		size_in_kb="104960"
+		size_in_kb="122368"
 		type="5647B280-DC2A-485D-9913-CF53AC40FA32"
 		bootable="false"
 		readonly="false"
@@ -127,7 +136,7 @@ SPDX-License-Identifier: ISC
 	<!--       they will instead be placed side by side at the beginning of the disk -->
 	<partition
 		label="0:SPL"
-		size_in_kb="832"
+		size_in_kb="1024"
 		type="DEA0BA2C-CBDD-4805-B4F9-F428251C3E98"
 		bootable="false"
 		readonly="false"
@@ -136,7 +145,7 @@ SPDX-License-Identifier: ISC
 		/>
 	<partition
 		label="0:SPL_1"
-		size_in_kb="832"
+		size_in_kb="1024"
 		type="7A3DF1A3-A31A-454D-BD78-DF259ED486BE"
 		bootable="false"
 		readonly="false"
@@ -154,7 +163,7 @@ SPDX-License-Identifier: ISC
 		/>
 	<partition
 		label="0:BOOTLDR"
-		size_in_kb="4352"
+		size_in_kb="4608"
 		type="A053AA7F-40B8-4B1C-BA08-2F68AC71A4F4"
 		bootable="false"
 		readonly="false"
@@ -164,7 +173,7 @@ SPDX-License-Identifier: ISC
 		/>
 	<partition
 		label="0:BOOTLDR_1"
-		size_in_kb="4352"
+		size_in_kb="4608"
 		type="A6DD74A1-C8BF-4DBC-AE39-62B8E78C4038"
 		bootable="false"
 		readonly="false"
@@ -182,8 +191,17 @@ SPDX-License-Identifier: ISC
 		/>
 	<partition
 		label="0:LICENSE"
-		size_in_kb="128"
+		size_in_kb="512"
 		type="a7a81a61-66ce-c908-f4a2-82d39d2aff57"
+		bootable="false"
+		readonly="false"
+		filename=""
+		flash_type="nor"
+		/>
+	<partition
+		label="0:DPR"
+		size_in_kb="64"
+		type="e6e98da2-e22a-4d12-ab33-169e7deaa507"
 		bootable="false"
 		readonly="false"
 		filename=""
@@ -200,7 +218,7 @@ SPDX-License-Identifier: ISC
 
 	<partition
 		label="0:SPL"
-		size_in_kb="832"
+		size_in_kb="1024"
 		type="DEA0BA2C-CBDD-4805-B4F9-F428251C3E98"
 		bootable="false"
 		readonly="false"
@@ -209,7 +227,7 @@ SPDX-License-Identifier: ISC
 		/>
 	<partition
 		label="0:SPL_1"
-		size_in_kb="832"
+		size_in_kb="1024"
 		type="7A3DF1A3-A31A-454D-BD78-DF259ED486BE"
 		bootable="false"
 		readonly="false"
@@ -227,7 +245,7 @@ SPDX-License-Identifier: ISC
 		/>
 	<partition
 		label="0:BOOTLDR"
-		size_in_kb="4352"
+		size_in_kb="4608"
 		type="A053AA7F-40B8-4B1C-BA08-2F68AC71A4F4"
 		bootable="false"
 		readonly="false"
@@ -237,14 +255,13 @@ SPDX-License-Identifier: ISC
                 />
 	<partition
 		label="0:BOOTLDR_1"
-		size_in_kb="4352"
+		size_in_kb="4608"
 		type="A6DD74A1-C8BF-4DBC-AE39-62B8E78C4038"
 		bootable="false"
 		readonly="false"
 		filename=""
 		flash_type="nor"
 		/>
-
 	<partition
 		label="0:APPSBLENV"
 		size_in_kb="64"
@@ -256,8 +273,17 @@ SPDX-License-Identifier: ISC
 		/>
 	<partition
 		label="0:LICENSE"
-		size_in_kb="128"
+		size_in_kb="512"
 		type="a7a81a61-66ce-c908-f4a2-82d39d2aff57"
+		bootable="false"
+		readonly="false"
+		filename=""
+		flash_type="nor"
+		/>
+	<partition
+		label="0:DPR"
+		size_in_kb="64"
+		type="e6e98da2-e22a-4d12-ab33-169e7deaa507"
 		bootable="false"
 		readonly="false"
 		filename=""
@@ -274,7 +300,7 @@ SPDX-License-Identifier: ISC
 		/>
 	<partition
 		label="rootfs"
-		size_in_kb="104960"
+		size_in_kb="122368"
 		type="98D2248D-7140-449F-A954-39D67BD6C3B4"
 		bootable="false"
 		readonly="false"
@@ -286,7 +312,7 @@ SPDX-License-Identifier: ISC
 		/>
 	<partition
 		label="rootfs_1"
-		size_in_kb="104960"
+		size_in_kb="122368"
 		type="5647B280-DC2A-485D-9913-CF53AC40FA32"
 		bootable="false"
 		readonly="false"

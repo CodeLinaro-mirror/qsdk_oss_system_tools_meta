@@ -47,7 +47,7 @@ SPDX-License-Identifier: ISC
 		</partition>
 		<partition>
 			<name length="16" type="string">0:BOOTLDR</name>
-			<size_kb length="4">4352</size_kb>
+			<size_kb length="4">4608</size_kb>
 			<pad_kb length="2">0</pad_kb>
 			<which_flash length="2">0</which_flash>
 			<attr>0xFF</attr>
@@ -63,6 +63,16 @@ SPDX-License-Identifier: ISC
 			<attr>0xFF</attr>
 			<attr>0xFF</attr>
 			<attr>0x00</attr>
+			<attr>0xFF</attr>
+		</partition>
+		<partition>
+			<name length="16" type="string">0:DPR</name>
+			<size_kb length="4">64</size_kb>
+			<pad_kb length="2">0</pad_kb>
+			<which_flash length="2">0</which_flash>
+			<attr>0xFF</attr>
+			<attr>64</attr>
+			<attr>32</attr>
 			<attr>0xFF</attr>
 		</partition>
 		<partition>
@@ -87,7 +97,7 @@ SPDX-License-Identifier: ISC
 		</partition>
 		<partition>
 			<name length="16" type="string">0:HLOS</name>
-			<size_kb length="4">6144</size_kb>
+			<size_kb length="4">10240</size_kb>
 			<pad_kb length="2">0</pad_kb>
 			<which_flash length="2">0</which_flash>
 			<attr>0xFF</attr>
@@ -99,7 +109,7 @@ SPDX-License-Identifier: ISC
 		</partition>
 		<partition>
 			<name length="16" type="string">rootfs</name>
-			<size_kb length="4">16960</size_kb>
+			<size_kb length="4">122368</size_kb>
 			<pad_kb length="2">0</pad_kb>
 			<which_flash length="2">0</which_flash>
 			<attr>0xFF</attr>

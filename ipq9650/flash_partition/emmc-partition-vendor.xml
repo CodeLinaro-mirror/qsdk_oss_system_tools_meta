@@ -31,7 +31,7 @@ SPDX-License-Identifier: ISC
 		/>
 	<partition
 		label="0:BOOTLDR"
-		size_in_kb="4352"
+		size_in_kb="4608"
 		type="A053AA7F-40B8-4B1C-BA08-2F68AC71A4F4"
 		bootable="false"
 		readonly="false"
@@ -40,7 +40,7 @@ SPDX-License-Identifier: ISC
 		/>
 	<partition
 		label="0:BOOTLDR_1"
-		size_in_kb="4352"
+		size_in_kb="4608"
 		type="A6DD74A1-C8BF-4DBC-AE39-62B8E78C4038"
 		bootable="false"
 		readonly="false"
@@ -56,8 +56,54 @@ SPDX-License-Identifier: ISC
 		/>
 	<partition
 		label="0:LICENSE"
-		size_in_kb="256"
+		size_in_kb="512"
 		type="a7a81a61-66ce-c908-f4a2-82d39d2aff57"
+		bootable="false"
+		readonly="false"
+		filename=""
+		/>
+	<partition
+		label="0:DPR"
+		size_in_kb="256"
+		type="e6e98da2-e22a-4d12-ab33-169e7deaa507"
+		bootable="false"
+		readonly="false"
+		filename=""
+		/>
+	<partition
+		label="0:PRIMEFW"
+		size_in_kb="512"
+		type="0a44c7ab-6022-49f1-9c18-f34895755b59"
+		bootable="false"
+		readonly="false"
+		diff_files = "true"
+		image_type = "hlos"
+		filename_32="prime_fw_ipq9650_squashfs.img"
+		filename_64="prime_fw_ipq9650_squashfs.img"
+		/>
+	<partition
+		label="0:PRIMEFW_1"
+		size_in_kb="512"
+		type="27fad05a-b321-4f65-8772-cc159ee99e0f"
+		bootable="false"
+		readonly="false"
+		filename=""
+		/>
+	<partition
+		label="0:CDSPFW"
+		size_in_kb="15360"
+		type="4e4e1c1e-8d5f-4e26-8341-4423a038fc27"
+		bootable="false"
+		readonly="false"
+		diff_files = "true"
+		image_type = "hlos"
+		filename_32="cdsp_ipq9650_squashfs.img"
+		filename_64="cdsp_ipq9650_squashfs.img"
+		/>
+	<partition
+		label="0:CDSPFW_1"
+		size_in_kb="15360"
+		type="f14ba18a-519b-4d6c-8828-324621e5bd44"
 		bootable="false"
 		readonly="false"
 		filename=""
@@ -81,8 +127,26 @@ SPDX-License-Identifier: ISC
 		filename=""
 		/>
 	<partition
+		label="0:CALFW"
+		size_in_kb="2048"
+		type="19a6dc0c-bf65-2f27-6763-e2d2df7356e0"
+		bootable="false"
+		readonly="false"
+		image_type = "hlos"
+		optional="true"
+		filename=""
+		/>
+	<partition
+		label="0:CALFW_1"
+		size_in_kb="2048"
+		type="5521e301-b498-5479-87b5-98adf1dadf6b"
+		bootable="false"
+		readonly="false"
+		filename=""
+		/>
+	<partition
 		label="0:HLOS"
-		size_in_kb="7168"
+		size_in_kb="10240"
 		type="B51F2982-3EBE-46DE-8721-EE641E1F9997"
 		bootable="false"
 		readonly="false"
@@ -93,7 +157,7 @@ SPDX-License-Identifier: ISC
 		/>
 	<partition
 		label="0:HLOS_1"
-		size_in_kb="7168"
+		size_in_kb="10240"
 		type="A71DA577-7F81-4626-B4A2-E377F9174525"
 		bootable="false"
 		readonly="false"
@@ -114,24 +178,6 @@ SPDX-License-Identifier: ISC
 		label="rootfs_1"
 		size_in_kb="124928"
 		type="5647B280-DC2A-485D-9913-CF53AC40FA32"
-		bootable="false"
-		readonly="false"
-		filename=""
-		/>
-	<partition
-		label="0:CALFW"
-		size_in_kb="2048"
-		type="19a6dc0c-bf65-2f27-6763-e2d2df7356e0"
-		bootable="false"
-		readonly="false"
-		image_type = "hlos"
-		optional="true"
-		filename=""
-		/>
-	<partition
-		label="0:CALFW_1"
-		size_in_kb="2048"
-		type="5521e301-b498-5479-87b5-98adf1dadf6b"
 		bootable="false"
 		readonly="false"
 		filename=""

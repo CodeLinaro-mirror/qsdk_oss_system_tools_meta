@@ -15,8 +15,8 @@ SPDX-License-Identifier: ISC
 	<partitions>
 		<partition>
 			<name length="16" type="string">0:SPL</name>
-			<size_kb length="4">768</size_kb>
-			<pad_kb length="2">768</pad_kb>
+			<size_kb length="4">1024</size_kb>
+			<pad_kb length="2">1024</pad_kb>
 			<which_flash length="2">0</which_flash>
 			<attr>0xFF</attr>
 			<attr>0xFF</attr>
@@ -27,7 +27,7 @@ SPDX-License-Identifier: ISC
 		<partition>
 			<name length="16" type="string">0:SPL_1</name>
 			<size_kb length="4">1024</size_kb>
-			<pad_kb length="2">768</pad_kb>
+			<pad_kb length="2">1024</pad_kb>
 			<which_flash length="2">0</which_flash>
 			<attr>0xFF</attr>
 			<attr>0xFF</attr>
@@ -57,8 +57,8 @@ SPDX-License-Identifier: ISC
 		</partition>
 		<partition>
 			<name length="16" type="string">0:BOOTLDR</name>
-			<size_kb length="4">4352</size_kb>
-			<pad_kb length="2">4352</pad_kb>
+			<size_kb length="4">4608</size_kb>
+			<pad_kb length="2">4608</pad_kb>
 			<which_flash length="2">0</which_flash>
 			<attr>0xFF</attr>
 			<attr>0xFF</attr>
@@ -67,8 +67,8 @@ SPDX-License-Identifier: ISC
 		</partition>
 		<partition>
 			<name length="16" type="string">0:BOOTLDR_1</name>
-			<size_kb length="4">4352</size_kb>
-			<pad_kb length="2">4352</pad_kb>
+			<size_kb length="4">4608</size_kb>
+			<pad_kb length="2">4608</pad_kb>
 			<which_flash length="2">0</which_flash>
 			<attr>0xFF</attr>
 			<attr>0xFF</attr>
@@ -105,9 +105,19 @@ SPDX-License-Identifier: ISC
                         <attr>0x00</attr>
                         <attr>0xFF</attr>
                 </partition>
+                <partition>
+                        <name length="16" type="string">0:DPR</name>
+                        <size_kb length="4">512</size_kb>
+                        <pad_kb length="2">0</pad_kb>
+                        <which_flash length="2">0</which_flash>
+                        <attr>0xFF</attr>
+                        <attr>0xFF</attr>
+                        <attr>0x00</attr>
+                        <attr>0xFF</attr>
+                </partition>
 		<partition>
 			<name length="16" type="string">rootfs</name>
-			<size_kb length="4">93184</size_kb>
+			<size_kb length="4">112384</size_kb>
 			<pad_kb length="2">0</pad_kb>
 			<which_flash length="2">0</which_flash>
 			<attr>0xFF</attr>
@@ -120,7 +130,7 @@ SPDX-License-Identifier: ISC
 		</partition>
 		<partition>
 			<name length="16" type="string">rootfs_1</name>
-			<size_kb length="4">93184</size_kb>
+			<size_kb length="4">112384</size_kb>
 			<pad_kb length="2">0</pad_kb>
 			<which_flash length="2">0</which_flash>
 			<attr>0xFF</attr>
