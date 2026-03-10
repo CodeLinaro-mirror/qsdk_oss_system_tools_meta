@@ -79,6 +79,14 @@ SPDX-License-Identifier: ISC
 		filename=""
 		/>
 	<partition
+		label="0:DPR"
+		size_in_kb="256"
+		type="e6e98da2-e22a-4d12-ab33-169e7deaa507"
+		bootable="false"
+		readonly="false"
+		filename=""
+		/>
+	<partition
 		label="0:WIFIFW"
 		size_in_kb="16384"
 		type="888d8069-8d27-40a8-95a9-6006e1ce9b3b"
