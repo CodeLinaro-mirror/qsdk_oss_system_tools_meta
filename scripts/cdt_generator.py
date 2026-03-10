@@ -10,7 +10,12 @@ from xml.dom import minidom
 #import common
 from time import sleep, time
 import time
-from inspect import getargspec
+try:
+    # Python3 - Compatible
+    from inspect import getfullargspec
+except ImportError:
+    # Fallback for older interpreters without getfullargspec
+    from inspect import getargspec
 from os.path import getsize
 import struct, sys
 import logging

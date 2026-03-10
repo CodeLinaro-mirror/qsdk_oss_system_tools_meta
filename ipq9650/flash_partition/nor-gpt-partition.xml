@@ -24,16 +24,16 @@ SPDX-License-Identifier: ISC
 	<!--       they will instead be placed side by side at the beginning of the disk -->
 
 	<partition
-		label="0:XBL"
+		label="0:SPL"
 		size_in_kb="832"
 		type="DEA0BA2C-CBDD-4805-B4F9-F428251C3E98"
 		bootable="false"
 		readonly="false"
-		filename="xbl_s.melf"
+		filename="u-boot-spl.melf"
 		flash_type="nor"
 		/>
 	<partition
-		label="0:XBL_1"
+		label="0:SPL_1"
 		size_in_kb="832"
 		type="7A3DF1A3-A31A-454D-BD78-DF259ED486BE"
 		bootable="false"
@@ -42,64 +42,28 @@ SPDX-License-Identifier: ISC
 		flash_type="nor"
 		/>
 	<partition
-		label="0:BOOTCONFIG"
-		size_in_kb="128"
-		type="2B7D04FF-31F0-4E6A-BE9A-DA50314DAD58"
+		label="0:ART"
+		size_in_kb="3584"
+		type="A72E50C1-D37C-429D-9620-35FCA612B9A8"
 		bootable="false"
 		readonly="false"
 		filename=""
 		flash_type="nor"
-		erase-only="true"
 		/>
 	<partition
-		label="0:QSEE"
-		size_in_kb="1536"
+		label="0:BOOTLDR"
+		size_in_kb="4352"
 		type="A053AA7F-40B8-4B1C-BA08-2F68AC71A4F4"
 		bootable="false"
 		readonly="false"
-		filename="tz.mbn"
+		filename_32=""
+		filename_64=""
 		flash_type="nor"
 		/>
 	<partition
-		label="0:QSEE_1"
-		size_in_kb="1536"
+		label="0:BOOTLDR_1"
+		size_in_kb="4352"
 		type="A6DD74A1-C8BF-4DBC-AE39-62B8E78C4038"
-		bootable="false"
-		readonly="false"
-		filename=""
-		flash_type="nor"
-		/>
-	<partition
-		label="0:DEVCFG"
-		size_in_kb="64"
-		type="F65D4B16-343D-4E25-AAFC-BE99B6556A6D"
-		bootable="false"
-		readonly="false"
-		filename="devcfg.mbn"
-		flash_type="nor"
-		/>
-	<partition
-		label="0:DEVCFG_1"
-		size_in_kb="64"
-		type="48BFA451-9443-46F7-B400-892A6B1BFC16"
-		bootable="false"
-		readonly="false"
-		filename=""
-		flash_type="nor"
-		/>
-	<partition
-		label="0:XBLCONFIG"
-		size_in_kb="64"
-		type="5A325AE4-4276-B66D-0ADD-3494DF27706A"
-		bootable="false"
-		readonly="false"
-		filename="xbl_config.elf"
-		flash_type="nor"
-		/>
-	<partition
-		label="0:XBLCONFIG_1"
-		size_in_kb="64"
-		type="F462E0EA-A20E-4B10-867A-2D4455366548"
 		bootable="false"
 		readonly="false"
 		filename=""
@@ -115,56 +79,9 @@ SPDX-License-Identifier: ISC
 		flash_type="nor"
 		/>
 	<partition
-		label="0:APPSBL"
-		size_in_kb="640"
-		type="400FFDCD-22E0-47E7-9A23-F16ED9382388"
-		bootable="false"
-		readonly="false"
-		diff_files = "true"
-		filename_32="openwrt-ipq9650-ipq96xx_32-norplusnand32-u-boot_compressed.mbn"
-		filename_64="openwrt-ipq9650-generic-norplusnand-u-boot_compressed.mbn"
-		flash_type="nor"
-		/>
-	<partition
-		label="0:APPSBL_1"
-		size_in_kb="640"
-		type="C126787D-3EEF-444C-9E43-FEFF3F103E22"
-		bootable="false"
-		readonly="false"
-		filename=""
-		flash_type="nor"
-		/>
-	<partition
-		label="0:ETHPHYFW"
-		size_in_kb="512"
-		type="C1DC4CAB-430B-4CDC-A8C5-7115912B74FE"
-		bootable="false"
-		readonly="false"
-		filename=""
-		flash_type="nor"
-		/>
-	<partition
-		label="0:ART"
-		size_in_kb="1024"
-		type="A72E50C1-D37C-429D-9620-35FCA612B9A8"
-		bootable="false"
-		readonly="false"
-		filename=""
-		flash_type="nor"
-		/>
-	<partition
 		label="0:LICENSE"
 		size_in_kb="128"
 		type="a7a81a61-66ce-c908-f4a2-82d39d2aff57"
-		bootable="false"
-		readonly="false"
-		filename=""
-		flash_type="nor"
-		/>
-	<partition
-		label="0:DPR"
-		size_in_kb="64"
-		type="e6e98da2-e22a-4d12-ab33-169e7deaa507"
 		bootable="false"
 		readonly="false"
 		filename=""
@@ -187,8 +104,8 @@ SPDX-License-Identifier: ISC
 		readonly="false"
 		diff_files = "true"
 		image_type = "hlos"
-		filename_32="openwrt-ipq96xx-ipq96xx_32-ubi-root.img"
-		filename_64="openwrt-ipq96xx-generic-ubi-root.img"
+		filename_32="openwrt-ipq96xx-ipq96xx_32-ubi-root-KERNEL_DTB_NAME.img"
+		filename_64="openwrt-ipq96xx-generic-ubi-root-KERNEL_DTB_NAME.img"
 		flash_type="nand"
 		/>
 	<partition
@@ -209,16 +126,16 @@ SPDX-License-Identifier: ISC
 	<!-- NOTE: If OPTIMIZE_READONLY_PARTITIONS=true, then partitions won't be in the order listed here -->
 	<!--       they will instead be placed side by side at the beginning of the disk -->
 	<partition
-		label="0:XBL"
+		label="0:SPL"
 		size_in_kb="832"
 		type="DEA0BA2C-CBDD-4805-B4F9-F428251C3E98"
 		bootable="false"
 		readonly="false"
-		filename="xbl_s.melf"
+		filename="u-boot-spl.melf"
 		flash_type="nor"
 		/>
 	<partition
-		label="0:XBL_1"
+		label="0:SPL_1"
 		size_in_kb="832"
 		type="7A3DF1A3-A31A-454D-BD78-DF259ED486BE"
 		bootable="false"
@@ -227,64 +144,28 @@ SPDX-License-Identifier: ISC
 		flash_type="nor"
 		/>
 	<partition
-		label="0:BOOTCONFIG"
-		size_in_kb="128"
-		type="2B7D04FF-31F0-4E6A-BE9A-DA50314DAD58"
+		label="0:ART"
+		size_in_kb="3584"
+		type="A72E50C1-D37C-429D-9620-35FCA612B9A8"
 		bootable="false"
 		readonly="false"
 		filename=""
 		flash_type="nor"
-		erase-only="true"
 		/>
 	<partition
-		label="0:QSEE"
-		size_in_kb="1536"
+		label="0:BOOTLDR"
+		size_in_kb="4352"
 		type="A053AA7F-40B8-4B1C-BA08-2F68AC71A4F4"
 		bootable="false"
 		readonly="false"
-		filename="tz.mbn"
+		filename_32=""
+		filename_64=""
 		flash_type="nor"
 		/>
 	<partition
-		label="0:QSEE_1"
-		size_in_kb="1536"
+		label="0:BOOTLDR_1"
+		size_in_kb="4352"
 		type="A6DD74A1-C8BF-4DBC-AE39-62B8E78C4038"
-		bootable="false"
-		readonly="false"
-		filename=""
-		flash_type="nor"
-		/>
-	<partition
-		label="0:DEVCFG"
-		size_in_kb="64"
-		type="F65D4B16-343D-4E25-AAFC-BE99B6556A6D"
-		bootable="false"
-		readonly="false"
-		filename="devcfg.mbn"
-		flash_type="nor"
-		/>
-	<partition
-		label="0:DEVCFG_1"
-		size_in_kb="64"
-		type="48BFA451-9443-46F7-B400-892A6B1BFC16"
-		bootable="false"
-		readonly="false"
-		filename=""
-		flash_type="nor"
-		/>
-	<partition
-		label="0:XBLCONFIG"
-		size_in_kb="64"
-		type="5A325AE4-4276-B66D-0ADD-3494DF27706A"
-		bootable="false"
-		readonly="false"
-		filename="xbl_config.elf"
-		flash_type="nor"
-		/>
-	<partition
-		label="0:XBLCONFIG_1"
-		size_in_kb="64"
-		type="F462E0EA-A20E-4B10-867A-2D4455366548"
 		bootable="false"
 		readonly="false"
 		filename=""
@@ -300,56 +181,9 @@ SPDX-License-Identifier: ISC
 		flash_type="nor"
 		/>
 	<partition
-		label="0:APPSBL"
-		size_in_kb="640"
-		type="400FFDCD-22E0-47E7-9A23-F16ED9382388"
-		bootable="false"
-		readonly="false"
-		diff_files = "true"
-		filename_32="openwrt-ipq9650-ipq96xx_32-norplusmmc32-u-boot_compressed.mbn"
-		filename_64="openwrt-ipq9650-generic-norplusmmc-u-boot_compressed.mbn"
-		flash_type="nor"
-		/>
-	<partition
-		label="0:APPSBL_1"
-		size_in_kb="640"
-		type="C126787D-3EEF-444C-9E43-FEFF3F103E22"
-		bootable="false"
-		readonly="false"
-		filename=""
-		flash_type="nor"
-		/>
-	<partition
-		label="0:ETHPHYFW"
-		size_in_kb="512"
-		type="C1DC4CAB-430B-4CDC-A8C5-7115912B74FE"
-		bootable="false"
-		readonly="false"
-		filename=""
-		flash_type="nor"
-		/>
-	<partition
-		label="0:ART"
-		size_in_kb="1024"
-		type="A72E50C1-D37C-429D-9620-35FCA612B9A8"
-		bootable="false"
-		readonly="false"
-		filename=""
-		flash_type="nor"
-		/>
-	<partition
 		label="0:LICENSE"
 		size_in_kb="128"
 		type="a7a81a61-66ce-c908-f4a2-82d39d2aff57"
-		bootable="false"
-		readonly="false"
-		filename=""
-		flash_type="nor"
-		/>
-	<partition
-		label="0:DPR"
-		size_in_kb="64"
-		type="e6e98da2-e22a-4d12-ab33-169e7deaa507"
 		bootable="false"
 		readonly="false"
 		filename=""
@@ -365,16 +199,16 @@ SPDX-License-Identifier: ISC
 	<!--       they will instead be placed side by side at the beginning of the disk -->
 
 	<partition
-		label="0:XBL"
+		label="0:SPL"
 		size_in_kb="832"
 		type="DEA0BA2C-CBDD-4805-B4F9-F428251C3E98"
 		bootable="false"
 		readonly="false"
-		filename="xbl_s.melf"
+		filename="u-boot-spl.melf"
 		flash_type="nor"
 		/>
 	<partition
-		label="0:XBL_1"
+		label="0:SPL_1"
 		size_in_kb="832"
 		type="7A3DF1A3-A31A-454D-BD78-DF259ED486BE"
 		bootable="false"
@@ -383,69 +217,34 @@ SPDX-License-Identifier: ISC
 		flash_type="nor"
 		/>
 	<partition
-		label="0:BOOTCONFIG"
-		size_in_kb="128"
-		type="2B7D04FF-31F0-4E6A-BE9A-DA50314DAD58"
+		label="0:ART"
+		size_in_kb="3584"
+		type="A72E50C1-D37C-429D-9620-35FCA612B9A8"
 		bootable="false"
 		readonly="false"
 		filename=""
 		flash_type="nor"
-		erase-only="true"
 		/>
 	<partition
-		label="0:QSEE"
-		size_in_kb="1536"
+		label="0:BOOTLDR"
+		size_in_kb="4352"
 		type="A053AA7F-40B8-4B1C-BA08-2F68AC71A4F4"
 		bootable="false"
 		readonly="false"
-		filename="tz.mbn"
+		filename_32=""
+		filename_64=""
 		flash_type="nor"
-		/>
+                />
 	<partition
-		label="0:QSEE_1"
-		size_in_kb="1536"
+		label="0:BOOTLDR_1"
+		size_in_kb="4352"
 		type="A6DD74A1-C8BF-4DBC-AE39-62B8E78C4038"
 		bootable="false"
 		readonly="false"
 		filename=""
 		flash_type="nor"
 		/>
-	<partition
-		label="0:DEVCFG"
-		size_in_kb="64"
-		type="F65D4B16-343D-4E25-AAFC-BE99B6556A6D"
-		bootable="false"
-		readonly="false"
-		filename="devcfg.mbn"
-		flash_type="nor"
-		/>
-	<partition
-		label="0:DEVCFG_1"
-		size_in_kb="64"
-		type="48BFA451-9443-46F7-B400-892A6B1BFC16"
-		bootable="false"
-		readonly="false"
-		filename=""
-		flash_type="nor"
-		/>
-	<partition
-		label="0:XBLCONFIG"
-		size_in_kb="64"
-		type="5A325AE4-4276-B66D-0ADD-3494DF27706A"
-		bootable="false"
-		readonly="false"
-		filename="xbl_config.elf"
-		flash_type="nor"
-		/>
-	<partition
-		label="0:XBLCONFIG_1"
-		size_in_kb="64"
-		type="F462E0EA-A20E-4B10-867A-2D4455366548"
-		bootable="false"
-		readonly="false"
-		filename=""
-		flash_type="nor"
-		/>
+
 	<partition
 		label="0:APPSBLENV"
 		size_in_kb="64"
@@ -456,56 +255,9 @@ SPDX-License-Identifier: ISC
 		flash_type="nor"
 		/>
 	<partition
-		label="0:APPSBL"
-		size_in_kb="640"
-		type="400FFDCD-22E0-47E7-9A23-F16ED9382388"
-		bootable="false"
-		readonly="false"
-		diff_files = "true"
-		filename_32="openwrt-ipq9650-ipq96xx_32-norplusnand32-u-boot_compressed.mbn"
-		filename_64="openwrt-ipq9650-generic-norplusnand-u-boot_compressed.mbn"
-		flash_type="nor"
-		/>
-	<partition
-		label="0:APPSBL_1"
-		size_in_kb="640"
-		type="C126787D-3EEF-444C-9E43-FEFF3F103E22"
-		bootable="false"
-		readonly="false"
-		filename=""
-		flash_type="nor"
-		/>
-	<partition
-		label="0:ETHPHYFW"
-		size_in_kb="512"
-		type="C1DC4CAB-430B-4CDC-A8C5-7115912B74FE"
-		bootable="false"
-		readonly="false"
-		filename=""
-		flash_type="nor"
-		/>
-	<partition
-		label="0:ART"
-		size_in_kb="1024"
-		type="A72E50C1-D37C-429D-9620-35FCA612B9A8"
-		bootable="false"
-		readonly="false"
-		filename=""
-		flash_type="nor"
-		/>
-	<partition
 		label="0:LICENSE"
 		size_in_kb="128"
 		type="a7a81a61-66ce-c908-f4a2-82d39d2aff57"
-		bootable="false"
-		readonly="false"
-		filename=""
-		flash_type="nor"
-		/>
-	<partition
-		label="0:DPR"
-		size_in_kb="64"
-		type="e6e98da2-e22a-4d12-ab33-169e7deaa507"
 		bootable="false"
 		readonly="false"
 		filename=""
@@ -528,8 +280,8 @@ SPDX-License-Identifier: ISC
 		readonly="false"
 		diff_files = "true"
 		image_type = "hlos"
-		filename_32="openwrt-ipq96xx-ipq96xx_32-ubi-root-m4096-p256KiB.img"
-		filename_64="openwrt-ipq96xx-generic-ubi-root-m4096-p256KiB.img"
+		filename_32="openwrt-ipq96xx-ipq96xx_32-ubi-root-m4096-p256KiB-KERNEL_DTB_NAME.img"
+		filename_64="openwrt-ipq96xx-generic-ubi-root-m4096-p256KiB-KERNEL_DTB_NAME.img"
 		flash_type="nand"
 		/>
 	<partition

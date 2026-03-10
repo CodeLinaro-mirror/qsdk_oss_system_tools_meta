@@ -207,7 +207,12 @@ def main():
             if memory == None:
                 memory = entry.find(".//memory")
 
-            if memory_profile == '256' or memory_profile == '512':
+            # Gracefully skip RDP entries that don't have default profile
+            if memory == None:
+                print("WARNING: Skipping RDP entry %s - no memory configuration found for profile '%s'" % (board.text, memory_profile))
+                continue
+
+            if memory_profile == '128' or memory_profile == '256' or memory_profile == '512':
                 name_suffix =  board.text + "_" + memory.text + "_LM" + memory_profile
             else:
                 name_suffix =  board.text + "_" + memory.text
