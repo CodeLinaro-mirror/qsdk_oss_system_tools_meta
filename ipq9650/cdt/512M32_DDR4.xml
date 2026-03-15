@@ -24,7 +24,7 @@ SPDX-License-Identifier: ISC
 				<props name="magic_number" type="DALPROP_ATTR_TYPE_BYTE_SEQ">0x00, 0x52, 0x44, 0x44, end</props>
 				<props name="checksum" type="DALPROP_ATTR_TYPE_BYTE_SEQ">0xFF, 0xFF, 0x00, 0x00, end</props>
 				<props name="num_of_device" type="DALPROP_ATTR_TYPE_UINT32">1</props>
-				<props name="size_of_param" type="DALPROP_ATTR_TYPE_UINT32">320</props>
+				<props name="size_of_param" type="DALPROP_ATTR_TYPE_UINT32">340</props>
 				<props name="interleaved" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="OBT_Threshold" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="ODT_Threshold" type="DALPROP_ATTR_TYPE_UINT32">0</props>
@@ -74,28 +74,32 @@ SPDX-License-Identifier: ISC
 				<props name="tCCD_L" type="DALPROP_ATTR_TYPE_UINT32">8</props>
 				<props name="tRRD_L" type="DALPROP_ATTR_TYPE_UINT32">6400</props>
 				<props name="num_device_per_cs0" type="DALPROP_ATTR_TYPE_UINT32">1</props>
-				<props name="features" type="DALPROP_ATTR_TYPE_UINT32">16</props>
-				<props name="low_power_ctrl" type="DALPROP_ATTR_TYPE_UINT32">33590869</props>
-				<props name="ctl_long_count_param" type="DALPROP_ATTR_TYPE_UINT32">1968136</props>
+				<props name="features" type="DALPROP_ATTR_TYPE_UINT32">18</props>
+				<props name="low_power_ctrl" type="DALPROP_ATTR_TYPE_UINT32">1024</props>
+				<props name="ctl_long_count_param" type="DALPROP_ATTR_TYPE_UINT32">4194320</props>
 				<props name="pu_pd_params" type="DALPROP_ATTR_TYPE_UINT32">4292968474</props>
 				<props name="zqndr_zdata" type="DALPROP_ATTR_TYPE_UINT32">67043427</props>
 				<props name="mr0" type="DALPROP_ATTR_TYPE_UINT32">3408</props>
-				<props name="mr1" type="DALPROP_ATTR_TYPE_UINT32">259</props>
+				<props name="mr1" type="DALPROP_ATTR_TYPE_UINT32">1281</props>
 				<props name="mr2" type="DALPROP_ATTR_TYPE_UINT32">40</props>
 				<props name="tWLO" type="DALPROP_ATTR_TYPE_UINT32">9500</props>
 				<props name="wrlat_adj_f0" type="DALPROP_ATTR_TYPE_UINT32">11</props>
 				<props name="rdlat_adj_f0" type="DALPROP_ATTR_TYPE_UINT32">17</props>
 				<props name="mr4" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="mr5" type="DALPROP_ATTR_TYPE_UINT32">1024</props>
-				<props name="mr6" type="DALPROP_ATTR_TYPE_UINT32">4096</props>
+				<props name="mr6" type="DALPROP_ATTR_TYPE_UINT32">4113</props>
 				<props name="mr3" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="reserved_6" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="mr8" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="mr9" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="mr10" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="mr11" type="DALPROP_ATTR_TYPE_UINT32">0</props>
+				<props name="mr12" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="mr13" type="DALPROP_ATTR_TYPE_UINT32">0</props>
+				<props name="mr14" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="mr15" type="DALPROP_ATTR_TYPE_UINT32">0</props>
+				<props name="mr32" type="DALPROP_ATTR_TYPE_UINT32">0</props>
+				<props name="mr33" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="mr34" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="mr35" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="mr37" type="DALPROP_ATTR_TYPE_UINT32">0</props>
@@ -108,6 +112,7 @@ SPDX-License-Identifier: ISC
 				<props name="mr52" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="mr58" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="mr59" type="DALPROP_ATTR_TYPE_UINT32">0</props>
+				<props name="ddr5_mr111" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="tRFCsb" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="tREFSBRD" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="tRx_DQS2DQ" type="DALPROP_ATTR_TYPE_UINT32">0</props>
@@ -154,28 +159,32 @@ SPDX-License-Identifier: ISC
 				<props name="tCCD_L" type="DALPROP_ATTR_TYPE_UINT32">8</props>
 				<props name="tRRD_L" type="DALPROP_ATTR_TYPE_UINT32">6400</props>
 				<props name="num_device_per_cs0" type="DALPROP_ATTR_TYPE_UINT32">1</props>
-				<props name="features" type="DALPROP_ATTR_TYPE_UINT32">16</props>
-				<props name="low_power_ctrl" type="DALPROP_ATTR_TYPE_UINT32">33590869</props>
-				<props name="ctl_long_count_param" type="DALPROP_ATTR_TYPE_UINT32">1968136</props>
+				<props name="features" type="DALPROP_ATTR_TYPE_UINT32">18</props>
+				<props name="low_power_ctrl" type="DALPROP_ATTR_TYPE_UINT32">1024</props>
+				<props name="ctl_long_count_param" type="DALPROP_ATTR_TYPE_UINT32">4194320</props>
 				<props name="pu_pd_params" type="DALPROP_ATTR_TYPE_UINT32">4292968474</props>
 				<props name="zqndr_zdata" type="DALPROP_ATTR_TYPE_UINT32">67043427</props>
 				<props name="mr0" type="DALPROP_ATTR_TYPE_UINT32">3408</props>
-				<props name="mr1" type="DALPROP_ATTR_TYPE_UINT32">259</props>
+				<props name="mr1" type="DALPROP_ATTR_TYPE_UINT32">1281</props>
 				<props name="mr2" type="DALPROP_ATTR_TYPE_UINT32">40</props>
 				<props name="tWLO" type="DALPROP_ATTR_TYPE_UINT32">9500</props>
 				<props name="wrlat_adj_f0" type="DALPROP_ATTR_TYPE_UINT32">11</props>
 				<props name="rdlat_adj_f0" type="DALPROP_ATTR_TYPE_UINT32">17</props>
 				<props name="mr4" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="mr5" type="DALPROP_ATTR_TYPE_UINT32">1024</props>
-				<props name="mr6" type="DALPROP_ATTR_TYPE_UINT32">4096</props>
+				<props name="mr6" type="DALPROP_ATTR_TYPE_UINT32">4113</props>
 				<props name="mr3" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="reserved_6" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="mr8" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="mr9" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="mr10" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="mr11" type="DALPROP_ATTR_TYPE_UINT32">0</props>
+				<props name="mr12" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="mr13" type="DALPROP_ATTR_TYPE_UINT32">0</props>
+				<props name="mr14" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="mr15" type="DALPROP_ATTR_TYPE_UINT32">0</props>
+				<props name="mr32" type="DALPROP_ATTR_TYPE_UINT32">0</props>
+				<props name="mr33" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="mr34" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="mr35" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="mr37" type="DALPROP_ATTR_TYPE_UINT32">0</props>
@@ -188,6 +197,7 @@ SPDX-License-Identifier: ISC
 				<props name="mr52" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="mr58" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="mr59" type="DALPROP_ATTR_TYPE_UINT32">0</props>
+				<props name="ddr5_mr111" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="tRFCsb" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="tREFSBRD" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="tRx_DQS2DQ" type="DALPROP_ATTR_TYPE_UINT32">0</props>
