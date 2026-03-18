@@ -87,6 +87,7 @@ split_by_rdp = "false"
 skip_4k_nand = "false"
 atf = "false"
 img_suffix = ""
+bootldr_only = "false"
 supported_arch = ["ipq9650_64", "ipq9650", "ipq5210", "ipq5210_64", "ipq5424", "ipq5424_64", "ipq5332", "ipq5332_64"]
 split_by_rdp_supported_arch = ["ipq5210", "ipq9650"]
 supported_flash_type = {}
@@ -1520,6 +1521,10 @@ class Pack(object):
 
                 print("#################", sys._getframe(0).f_code.co_name, sys._getframe(0).f_lineno, os.path.join(self.images_dname, fname))
 
+                # Skip file validation in bootloader-only mode for non-bootloader partitions
+                if bootldr_only == "true" and pname.lower().replace("0:", "") != "bootldr":
+                    continue
+
                 if os.path.isfile(os.path.join(self.images_dname, fname)) == False:
                     print("file '%s' is not exist " % fname)
                     return 1
@@ -1839,6 +1844,11 @@ class Pack(object):
         if not bool(machid_map):
             return 1
 
+        # If bootloader-only mode, exit here after generating bootloader images
+        if bootldr_only == "true":
+            print("Bootloader images generated successfully in %s" % self.images_dname)
+            return 0
+
         if split_by_rdp == "true":
             for machid in machid_map:
                 board = machid_map[machid]["board"]
@@ -1934,6 +1944,7 @@ class ArgParser(object):
         global skip_test
         global flayout
         global split_by_rdp
+        global bootldr_only
         skip_test = False
 
         """Start the parsing process, and populate members with parsed value.
@@ -1944,7 +1955,7 @@ class ArgParser(object):
         cdir = os.path.abspath(os.path.dirname(""))
         if len(sys.argv) > 1:
             try:
-                opts, args = getopt(sys.argv[1:], "", ["arch=", "fltype=", "srcPath=", "inImage=", "outImage=", "image_type=", "memory=", "img_suffix=", "skip_4k_nand", "atf", "flayout=", "split_by_rdp"])
+                opts, args = getopt(sys.argv[1:], "", ["arch=", "fltype=", "srcPath=", "inImage=", "outImage=", "image_type=", "memory=", "img_suffix=", "skip_4k_nand", "atf", "flayout=", "split_by_rdp", "bootldr"])
             except GetoptError as e:
                 raise UsageError(e.msg)
 
@@ -1984,6 +1995,9 @@ class ArgParser(object):
 
                 elif option =="--split_by_rdp":
                     split_by_rdp = "true"
+
+                elif option =="--bootldr":
+                    bootldr_only = "true"
             # Verify Arguments passed by user
             # Verify arch type
             if ARCH_NAME not in supported_arch:
@@ -2012,9 +2026,13 @@ class ArgParser(object):
             if self.images_dname == None:
                 raise UsageError("input images' Path is not provided")
 
-            #Verify Output image path
-            if self.out_dname == None:
+            #Verify Output image path (not required for bootldr-only mode)
+            if self.out_dname == None and bootldr_only != "true":
                 raise UsageError("Output Path is not provided")
+
+            # For bootldr-only mode, use inImage as output directory
+            if bootldr_only == "true" and self.out_dname == None:
+                self.out_dname = self.images_dname
 
     def usage(self, msg):
         """Print error message and command usage information.
@@ -2046,7 +2064,8 @@ class ArgParser(object):
         print("  --skip_4k_nand \tskip generating 4k nand images")
         print("  --split_by_rdp \tGenerate RDP based image with respect to flash layout")
         print("  --flayout \tGenerate single image with respect to flash layout")
-        print(" \t\tThis Argument does not take any value")
+        print("  --bootldr \tGenerate only bootloader images without full single image")
+        print(" \t\tThis option does not require --outImage to be specified\n")
         print("Pack Version: %s" % version)
 
 def main():
