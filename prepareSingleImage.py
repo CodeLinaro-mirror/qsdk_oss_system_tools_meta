@@ -700,6 +700,52 @@ def gen_optee_mbn():
 
     return 0
 
+def cleanup_intermediate_files():
+    """Clean up intermediate files generated during the build process.
+
+    This function removes temp files that are not needed after MBN and MELF
+    files have been created. These intermediate files include hash, object,
+    wrapped ELF files, and other temp build artifacts.
+    """
+    global inDir
+
+    print("\nCleaning up intermediate files...")
+
+    # Define patterns for files to delete
+    cleanup_patterns = [
+        "*.hash",           # Hash files (144 bytes each)
+        "*_hash.hd",        # Hash header files (64 bytes each)
+        "*_combined_hash.mbn",  # Combined hash MBN files (208 bytes each)
+        "*_phdr.pbn",       # Program header binary files
+        "*_out.o",          # Object files from objcopy (~900KB+ each)
+        "*_wrapped.elf",    # Wrapped ELF files from linker (~900KB+ each)
+        "uboot.ld",         # Temporary linker script
+        "comfile0",         # Uncompressed intermediate file
+        "comfile0.lzma",    # LZMA compressed intermediate file
+        "*.bak"             # Backup files from sed operations
+    ]
+
+    deleted_count = 0
+
+    for pattern in cleanup_patterns:
+        file_pattern = os.path.join(inDir, pattern)
+        matching_files = glob.glob(file_pattern)
+
+        for file_path in matching_files:
+            try:
+                # Get file size before deletion for reporting
+                file_size = os.path.getsize(file_path)
+                os.remove(file_path)
+                deleted_count += 1
+                print("Deleted: %s (%d bytes)" % (os.path.basename(file_path), file_size))
+            except OSError as e:
+                print("Warning: Could not delete %s: %s" % (file_path, str(e)))
+
+    print("\nCleanup complete:")
+    print("  Files deleted: %d" % deleted_count)
+
+    return 0
+
 def main():
     global flash
     global arch
@@ -943,6 +989,9 @@ def main():
 
         if to_gen_optee_mbn == "true" and gen_optee_mbn() != 0:
             return -1
+
+        # Clean up temp files after all operations are complete
+        cleanup_intermediate_files()
 
         return 0
     else:
