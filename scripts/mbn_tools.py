@@ -167,6 +167,8 @@ MI_PBT_ELF_PHDR_SEGMENT = 0x07000000
 MI_PBT_ELF_NON_PAGED_L4BSP_SEGMENT = 0x04000000
 MI_PBT_ELF_PAGED_L4BSP_SEGMENT = 0x04100000
 MI_PBT_ELF_AMSS_RELOCATABLE_IMAGE = 0x8000000
+MI_PBT_ELF_PT_LZMA = 0x08000000
+MI_PBT_ELF_PT_LOOS = 0x60000000
 
 #----------------------------------------------------------------------------
 # GLOBAL VARIABLES END
@@ -1376,7 +1378,7 @@ def pboot_gen_elf(env, elf_in_file_name,
                 continue
 
             if ((is_com == True) and  ((curr_phdr.p_type == LOAD_TYPE) or (curr_phdr.p_type == PHDR_ENTR_TYPE))):
-                curr_phdr.p_type = curr_phdr.p_type | 0x68000000
+                curr_phdr.p_type |= (MI_PBT_ELF_PT_LOOS | MI_PBT_ELF_PT_LZMA)
             if (is_com == True):
                 curr_phdr.p_offset = iarrPhdrFileOff[i]
                 curr_phdr.p_filesz = iarrPhdrFileLen[i]
@@ -2339,6 +2341,31 @@ def image_preamble(gen_dict, preamble_file_name, boot_sbl_header, num_of_pages=N
     preamble_fp.close()
 
     return boot_sbl_header
+
+#----------------------------------------------------------------------------
+# set LZMA+LOOS compression flags on all LOAD-type segments
+#----------------------------------------------------------------------------
+def set_compress_flag(elf_in_file_name, elf_out_file_name):
+    #For every program header whose p_type is LOAD_TYPE, the flags
+    #MI_PBT_ELF_PT_LOOS and MI_PBT_ELF_PT_LZMA are OR-ed into p_type
+    #and the updated header is written back to the output file.
+
+    shutil.copyfile(elf_in_file_name, elf_out_file_name)
+
+    [elf_header, phdr_table] = preprocess_elf_file(elf_in_file_name)
+
+    elf_out_fp = OPEN(elf_out_file_name, "r+b")
+    try:
+        for idx, curr_phdr in enumerate(phdr_table):
+            if curr_phdr.p_type == LOAD_TYPE:
+                phdr_offset = elf_header.e_phoff + idx * elf_header.e_phentsize
+                curr_phdr.p_type |= (MI_PBT_ELF_PT_LOOS | MI_PBT_ELF_PT_LZMA)
+                elf_out_fp.seek(phdr_offset)
+                elf_out_fp.write(curr_phdr.getPackedData())
+    finally:
+        elf_out_fp.close()
+
+    return 0
 
 #----------------------------------------------------------------------------
 # Helper functions to parse ELF program headers
