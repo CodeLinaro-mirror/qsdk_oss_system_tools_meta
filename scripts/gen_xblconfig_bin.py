@@ -212,10 +212,16 @@ def main():
                 print("WARNING: Skipping RDP entry %s - no memory configuration found for profile '%s'" % (board.text, memory_profile))
                 continue
 
-            if memory_profile == '128' or memory_profile == '256' or memory_profile == '512':
-                name_suffix =  board.text + "_" + memory.text + "_LM" + memory_profile
+            if ARCH_NAME == "ipq9650":
+                if memory_profile == '2048' or memory_profile == '1024' or memory_profile == '512':
+                    name_suffix =  board.text + "_" + memory.text + "_LM" + memory_profile
+                else:
+                    name_suffix =  board.text + "_" + memory.text
             else:
-                name_suffix =  board.text + "_" + memory.text
+                if memory_profile == '128' or memory_profile == '256' or memory_profile == '512':
+                    name_suffix =  board.text + "_" + memory.text + "_LM" + memory_profile
+                else:
+                    name_suffix =  board.text + "_" + memory.text
 
             cdt_bin =  "cdt-" + name_suffix + ".bin"
 

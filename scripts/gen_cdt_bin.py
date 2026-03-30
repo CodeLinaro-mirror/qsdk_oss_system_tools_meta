@@ -211,7 +211,12 @@ def main():
                         # overwritting Bit 18 for qcn9160 on pcie2
                         boot_settings.text = str(int(boot_settings.text) | 262144)
 
-            if memory_profile == '128' or memory_profile == '256' or memory_profile == '512':
+            if ARCH_NAME == "ipq9650":
+                valid_profiles = memory_profile in ['512', '1024', '2048']
+            else:
+                valid_profiles = memory_profile in ['128', '256', '512']
+
+            if valid_profiles:
                 config_memory_organization = memory.text.split('_', 1)[0]
                 config_memory_type = memory.text.split('_', 1)[1]
                 print("!!!!!!!!!!!############!!!!!!!!!!!")
