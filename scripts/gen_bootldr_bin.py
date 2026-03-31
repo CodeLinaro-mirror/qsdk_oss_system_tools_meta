@@ -187,7 +187,12 @@ def main():
                         boot_settings.text = str(int(boot_settings.text) | 262144)
 
             if memory_profile != "default":
-                if memory_profile == '128' or memory_profile == '256' or memory_profile == '512':
+                if ARCH_NAME == "ipq9650":
+                    valid_profiles = memory_profile in ['512', '1024', '2048']
+                else:
+                    valid_profiles = memory_profile in ['128', '256', '512']
+
+                if valid_profiles:
                     config_memory_organization = memory.text.split('_', 1)[0]
                     config_memory_type = memory.text.split('_', 1)[1]
                     print("!!!!!!!!!!!############!!!!!!!!!!!")
@@ -222,7 +227,10 @@ def main():
                     tree_cdt_xml.write(os.path.join(srcDir, board.text + "_" + \
                                     memory.text + "_LM" + memory_profile + ".xml"))
                 else:
-                    print("memory_profile should be 256/512")
+                    if ARCH_NAME == "ipq9650":
+                        print("memory_profile should be 512/1024/2048 for ipq9650")
+                    else:
+                        print("memory_profile should be 128/256/512")
                     return -1
 
             else:

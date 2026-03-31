@@ -141,22 +141,10 @@ SPDX-License-Identifier: ISC
 			<machid>0xF060000</machid>
 			<board>JU-EMU</board>
 			<memory>512M32_DDR4</memory>
-			<memory_2048>512M32_DDR4</memory_2048>
-			<memory_8192>2048M32_DDR4</memory_8192>
 			<layouts>default,vendor</layouts>
 			<uboot_dtb_name>emulation</uboot_dtb_name>
 			<kernel_dtb_name>emulation-fbc</kernel_dtb_name>
 			<fw_override>
-				<profile-8192 layouts="default,vendor">
-					<bootldr_components>
-						<qcconfig>qcconfig-JU-EMU_2048M32_DDR4.elf</qcconfig>
-					</bootldr_components>
-				</profile-8192>
-				<profile-2048 layouts="default,vendor">
-					<bootldr_components>
-						<qcconfig>qcconfig-JU-EMU_512M32_DDR4.elf</qcconfig>
-					</bootldr_components>
-				</profile-2048>
 				<profile-default layouts="default,vendor">
 					<bootldr_components>
 						<qcconfig>qcconfig-JU-EMU_512M32_DDR4.elf</qcconfig>
@@ -164,7 +152,7 @@ SPDX-License-Identifier: ISC
 				</profile-default>
 				<profile-512 layouts="default,vendor">
 					<bootldr_components>
-						<qcconfig>qcconfig-JU-EMU_256M32_DDR4_LM512.elf</qcconfig>
+						<qcconfig>qcconfig-JU-EMU_512M32_DDR4_LM512.elf</qcconfig>
 					</bootldr_components>
 				</profile-512>
 			</fw_override>
@@ -173,21 +161,9 @@ SPDX-License-Identifier: ISC
 			<machid>0x8090000</machid>
 			<board>RDP488</board>
 			<memory>1024M32_DDR5</memory>
-			<memory_2048>1024M32_DDR5</memory_2048>
-			<memory_4096>1024M32_DDR5</memory_4096>
 			<layouts>default,vendor</layouts>
 			<fw_override>
 				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="10240KiB"/>
-				<profile-4096 layouts="default,vendor">
-					<bootldr_components>
-						<qcconfig>qcconfig-RDP488_1024M32_DDR5.elf</qcconfig>
-					</bootldr_components>
-				</profile-4096>
-				<profile-2048 layouts="default,vendor">
-					<bootldr_components>
-						<qcconfig>qcconfig-RDP488_1024M32_DDR5.elf</qcconfig>
-					</bootldr_components>
-				</profile-2048>
 				<profile-default layouts="default,vendor">
 					<bootldr_components>
 						<qcconfig>qcconfig-RDP488_1024M32_DDR5.elf</qcconfig>
@@ -204,31 +180,14 @@ SPDX-License-Identifier: ISC
 			<machid>0x8090001</machid>
 			<board>RDP506</board>
 			<memory>1024M32_DDR5</memory>
-			<memory_2048>1024M32_DDR5</memory_2048>
-			<memory_4096>1024M32_DDR5</memory_4096>
 			<layouts>default,vendor</layouts>
 			<fw_override>
 				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="10240KiB"/>
-				<profile-4096 layouts="default,vendor">
-					<bootldr_components>
-						<qcconfig>qcconfig-RDP506_1024M32_DDR5.elf</qcconfig>
-					</bootldr_components>
-				</profile-4096>
-				<profile-2048 layouts="default,vendor">
-					<bootldr_components>
-						<qcconfig>qcconfig-RDP506_1024M32_DDR5.elf</qcconfig>
-					</bootldr_components>
-				</profile-2048>
 				<profile-default layouts="default,vendor">
 					<bootldr_components>
 						<qcconfig>qcconfig-RDP506_1024M32_DDR5.elf</qcconfig>
 					</bootldr_components>
 				</profile-default>
-				<profile-512 layouts="default,vendor">
-					<bootldr_components>
-						<qcconfig>qcconfig-RDP506_1024M32_DDR5_LM512.elf</qcconfig>
-					</bootldr_components>
-				</profile-512>
 			</fw_override>
 		</entry>
 		<entry>
@@ -254,27 +213,9 @@ SPDX-License-Identifier: ISC
 			<machid>0x1090000</machid>
 			<board>DB-JU01</board>
 			<memory>1024M32_DDR5</memory>
-			<memory_2048>1024M32_DDR5</memory_2048>
-			<memory_4096>1024M32_DDR5</memory_4096>
-			<memory_8192>1024M32_DDR5</memory_8192>
 			<layouts>default,vendor</layouts>
 			<fw_override>
 				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="10240KiB"/>
-				<profile-8192 layouts="default,vendor">
-					<bootldr_components>
-						<qcconfig>qcconfig-DB-JU01_1024M32_DDR5.elf</qcconfig>
-					</bootldr_components>
-				</profile-8192>
-				<profile-4096 layouts="default,vendor">
-					<bootldr_components>
-						<qcconfig>qcconfig-DB-JU01_1024M32_DDR5.elf</qcconfig>
-					</bootldr_components>
-				</profile-4096>
-				<profile-2048 layouts="default,vendor">
-					<bootldr_components>
-						<qcconfig>qcconfig-DB-JU01_1024M32_DDR5.elf</qcconfig>
-					</bootldr_components>
-				</profile-2048>
 				<profile-default layouts="default,vendor">
 					<bootldr_components>
 						<qcconfig>qcconfig-DB-JU01_1024M32_DDR5.elf</qcconfig>
