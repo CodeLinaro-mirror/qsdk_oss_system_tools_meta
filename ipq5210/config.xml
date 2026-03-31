@@ -381,6 +381,42 @@ SPDX-License-Identifier: ISC
 			</fw_override>
 		</entry>
 		<entry>
+			<machid>0x8080400</machid>
+			<board>RDP511</board>
+			<memory>1024M16_DDR4</memory>
+			<layouts>default,vendor</layouts>
+			<fw_override>
+				<profile-512 layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP511_1024M16_DDR4_LM512.elf</qcconfig>
+					</bootldr_components>
+				</profile-512>
+				<profile-default layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP511_1024M16_DDR4.elf</qcconfig>
+					</bootldr_components>
+				</profile-default>
+			</fw_override>
+		</entry>
+		<entry>
+			<machid>0x8080401</machid>
+			<board>RDP512</board>
+			<memory>1024M16_DDR4</memory>
+			<layouts>default,vendor</layouts>
+			<fw_override>
+				<profile-512 layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP512_1024M16_DDR4_LM512.elf</qcconfig>
+					</bootldr_components>
+				</profile-512>
+				<profile-default layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP512_1024M16_DDR4.elf</qcconfig>
+					</bootldr_components>
+				</profile-default>
+			</fw_override>
+		</entry>
+		<entry>
 			<machid>0x1080000</machid>
 			<board>DB-HM01.1</board>
 			<memory>1024M16_DDR4</memory>
