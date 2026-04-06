@@ -24,7 +24,7 @@ SPDX-License-Identifier: ISC
 				<props name="magic_number" type="DALPROP_ATTR_TYPE_BYTE_SEQ">0x00, 0x52, 0x44, 0x44, end</props>
 				<props name="checksum" type="DALPROP_ATTR_TYPE_BYTE_SEQ">0xFF, 0xFF, 0x00, 0x00, end</props>
 				<props name="num_of_device" type="DALPROP_ATTR_TYPE_UINT32">1</props>
-				<props name="size_of_param" type="DALPROP_ATTR_TYPE_UINT32">340</props>
+				<props name="size_of_param" type="DALPROP_ATTR_TYPE_UINT32">344</props>
 				<props name="interleaved" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="OBT_Threshold" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="ODT_Threshold" type="DALPROP_ATTR_TYPE_UINT32">0</props>
@@ -77,8 +77,8 @@ SPDX-License-Identifier: ISC
 				<props name="features" type="DALPROP_ATTR_TYPE_UINT32">18</props>
 				<props name="low_power_ctrl" type="DALPROP_ATTR_TYPE_UINT32">1024</props>
 				<props name="ctl_long_count_param" type="DALPROP_ATTR_TYPE_UINT32">4194320</props>
-				<props name="pu_pd_params" type="DALPROP_ATTR_TYPE_UINT32">4292968474</props>
-				<props name="zqndr_zdata" type="DALPROP_ATTR_TYPE_UINT32">67043427</props>
+				<props name="pu_pd_params" type="DALPROP_ATTR_TYPE_UINT32">7454734</props>
+				<props name="zqndr_zdata" type="DALPROP_ATTR_TYPE_UINT32">657375</props>
 				<props name="mr0" type="DALPROP_ATTR_TYPE_UINT32">3408</props>
 				<props name="mr1" type="DALPROP_ATTR_TYPE_UINT32">1281</props>
 				<props name="mr2" type="DALPROP_ATTR_TYPE_UINT32">40</props>
@@ -117,6 +117,7 @@ SPDX-License-Identifier: ISC
 				<props name="tREFSBRD" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="tRx_DQS2DQ" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="num_bankgroups_cs0" type="DALPROP_ATTR_TYPE_UINT32">0</props>
+                                <props name="train_2d_opt" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="manufacture_name" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="ddr_type" type="DALPROP_ATTR_TYPE_UINT32">10</props>
 				<props name="num_rows_cs0" type="DALPROP_ATTR_TYPE_UINT32">16</props>
@@ -162,8 +163,8 @@ SPDX-License-Identifier: ISC
 				<props name="features" type="DALPROP_ATTR_TYPE_UINT32">18</props>
 				<props name="low_power_ctrl" type="DALPROP_ATTR_TYPE_UINT32">1024</props>
 				<props name="ctl_long_count_param" type="DALPROP_ATTR_TYPE_UINT32">4194320</props>
-				<props name="pu_pd_params" type="DALPROP_ATTR_TYPE_UINT32">4292968474</props>
-				<props name="zqndr_zdata" type="DALPROP_ATTR_TYPE_UINT32">67043427</props>
+				<props name="pu_pd_params" type="DALPROP_ATTR_TYPE_UINT32">7454734</props>
+				<props name="zqndr_zdata" type="DALPROP_ATTR_TYPE_UINT32">657375</props>
 				<props name="mr0" type="DALPROP_ATTR_TYPE_UINT32">3408</props>
 				<props name="mr1" type="DALPROP_ATTR_TYPE_UINT32">1281</props>
 				<props name="mr2" type="DALPROP_ATTR_TYPE_UINT32">40</props>
@@ -202,6 +203,7 @@ SPDX-License-Identifier: ISC
 				<props name="tREFSBRD" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="tRx_DQS2DQ" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="num_bankgroups_cs0" type="DALPROP_ATTR_TYPE_UINT32">0</props>
+                                <props name="train_2d_opt" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 			</device>
 		</driver>
 	</module>
