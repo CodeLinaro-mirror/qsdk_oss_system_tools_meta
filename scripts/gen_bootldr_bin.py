@@ -212,7 +212,7 @@ def main():
                     for device_size in sizes:
                         device_size.text = memory_profile
 
-                    if config_memory_type != "DDR4":
+                    if config_memory_type != "DDR4" and config_memory_type != "DDR5":
                         # Set row cs for Low Memory profiles
                         row_cs0 = root_cdt.findall(".//device[@id='cdb1']/props[@name='num_rows_cs0']")
                         for width in row_cs0:
