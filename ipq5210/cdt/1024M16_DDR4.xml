@@ -53,12 +53,12 @@ SPDX-License-Identifier: ISC
 				<props name="tXSR" type="DALPROP_ATTR_TYPE_UINT32">639998</props>
 				<props name="tXP" type="DALPROP_ATTR_TYPE_UINT32">6000</props>
 				<props name="tWTR" type="DALPROP_ATTR_TYPE_UINT32">2500</props>
-				<props name="tRP_AB" type="DALPROP_ATTR_TYPE_UINT32">14320</props>
+				<props name="tRP_AB" type="DALPROP_ATTR_TYPE_UINT32">13750</props>
 				<props name="tRRD" type="DALPROP_ATTR_TYPE_UINT32">5300</props>
 				<props name="tWR" type="DALPROP_ATTR_TYPE_UINT32">15000</props>
 				<props name="tCKE" type="DALPROP_ATTR_TYPE_UINT32">5000</props>
-				<props name="tRC" type="DALPROP_ATTR_TYPE_UINT32">46320</props>
-				<props name="tRCD" type="DALPROP_ATTR_TYPE_UINT32">14320</props>
+				<props name="tRC" type="DALPROP_ATTR_TYPE_UINT32">45750</props>
+				<props name="tRCD" type="DALPROP_ATTR_TYPE_UINT32">13750</props>
 				<props name="tFAW" type="DALPROP_ATTR_TYPE_UINT32">30000</props>
 				<props name="tRTP" type="DALPROP_ATTR_TYPE_UINT32">7500</props>
 				<props name="tZQoper" type="DALPROP_ATTR_TYPE_UINT32">512</props>
@@ -116,12 +116,12 @@ SPDX-License-Identifier: ISC
 				<props name="tXSR" type="DALPROP_ATTR_TYPE_UINT32">639998</props>
 				<props name="tXP" type="DALPROP_ATTR_TYPE_UINT32">6000</props>
 				<props name="tWTR" type="DALPROP_ATTR_TYPE_UINT32">2500</props>
-				<props name="tRP_AB" type="DALPROP_ATTR_TYPE_UINT32">14320</props>
+				<props name="tRP_AB" type="DALPROP_ATTR_TYPE_UINT32">13750</props>
 				<props name="tRRD" type="DALPROP_ATTR_TYPE_UINT32">5300</props>
 				<props name="tWR" type="DALPROP_ATTR_TYPE_UINT32">15000</props>
 				<props name="tCKE" type="DALPROP_ATTR_TYPE_UINT32">5000</props>
-				<props name="tRC" type="DALPROP_ATTR_TYPE_UINT32">46320</props>
-				<props name="tRCD" type="DALPROP_ATTR_TYPE_UINT32">14320</props>
+				<props name="tRC" type="DALPROP_ATTR_TYPE_UINT32">45750</props>
+				<props name="tRCD" type="DALPROP_ATTR_TYPE_UINT32">13750</props>
 				<props name="tFAW" type="DALPROP_ATTR_TYPE_UINT32">30000</props>
 				<props name="tRTP" type="DALPROP_ATTR_TYPE_UINT32">7500</props>
 				<props name="tZQoper" type="DALPROP_ATTR_TYPE_UINT32">512</props>
