@@ -312,8 +312,8 @@ image_type_mapping = {
 # Architecture mapping
 arch_meta_load_addr = {
     "ipq5424": "0x8cf4800",
-    "ipq5210": "0x8caf000",
-    "ipq9650": "0x8ce7000"
+    "ipq5210": "0x08cb8000",
+    "ipq9650": "0x08cf8000"
 }
 
 def handle_error(operation_name, e, default_return=False):
