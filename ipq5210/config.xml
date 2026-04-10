@@ -178,6 +178,8 @@ SPDX-License-Identifier: ISC
 					<bootldr_components>
 						<optee>tee-raw_lm.mbn</optee>
 						<qcconfig>qcconfig-RDP497_64M16_DDR3_LM128.elf</qcconfig>
+						<uboot flash="nand,nand-4k" mode="32">openwrt-ipq5210-ipq52xx_32-tiny_nand32-u-boot-rdp497.mbn</uboot>
+						<uboot flash="norplusnand,norplusnand-gpt,norplusnand-4k,norplusnand-4k-gpt" mode="32">openwrt-ipq5210-ipq52xx_32-tiny_norplusnand32-u-boot-rdp497.mbn</uboot>
 					</bootldr_components>
 				</profile-128>
 			</fw_override>
@@ -194,6 +196,8 @@ SPDX-License-Identifier: ISC
 					<bootldr_components>
 						<optee>tee-raw_lm.mbn</optee>
 						<qcconfig>qcconfig-RDP498_512M16_DDR4_LM256.elf</qcconfig>
+						<uboot flash="nand,nand-4k" mode="32">openwrt-ipq5210-ipq52xx_32-tiny_nand32-u-boot-rdp498.mbn</uboot>
+						<uboot flash="norplusnand,norplusnand-gpt,norplusnand-4k,norplusnand-4k-gpt" mode="32">openwrt-ipq5210-ipq52xx_32-tiny_norplusnand32-u-boot-rdp498.mbn</uboot>
 					</bootldr_components>
 				</profile-256>
 				<profile-512 layouts="default,vendor">
@@ -220,6 +224,8 @@ SPDX-License-Identifier: ISC
 					<bootldr_components>
 						<optee>tee-raw_lm.mbn</optee>
 						<qcconfig>qcconfig-RDP500_512M16_DDR4_LM256.elf</qcconfig>
+						<uboot flash="nand,nand-4k" mode="32">openwrt-ipq5210-ipq52xx_32-tiny_nand32-u-boot-rdp500.mbn</uboot>
+						<uboot flash="norplusnand,norplusnand-gpt,norplusnand-4k,norplusnand-4k-gpt" mode="32">openwrt-ipq5210-ipq52xx_32-tiny_norplusnand32-u-boot-rdp500.mbn</uboot>
 					</bootldr_components>
 				</profile-256>
 				<profile-512 layouts="default,vendor">
@@ -246,6 +252,8 @@ SPDX-License-Identifier: ISC
 					<bootldr_components>
 						<optee>tee-raw_lm.mbn</optee>
 						<qcconfig>qcconfig-RDP501_512M16_DDR4_LM256.elf</qcconfig>
+						<uboot flash="nand,nand-4k" mode="32">openwrt-ipq5210-ipq52xx_32-tiny_nand32-u-boot-rdp501.mbn</uboot>
+						<uboot flash="norplusnand,norplusnand-gpt,norplusnand-4k,norplusnand-4k-gpt" mode="32">openwrt-ipq5210-ipq52xx_32-tiny_norplusnand32-u-boot-rdp501.mbn</uboot>
 					</bootldr_components>
 				</profile-256>
 				<profile-512 layouts="default,vendor">
@@ -271,6 +279,8 @@ SPDX-License-Identifier: ISC
 					<bootldr_components>
 						<optee>tee-raw_lm.mbn</optee>
 						<qcconfig>qcconfig-RDP499_512M16_DDR4_LM256.elf</qcconfig>
+						<uboot flash="nand,nand-4k" mode="32">openwrt-ipq5210-ipq52xx_32-tiny_nand32-u-boot-rdp499.mbn</uboot>
+						<uboot flash="norplusnand,norplusnand-gpt,norplusnand-4k,norplusnand-4k-gpt" mode="32">openwrt-ipq5210-ipq52xx_32-tiny_norplusnand32-u-boot-rdp499.mbn</uboot>
 					</bootldr_components>
 				</profile-256>
 				<profile-512 layouts="default,vendor">
@@ -296,6 +306,8 @@ SPDX-License-Identifier: ISC
 					<bootldr_components>
 						<optee>tee-raw_lm.mbn</optee>
 						<qcconfig>qcconfig-RDP502_512M16_DDR4_LM256.elf</qcconfig>
+						<uboot flash="nand,nand-4k" mode="32">openwrt-ipq5210-ipq52xx_32-tiny_nand32-u-boot-rdp502.mbn</uboot>
+						<uboot flash="norplusnand,norplusnand-gpt,norplusnand-4k,norplusnand-4k-gpt" mode="32">openwrt-ipq5210-ipq52xx_32-tiny_norplusnand32-u-boot-rdp502.mbn</uboot>
 					</bootldr_components>
 				</profile-256>
 				<profile-512 layouts="default,vendor">
@@ -321,6 +333,8 @@ SPDX-License-Identifier: ISC
 					<bootldr_components>
 						<optee>tee-raw_lm.mbn</optee>
 						<qcconfig>qcconfig-RDP503_512M16_DDR4_LM256.elf</qcconfig>
+						<uboot flash="nand,nand-4k" mode="32">openwrt-ipq5210-ipq52xx_32-tiny_nand32-u-boot-rdp503.mbn</uboot>
+						<uboot flash="norplusnand,norplusnand-gpt,norplusnand-4k,norplusnand-4k-gpt" mode="32">openwrt-ipq5210-ipq52xx_32-tiny_norplusnand32-u-boot-rdp503.mbn</uboot>
 					</bootldr_components>
 				</profile-256>
 				<profile-512 layouts="default,vendor">
@@ -346,6 +360,8 @@ SPDX-License-Identifier: ISC
 					<bootldr_components>
 						<optee>tee-raw_lm.mbn</optee>
 						<qcconfig>qcconfig-RDP504_512M16_DDR4_LM256.elf</qcconfig>
+						<uboot flash="nand,nand-4k" mode="32">openwrt-ipq5210-ipq52xx_32-tiny_nand32-u-boot-rdp504.mbn</uboot>
+						<uboot flash="norplusnand,norplusnand-gpt,norplusnand-4k,norplusnand-4k-gpt" mode="32">openwrt-ipq5210-ipq52xx_32-tiny_norplusnand32-u-boot-rdp504.mbn</uboot>
 					</bootldr_components>
 				</profile-256>
 				<profile-512 layouts="default,vendor">
@@ -371,6 +387,8 @@ SPDX-License-Identifier: ISC
 					<bootldr_components>
 						<optee>tee-raw_lm.mbn</optee>
 						<qcconfig>qcconfig-RDP505_256M16_DDR3_LM256.elf</qcconfig>
+						<uboot flash="nand,nand-4k" mode="32">openwrt-ipq5210-ipq52xx_32-tiny_nand32-u-boot-rdp505.mbn</uboot>
+						<uboot flash="norplusnand,norplusnand-gpt,norplusnand-4k,norplusnand-4k-gpt" mode="32">openwrt-ipq5210-ipq52xx_32-tiny_norplusnand32-u-boot-rdp505.mbn</uboot>
 					</bootldr_components>
 				</profile-256>
 				<profile-512 layouts="vendor,128M">
