@@ -7,20 +7,22 @@
 #
 # Example Usage:
 # -------------
-# Using conditional template:
+# Using conditional template :
 # python gen_its.py --template template.its \
 #                  --arch ipq9650 \
-#                  --qclib_path qclib_with_zi_init.elf \
-#                  --qcconfig_path xblconfig-DB-MR01.1_512M32_DDR4_align64.elf \
-#                  --tfa_bl31_path bl31.mbn \
+#                  --qclib_path qclib.elf \
+#                  --qcconfig_path qcconfig.elf \
+#                  --tfa_bl31.mbn \
 #                  --uboot_path openwrt-ipq5200-generic-mmc-u-boot.mbn \
-#                  --optee_path tee-raw.mbn \
+#                  --optee_path tee-pager_v2.mbn \
 #                  --dtb_path u-boot.dtb \
+#                  --dpr dpr.elf \
 #                  --output ./new_out/boot_loader.img
 #
 # This will create boot_loader.its and boot_loader.img in the ./new_out directory
 #
 # Note: All component paths (qclib_path, qcconfig_path, tfa_bl31_path, uboot_path, optee_path) are required.
+# Optional paths: --dtb_path (Device Tree Blob), --dpr (DPR ELF, loaded as a whole image before qcconfig).
 # The script will always process templates with conditional statements (#define) and replace placeholders.
 # This script is compatible with both Python 2.7 and Python 3.
 
@@ -58,7 +60,8 @@ class TemplateManager:
             'HAVE_TFA_BL31': 0,
             'HAVE_UBOOT': 0,
             'HAVE_OPTEE': 0,
-            'HAVE_FDT': 0
+            'HAVE_FDT': 0,
+            'HAVE_DPR': 0
         }
         self.placeholders = {}
         self.is_conditional = True
@@ -714,6 +717,17 @@ class FitImageGenerator:
                 return False
             self.parsers[component_name] = parser
 
+        # Handle DPR: copy the whole ELF to the output directory (no segment splitting)
+        if self.args.dpr_path:
+            dpr_basename = os.path.basename(self.args.dpr_path)
+            output_dpr_path = os.path.join(self.output_dir, dpr_basename)
+            try:
+                shutil.copy2(self.args.dpr_path, output_dpr_path)
+                self.temp_files.append(output_dpr_path)
+                print("Copied DPR ELF to output directory: {0}".format(dpr_basename))
+            except (IOError, OSError) as e:
+                return handle_error("copying DPR ELF file", e, False)
+
         return True
 
     def generate_its_file(self):
@@ -792,6 +806,20 @@ class FitImageGenerator:
         if 'uboot' in self.parsers:
             uboot_arch = self.parsers['uboot'].get_architecture()
             self.template_manager.set_placeholder("UBOOT_ARCH", uboot_arch)
+
+        # Handle DPR if provided: enable the conditional block and set placeholders
+        if self.args.dpr_path:
+            dpr_basename = os.path.basename(self.args.dpr_path)
+            self.template_manager.set_component_availability("DPR", True)
+            self.template_manager.set_placeholder("DPR_FILENAME", dpr_basename)
+            # Use the same load address as qcconfig segment 1
+            if 'qcconfig' in self.parsers and self.parsers['qcconfig'].get_load_segments():
+                dpr_load_addr = self.parsers['qcconfig'].get_load_segments()[0]['load_address']
+                self.template_manager.set_placeholder("DPR_LOAD_ADDR", dpr_load_addr)
+                print("DPR load address set to: {0} (same as qcconfig)".format(dpr_load_addr))
+            else:
+                print("Error: qcconfig load segments not available to derive DPR load address")
+                return False
 
         # Update the template with load addresses and placeholders
         # Note: For conditional templates, only load address updates are needed.
@@ -905,6 +933,9 @@ def main():
     parser.add_argument('-o', '--output', type=str, required=True,
                         help="Output file path and name (e.g., './out_path/bootldr.img')")
     parser.add_argument('--dtb_path', type=str, help="Path to Device Tree Blob (DTB) file")
+    parser.add_argument('--dpr', dest='dpr_path', type=str, default=None,
+                        help="Path to DPR ELF file (optional). When provided, the entire ELF is "
+                             "included as a single image in the FIT before qcconfig.")
 
     args = parser.parse_args()
 
@@ -935,7 +966,8 @@ def main():
         ('tfa_bl31_path', args.tfa_bl31_path),
         ('uboot_path', args.uboot_path),
         ('optee_path', args.optee_path),
-        ('dtb_path', args.dtb_path)
+        ('dtb_path', args.dtb_path),
+        ('dpr_path', args.dpr_path)
     ]:
         if file_path:
             # Validate and sanitize the path
