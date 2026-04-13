@@ -22,6 +22,16 @@ SPDX-License-Identifier: ISC
 	<!-- NOTE: If OPTIMIZE_READONLY_PARTITIONS=true, then partitions won't be in the order listed here -->
 	<!--       they will instead be placed side by side at the beginning of the disk -->
 	<partition
+		label="0:PONCAL"
+		size_in_kb="4096"
+		type="3e4e7dc9-96d5-4b36-ab65-fc70aa30d882"
+		bootable="false"
+		readonly="false"
+		image_type = "hlos"
+		optional="true"
+		filename=""
+		/>
+	<partition
 		label="0:WIFIFW"
 		size_in_kb="16384"
 		type="5911fd72-35be-424e-975d-69c957ad3a43"

@@ -88,6 +88,15 @@ SPDX-License-Identifier: ISC
 		flash_type="nor"
 		/>
 	<partition
+		label="0:PONCAL"
+		size_in_kb="2048"
+		type="e6e98da2-e22a-4d12-ab33-169e7deaa507"
+		bootable="false"
+		readonly="false"
+		filename=""
+		flash_type="nand"
+		/>
+	<partition
 		label="0:TRAINING"
 		size_in_kb="512"
 		type="E03C44C5-6BEC-4DE3-B7D1-ED7320E695ED"
@@ -262,6 +271,15 @@ SPDX-License-Identifier: ISC
 		readonly="false"
 		filename=""
 		flash_type="nor"
+		/>
+	<partition
+		label="0:PONCAL"
+		size_in_kb="4096"
+		type="e6e98da2-e22a-4d12-ab33-169e7deaa507"
+		bootable="false"
+		readonly="false"
+		filename=""
+		flash_type="nand"
 		/>
 	<partition
 		label="0:TRAINING"
