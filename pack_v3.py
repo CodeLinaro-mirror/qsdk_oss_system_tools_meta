@@ -1620,6 +1620,48 @@ class Pack(object):
                 f1.close()
                 f2.close()
 
+            current_section = None
+            for line in open(UBINIZE_CFG_NAME, 'r'):
+                stripped = line.strip()
+                # Check if the line is a section header (e.g., [prime_fw])
+                if stripped.startswith('[') and stripped.endswith(']'):
+                    current_section = stripped[1:-1]
+                    print("DEBUG: current_section = '%s'" % current_section)
+                # Only process the image entry inside the prime_fw section
+                if current_section == 'prime_fw' and stripped.startswith('image='):
+                    print("DEBUG: found prime_fw image line = '%s'" % stripped)
+                    img_path = stripped.split('=', 1)[1]
+                    print("DEBUG: img_path = '%s'" % img_path)
+                    print("DEBUG: file exists = %s" % os.path.isfile(img_path))
+                    if os.path.isfile(img_path):
+                        img_size = os.path.getsize(img_path)
+                        print("DEBUG: img_size = %d" % img_size)
+                        print("DEBUG: img_size %% 4096 = %d" % (img_size % 4096))
+                        # Check if the file size is not aligned to a 4096-byte boundary
+                        if img_size % 4096 != 0:
+                            # Use a temporary file to write the padded version
+                            print("DEBUG: image is not 4K aligned, padding required")
+                            padded_path = img_path + '.padded'
+                            print("DEBUG: padded_path = '%s'" % padded_path)
+                            cmd = 'dd if=%s of=%s bs=4096 conv=sync' % (img_path, padded_path)
+                            print("DEBUG: running cmd = %s" % cmd)
+                            ret = subprocess.call(cmd, shell=True)
+                            print("DEBUG: ret = %d" % ret)
+                            if ret != 0:
+                                print("DEBUG: padding command failed")
+                                error("failed to pad prime_fw image '%s'" % img_path)
+                            # Replace the original file with the padded version
+                            os.rename(padded_path, img_path)
+                            print("DEBUG: new img_size = %d" % os.path.getsize(img_path))
+                            print("Padded prime_fw from %d to %d bytes" % (
+                                       img_size, os.path.getsize(img_path)))
+                        else:
+                            print("DEBUG: image is already 4K aligned, skipping padding")
+                    else:
+                         print("DEBUG: image file does not exist: '%s'" % img_path)
+                    # Stop reading the file once the prime_fw image entry is found
+                    break
+
             part_file = SRC_DIR + "/" + ARCH_NAME + "/flash_partition/" + ftype + "-partition"+ layout_name +".xml"
             print("#################", sys._getframe(0).f_code.co_name, sys._getframe(0).f_lineno, part_file)
 
