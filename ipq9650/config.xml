@@ -161,6 +161,7 @@ SPDX-License-Identifier: ISC
 			<machid>0x8090000</machid>
 			<board>RDP488</board>
 			<memory>1024M32_DDR5</memory>
+			<memory_2048>1024M32_DDR5</memory_2048>
 			<layouts>default,vendor</layouts>
 			<fw_override>
 				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="10240KiB"/>
@@ -169,6 +170,11 @@ SPDX-License-Identifier: ISC
 						<qcconfig>qcconfig-RDP488_1024M32_DDR5.elf</qcconfig>
 					</bootldr_components>
 				</profile-default>
+				<profile-2048 layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP488_1024M32_DDR5_LM2048.elf</qcconfig>
+					</bootldr_components>
+				</profile-2048>
 				<profile-512 layouts="default,vendor">
 					<bootldr_components>
 						<qcconfig>qcconfig-RDP488_1024M32_DDR5_LM512.elf</qcconfig>
@@ -180,6 +186,7 @@ SPDX-License-Identifier: ISC
 			<machid>0x8090001</machid>
 			<board>RDP506</board>
 			<memory>1024M32_DDR5</memory>
+			<memory_2048>1024M32_DDR5</memory_2048>
 			<layouts>default,vendor</layouts>
 			<fw_override>
 				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="10240KiB"/>
@@ -188,6 +195,11 @@ SPDX-License-Identifier: ISC
 						<qcconfig>qcconfig-RDP506_1024M32_DDR5.elf</qcconfig>
 					</bootldr_components>
 				</profile-default>
+				<profile-2048 layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP506_1024M32_DDR5_LM2048.elf</qcconfig>
+					</bootldr_components>
+				</profile-2048>
 			</fw_override>
 		</entry>
 		<entry>
@@ -213,6 +225,7 @@ SPDX-License-Identifier: ISC
 			<machid>0x1090000</machid>
 			<board>DB-JU01</board>
 			<memory>1024M32_DDR5</memory>
+			<memory_2048>1024M32_DDR5</memory_2048>
 			<layouts>default,vendor</layouts>
 			<fw_override>
 				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="10240KiB"/>
@@ -221,6 +234,11 @@ SPDX-License-Identifier: ISC
 						<qcconfig>qcconfig-DB-JU01_1024M32_DDR5.elf</qcconfig>
 					</bootldr_components>
 				</profile-default>
+				<profile-2048 layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-DB-JU01_1024M32_DDR5_LM2048.elf</qcconfig>
+					</bootldr_components>
+				</profile-2048>
 				<profile-512 layouts="default,vendor">
 					<bootldr_components>
 						<qcconfig>qcconfig-DB-JU01_1024M32_DDR5_LM512.elf</qcconfig>

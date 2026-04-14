@@ -234,17 +234,17 @@ def main():
                     for device_size in sizes:
                         device_size.text = memory_profile
 
-                if config_memory_type != "DDR4":
-                    # Set row cs for Low Memory profiles
-                    row_cs0 = root_cdt.findall(".//device[@id='cdb1']/props[@name='num_rows_cs0']")
-                    for width in row_cs0:
-                        width.text = str(int(width.text) - diff_rows_cs)
-                        print("!!!!num_rows_cs0!!!" + width.text)
+                    if config_memory_type != "DDR4" and config_memory_type != "DDR5":
+                        # Set row cs for Low Memory profiles
+                        row_cs0 = root_cdt.findall(".//device[@id='cdb1']/props[@name='num_rows_cs0']")
+                        for width in row_cs0:
+                            width.text = str(int(width.text) - diff_rows_cs)
+                            print("!!!!num_rows_cs0!!!" + width.text)
 
-                    row_cs1 = root_cdt.findall(".//device[@id='cdb1']/props[@name='num_rows_cs1']")
-                    for width in row_cs1:
-                        width.text = str(int(width.text) - diff_rows_cs)
-                        print("!!!!num_rows_cs1!!!" + width.text)
+                        row_cs1 = root_cdt.findall(".//device[@id='cdb1']/props[@name='num_rows_cs1']")
+                        for width in row_cs1:
+                            width.text = str(int(width.text) - diff_rows_cs)
+                            print("!!!!num_rows_cs1!!!" + width.text)
 
                 tree_cdt_xml.write(os.path.join(srcDir, board.text + "_" + \
                                     memory.text + "_LM" + memory_profile + ".xml"))
