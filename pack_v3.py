@@ -1400,7 +1400,14 @@ class Pack(object):
                 bootldr_override = override_cfg.find(".//bootldr_components")
                 if bootldr_override is not None:
                     for component in bootldr_override:
-                        bootldr_components[component.tag] = component.text
+                        tag_ftype = component.get("flash")
+                        tag_mode = component.get("mode")
+                        if tag_ftype != None and tag_mode != None:
+                            tag_ftype = tag_ftype.split(",")
+                            if self.flash_type in tag_ftype and tag_mode == MODE:
+                                bootldr_components[component.tag] = component.text
+                        else:
+                            bootldr_components[component.tag] = component.text
 
             # Check if we need to generate a bootldr image
             bootldr_part = None
