@@ -89,7 +89,7 @@ SPDX-License-Identifier: ISC
 <!-- NAND Partition Informations -->
                 <partition>
                         <name length="16" type="string">0:PONCAL</name>
-                        <size_kb length="4">2048</size_kb>
+                        <size_kb length="4">4096</size_kb>
                         <pad_kb length="2">0</pad_kb>
                         <which_flash length="2">1</which_flash>
                         <attr>0xFF</attr>
