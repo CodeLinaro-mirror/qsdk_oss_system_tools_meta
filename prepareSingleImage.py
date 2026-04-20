@@ -132,9 +132,10 @@ def print_help():
     print("\t\tThis Argument does not take any value")
     print("\t\te.g python prepareSingleImage.py --gentfambn\n\n")
 
-    print("--genopteembn \t\tWhether optee elf to be converted to mbn")
+    print("--genopteembn \t\tWhether optee bin to be converted to mbn")
     print("\t\tIf not specified optee mbn will not be generated")
     print("\t\tThis is currently used/needed only for IPQ5210, IPQ9650")
+    print("\t\tAuto-generates single-segment ELF from .bin files with chipset load addresses")
     print("\t\tThis Argument does not take any value")
     print("\t\te.g python prepareSingleImage.py --genopteembn\n\n")
 
@@ -677,11 +678,82 @@ def gen_tfa_mbn():
 
 def gen_optee_mbn():
     global srcDir
+    global inDir
+
+    tee_elf_path = inDir + "/tee.elf"
+
+    if not os.path.exists(tee_elf_path):
+        print("ERROR: tee.elf not found in " + inDir)
+        return -1
+
+    print("Found tee.elf, extracting entry point...")
+    cmd = "readelf -h %s | grep Entry | awk -F ' ' '{print $4}'" % tee_elf_path
+    prc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
+    entry_point, err = prc.communicate()
+    if err is not None:
+        print("ERROR: Failed to parse entry point from tee.elf")
+        return -1
+
+    if sys.version_info.major >= 3:
+        entry_point = entry_point.decode("utf-8").strip()
+    load_address = entry_point.strip()
+    print("Using entry point from tee.elf: " + load_address)
+
+    # Check for .bin files and generate corresponding .elf files
+    bin_files = ['tee-raw.bin', 'tee-raw_lm.bin']
+
+    for bin_file in bin_files:
+        bin_path = inDir + "/" + bin_file
+
+        if os.path.exists(bin_path):
+            print("Found " + bin_file + ", generating single segment ELF...")
+
+            # Create linker script content
+            ld_content = """ENTRY(_entry)
+SECTIONS
+{
+    . = %s;
+
+    _entry = . ;
+
+    .data : {
+        *(.data)
+    }
+}
+""" % load_address
+
+            # Write linker script to file
+            ld_file = inDir + "/optee-" + bin_file.replace('.bin', '.ld')
+            try:
+                with open(ld_file, 'w') as f:
+                    f.write(ld_content)
+                print("Created linker script: " + ld_file)
+            except IOError as e:
+                print("ERROR: Failed to create linker script: " + str(e))
+                continue
+
+            obj_file = inDir + "/" + bin_file.replace('.bin', '_out.o')
+            elf_file_name = bin_file.replace('.bin', '.elf')
+            elf_path = inDir + "/" + elf_file_name
+
+            cmd = ['objcopy', '-I', 'binary', '-O', 'elf64-x86-64', '--binary-architecture', 'i386:x86-64', bin_path, obj_file]
+            ret = subprocess.call(cmd)
+            if ret != 0:
+                print("ERROR: Failed to convert " + bin_file + " to object file")
+                return -1
+
+            cmd = ['ld', '-m', 'elf_x86_64', obj_file, '-T', ld_file, '-o', elf_path]
+            ret = subprocess.call(cmd)
+            if ret != 0:
+                print("ERROR: Failed to link " + elf_file_name)
+                return -1
+
+            print("Successfully created " + elf_file_name + " from " + bin_file)
 
     bootconfig_path = srcDir + '/elftombn.py'
     print("Converting OPTEE elf to mbn ...")
 
-    optee_files = ['tee-pager_v2.elf', 'tee-raw.elf', 'tee-raw_lm.elf']
+    optee_files = ['tee-raw.elf', 'tee-raw_lm.elf']
 
     for elf_file in optee_files:
         elf_path = inDir + "/" + elf_file
@@ -719,7 +791,7 @@ def cleanup_intermediate_files():
         "*_phdr.pbn",       # Program header binary files
         "*_out.o",          # Object files from objcopy (~900KB+ each)
         "*_wrapped.elf",    # Wrapped ELF files from linker (~900KB+ each)
-        "uboot.ld",         # Temporary linker script
+        "*.ld",             # Temporary linker script
         "comfile0",         # Uncompressed intermediate file
         "comfile0.lzma",    # LZMA compressed intermediate file
         "*.bak"             # Backup files from sed operations
