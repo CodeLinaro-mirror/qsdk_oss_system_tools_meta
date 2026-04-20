@@ -84,6 +84,14 @@ SPDX-License-Identifier: ISC
 			<nand_pages_per_block>64</nand_pages_per_block>
 			<nand_total_block>4096</nand_total_block>
 		</entry>
+		<entry type="2k" layout="128M">
+			<page_size>256</page_size>
+			<pages_per_block>256</pages_per_block>
+			<total_block>256</total_block>
+			<nand_page_size>2048</nand_page_size>
+			<nand_pages_per_block>64</nand_pages_per_block>
+			<nand_total_block>1024</nand_total_block>
+		</entry>
 	</data>
 
 	<data type="NORPLUSEMMC_PARAMETER">
@@ -113,6 +121,13 @@ SPDX-License-Identifier: ISC
 				<total_block>4096</total_block>
 				<partition_mbn>norplusnand_4k_gpt_main.bin</partition_mbn>
 				<partition_mbn_backup>norplusnand_4k_gpt_backup.bin</partition_mbn_backup>
+			</entry>
+		</entry>
+		<entry type="2k" layout="128M">
+			<entry physical_partition="3">
+				<total_block>4096</total_block>
+				<partition_mbn>norplusnand_128M_gpt_main.bin</partition_mbn>
+				<partition_mbn_backup>norplusnand_128M_gpt_backup.bin</partition_mbn_backup>
 			</entry>
 		</entry>
 	</data>

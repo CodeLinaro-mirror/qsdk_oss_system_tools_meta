@@ -971,14 +971,15 @@ class Pack(object):
         images -- list of ImageInfo, append images used by the board here
         """
 
+        iftype = self.flash_type
         erase_only = "false"
-        if "nand" in ftype:
-            if "4k" in ftype:
+        if "nand" in iftype:
+            if "4k" in iftype:
                 list_entry = ".//data[@type='NORPLUSNAND-GPT_PARAMETER']/entry[@type='4k']"
             else:
                 list_entry = ".//data[@type='NORPLUSNAND-GPT_PARAMETER']/entry[@type='2k']"
         else:
-            list_entry = ".//data[@type='" + self.flash_type.upper() + "_PARAMETER']/entry"
+            list_entry = ".//data[@type='" + iftype.upper() + "_PARAMETER']/entry"
 
         print("#################", sys._getframe(0).f_code.co_name, sys._getframe(0).f_lineno, list_entry)
         entries = root.findall(list_entry)
@@ -995,17 +996,26 @@ class Pack(object):
                 print("#################", sys._getframe(0).f_code.co_name, sys._getframe(0).f_lineno, layout, gpt_type)
                 if gpt_type == None:
                     gpt_type = ""
-                    part_ref = ".//physical_partition[@ref='" + ftype + "']/partition"
+                    # Check if layout-specific partition file exists, else default
+                    if layout_name != "":
+                        part_ref = ".//physical_partition[@ref='" + iftype + layout_name + "']/partition"
+                    else:
+                        part_ref = ".//physical_partition[@ref='" + iftype + "']/partition"
                 else:
-                    part_ref = ".//physical_partition[@ref='" + gpt_type + "']/partition"
+                    # Check if layout-specific partition file exists, else default
+                    if layout_name != "":
+                        part_ref = ".//physical_partition[@ref='" + gpt_type + layout_name + "']/partition"
+                    else:
+                        part_ref = ".//physical_partition[@ref='" + gpt_type + "']/partition"
                 print("#################", sys._getframe(0).f_code.co_name, sys._getframe(0).f_lineno, part_ref)
 
-                if ftype in [ "norplusnand-gpt" , "norplusnand-4k-gpt" , "norplusemmc-gpt" ]:
+                if iftype in [ "norplusnand-gpt" , "norplusnand-4k-gpt" , "norplusemmc-gpt" ]:
                     pagesize = self.nor_gpt_page_size
                     blocksize = self.nor_gpt_block_size
-                    part_file = SRC_DIR + "/" + ARCH_NAME + "/flash_partition/nor-gpt-partition" + layout_name + ".xml"
+                    # Always use nor-gpt-partition.xml (single file with all layouts)
+                    part_file = SRC_DIR + "/" + ARCH_NAME + "/flash_partition/nor-gpt-partition.xml"
                     ftype = "nor-gpt"
-                elif ftype == "norplusemmc":
+                elif iftype == "norplusemmc":
                     pagesize = int(part_info.find(".//page_size_flash").text)
                     blocksize = self.emmc_block_size
                     part_file = SRC_DIR + "/" + ARCH_NAME + "/flash_partition/sec-emmc-partition" + layout_name + ".xml"
@@ -1017,7 +1027,7 @@ class Pack(object):
 
                 chipsize = int(part_info.find(".//total_block").text)
 
-                print("#################", sys._getframe(0).f_code.co_name, sys._getframe(0).f_lineno, part_file, self.flash_type, part_file)
+                print("#################", sys._getframe(0).f_code.co_name, sys._getframe(0).f_lineno, part_file, iftype, part_file)
                 part_xml = ET.parse(part_file)
 
                 flinfo = FlashInfo(ftype, pagesize, blocksize, chipsize)
@@ -1132,7 +1142,7 @@ class Pack(object):
                     except KeyError as e:
                         pass
 
-                if self.flash_type != "norplusemmc":
+                if iftype != "norplusemmc":
                     images[layout] = dict()
                     images[layout]["part_info"] = part_img_map
                     images[layout]["flinfo"] = flinfo

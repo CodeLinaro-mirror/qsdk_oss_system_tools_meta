@@ -312,4 +312,116 @@ SPDX-License-Identifier: ISC
 		flash_type="nand"
 		/>
 	</physical_partition>
+
+<!-- This is physical partition 3 - norplusnand-gpt with 128M NAND -->
+	<physical_partition ref="norplusnand-gpt-128M">
+	<!-- NOTE: Define information for each partition, which will be created in order listed here -->
+	<!-- NOTE: Place all "readonly=true" partitions side by side for optimum space usage -->
+	<!-- NOTE: If OPTIMIZE_READONLY_PARTITIONS=true, then partitions won't be in the order listed here -->
+	<!--       they will instead be placed side by side at the beginning of the disk -->
+
+	<partition
+		label="0:SPL"
+		size_in_kb="832"
+		type="DEA0BA2C-CBDD-4805-B4F9-F428251C3E98"
+		bootable="false"
+		readonly="false"
+		filename="u-boot-spl.melf"
+		flash_type="nor"
+		/>
+	<partition
+		label="0:SPL_1"
+		size_in_kb="832"
+		type="7A3DF1A3-A31A-454D-BD78-DF259ED486BE"
+		bootable="false"
+		readonly="false"
+		filename=""
+		flash_type="nor"
+		/>
+	<partition
+		label="0:ART"
+		size_in_kb="1536"
+		type="A72E50C1-D37C-429D-9620-35FCA612B9A8"
+		bootable="false"
+		readonly="false"
+		filename=""
+		flash_type="nor"
+		/>
+	<partition
+		label="0:BOOTLDR"
+		size_in_kb="4352"
+		type="A053AA7F-40B8-4B1C-BA08-2F68AC71A4F4"
+		bootable="false"
+		readonly="false"
+		filename_32=""
+		filename_64=""
+		flash_type="nor"
+		/>
+	<partition
+		label="0:BOOTLDR_1"
+		size_in_kb="4352"
+		type="A6DD74A1-C8BF-4DBC-AE39-62B8E78C4038"
+		bootable="false"
+		readonly="false"
+		filename=""
+		flash_type="nor"
+		/>
+	<partition
+		label="0:APPSBLENV"
+		size_in_kb="64"
+		type="300FFDCD-22E0-47E7-9A23-F16ED9382387"
+		bootable="false"
+		readonly="false"
+		filename=""
+		flash_type="nor"
+		/>
+	<partition
+		label="0:LICENSE"
+		size_in_kb="128"
+		type="a7a81a61-66ce-c908-f4a2-82d39d2aff57"
+		bootable="false"
+		readonly="false"
+		filename=""
+		flash_type="nor"
+		/>
+	<partition
+		label="0:PONCAL"
+		size_in_kb="4096"
+		type="e6e98da2-e22a-4d12-ab33-169e7deaa507"
+		bootable="false"
+		readonly="false"
+		filename=""
+		flash_type="nand"
+		/>
+	<partition
+		label="0:TRAINING"
+		size_in_kb="512"
+		type="E03C44C5-6BEC-4DE3-B7D1-ED7320E695ED"
+		bootable="false"
+		readonly="false"
+		filename=""
+		flash_type="nand"
+		/>
+	<partition
+		label="rootfs"
+		size_in_kb="59392"
+		type="98D2248D-7140-449F-A954-39D67BD6C3B4"
+		bootable="false"
+		readonly="false"
+		diff_files = "true"
+		image_type = "hlos"
+		filename_32="openwrt-ipq52xx-ipq52xx_32-ubi-root-KERNEL_DTB_NAME-128M.img"
+		filename_64="openwrt-ipq52xx-generic-ubi-root-KERNEL_DTB_NAME-128M.img"
+		flash_type="nand"
+		/>
+	<partition
+		label="rootfs_1"
+		size_in_kb="59392"
+		type="5647B280-DC2A-485D-9913-CF53AC40FA32"
+		bootable="false"
+		readonly="false"
+		filename=""
+		flash_type="nand"
+		/>
+	</physical_partition>
 </configuration>
