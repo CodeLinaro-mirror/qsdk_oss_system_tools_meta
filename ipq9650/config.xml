@@ -247,6 +247,25 @@ SPDX-License-Identifier: ISC
 			</fw_override>
 		</entry>
 		<entry>
+			<machid>0x1090001</machid>
+			<board>DB-JU01-C1</board>
+			<memory>1024M32_DDR5</memory>
+			<layouts>default,vendor</layouts>
+			<fw_override>
+				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="10240KiB"/>
+				<profile-default layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-DB-JU01-C1_1024M32_DDR5.elf</qcconfig>
+					</bootldr_components>
+				</profile-default>
+				<profile-512 layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-DB-JU01-C1_1024M32_DDR5_LM512.elf</qcconfig>
+					</bootldr_components>
+				</profile-512>
+			</fw_override>
+		</entry>
+		<entry>
 			<machid>0x1090100</machid>
 			<board>DB-JU02</board>
 			<memory>256M32_DDR4</memory>
