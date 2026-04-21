@@ -88,7 +88,7 @@ def main():
     genqccfg = False
     if len(sys.argv) > 1:
         try:
-            opts, args = getopt(sys.argv[1:], "c:o:m:", ["dtc_path=", "genqccfg"])
+            opts, args = getopt(sys.argv[1:], "c:o:m:", ["dtc_path=", "genqccfg", "mbnv="])
         except GetoptError as e:
             print("config file and output path are needed to generate xblcfg files")
             raise
@@ -103,6 +103,8 @@ def main():
                 dtcDir =  value
             elif option == "--genqccfg":
                 genqccfg = True
+            elif option == "--mbnv":
+                mbn_version = value
     else:
         print("config file and output path are needed to generate xblcfg files")
         return -1
@@ -275,8 +277,8 @@ def main():
 
             #elf2mbn conversion
             bootconfig_path = cdir +'/scripts' + '/elftombn.py'
-            print("Converting xbconfig elf to mbn ...")
-            cmd = ['python', bootconfig_path, '-a', ARCH_NAME, '-f', outfile_xblconfig, '-o', cdir + "/" + out_xblconfig + ".elf", '-v', "7", '-s', "37"]
+            print("Converting xbconfig elf to mbn using MBN version " + mbn_version + " ...")
+            cmd = ['python', bootconfig_path, '-a', ARCH_NAME, '-f', outfile_xblconfig, '-o', cdir + "/" + out_xblconfig + ".elf", '-v', mbn_version, '-s', "37"]
             print(cmd)
             prc = subprocess.Popen(cmd, cwd=cdir)
             prc.wait()
