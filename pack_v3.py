@@ -997,16 +997,13 @@ class Pack(object):
                 if gpt_type == None:
                     gpt_type = ""
                     # Check if layout-specific partition file exists, else default
-                    if layout_name != "":
+                    if iftype in [ "norplusnand-gpt" , "norplusnand-4k-gpt" , "norplusemmc-gpt" ]:
                         part_ref = ".//physical_partition[@ref='" + iftype + layout_name + "']/partition"
                     else:
                         part_ref = ".//physical_partition[@ref='" + iftype + "']/partition"
                 else:
-                    # Check if layout-specific partition file exists, else default
-                    if layout_name != "":
-                        part_ref = ".//physical_partition[@ref='" + gpt_type + layout_name + "']/partition"
-                    else:
-                        part_ref = ".//physical_partition[@ref='" + gpt_type + "']/partition"
+                    # For emmc-vendor flash type
+                    part_ref = ".//physical_partition[@ref='" + gpt_type + "']/partition"
                 print("#################", sys._getframe(0).f_code.co_name, sys._getframe(0).f_lineno, part_ref)
 
                 if iftype in [ "norplusnand-gpt" , "norplusnand-4k-gpt" , "norplusemmc-gpt" ]:
