@@ -143,7 +143,7 @@ SPDX-License-Identifier: ISC
 	</data>
 
 	<data type="BOOTLDR_COMPONENTS">
-		<qclib>QCLib.elf</qclib>
+		<qclib>QCLib.mbn</qclib>
 		<tfa_bl31>bl31.mbn</tfa_bl31>
 		<optee>tee-raw.mbn</optee>
 		<uboot flash="emmc" mode="32">openwrt-ipq5210-ipq52xx_32-mmc32-u-boot-UBOOT_DTB_NAME.mbn</uboot>
