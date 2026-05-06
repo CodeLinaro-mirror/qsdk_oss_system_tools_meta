@@ -294,6 +294,104 @@ def gen_qccfg():
         return prc.returncode
     return 0
 
+def has_null_program_headers(file_path):
+    """
+    Check if an ELF file has NULL program headers.
+    MBN files renamed to .elf have NULL program headers, ELF files will be preserved.
+    Args:
+        file_path: Path to the file to check
+    Returns:
+        True if file has NULL program headers (is MBN),
+        False if not (is ELF),
+        None on error
+    """
+    if not os.path.exists(file_path):
+        return None
+
+    try:
+        # Use readelf to check for NULL program headers
+        cmd = "readelf -l %s 2>&1" % file_path
+        prc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        output, err = prc.communicate()
+
+        if prc.returncode != 0:
+            # readelf failed - might not be ELF format at all
+            return None
+
+        if sys.version_info.major >= 3:
+            output = output.decode("utf-8")
+
+        # Check if output contains NULL program headers
+        # MBN files have NULL program headers, true ELF files have LOAD headers
+        has_null = 'NULL' in output and 'Type' in output
+        return has_null
+
+    except Exception as e:
+        print('ERROR: Unable to check program headers for %s: %s' % (file_path, str(e)))
+        return None
+
+def process_qclib_files():
+    """
+    Process QCLib.elf and QCLib_flashless.elf files.
+
+    Check if these files are MBN (with NULL headers) or true ELF files:
+    - If MBN: Simply rename from .elf to .mbn
+    - If ELF: Convert to MBN using elftombn.py and save as .mbn
+
+    Returns:
+        0 on success, non-zero on failure
+    """
+    global srcDir
+    global cdir
+    global mbn_version
+    global arch
+    global inDir
+
+    # List of QCLib files to process
+    qclib_files = ['QCLib.elf', 'QCLib_flashless.elf']
+
+    bootconfig_path = srcDir + '/elftombn.py'
+
+    for qclib_file in qclib_files:
+        elf_path = inDir + "/" + qclib_file
+        mbn_path = inDir + "/" + qclib_file.replace('.elf', '.mbn')
+
+        # Skip if file doesn't exist
+        if not os.path.exists(elf_path):
+            print('Note: %s not found, skipping' % qclib_file)
+            continue
+
+        # Check if file has NULL program headers
+        has_null_headers = has_null_program_headers(elf_path)
+
+        if has_null_headers is None:
+            print('ERROR: Unable to determine format of %s' % qclib_file)
+            return -1
+        elif has_null_headers:
+            # File is MBN - renamed from .elf to .mbn
+            print('%s is already in MBN format, copying to .mbn' % qclib_file)
+            try:
+                with open(elf_path, 'rb') as src:
+                    with open(mbn_path, 'wb') as dst:
+                        dst.write(src.read())
+                print('Successfully copied %s to %s' % (qclib_file, qclib_file.replace('.elf', '.mbn')))
+            except (OSError, IOError) as e:
+                print('ERROR: Unable to copy %s: %s' % (qclib_file, str(e)))
+                return -1
+        else:
+            # File is true ELF - convert to MBN
+            print('%s is ELF format, converting to MBN' % qclib_file)
+            prc = subprocess.Popen(['python', bootconfig_path, '-a', arch, '-f', elf_path, '-o', mbn_path, '-v', mbn_version, '-s', '0'], cwd=cdir)
+            prc.wait()
+
+            if prc.returncode != 0:
+                print('ERROR: Unable to convert %s from ELF to MBN' % qclib_file)
+                return prc.returncode
+
+            print('Successfully converted %s to %s' % (qclib_file, qclib_file.replace('.elf', '.mbn')))
+
+    return 0
+
 def gen_melf():
     global srcDir
     global configDir
@@ -356,7 +454,7 @@ def gen_melf():
         # u-boot-spl.mbn QCLib_flashless.elf is required
         spl_img_dict = {
             'u-boot-spl.mbn'     : ('u-boot-spl.melf',     False),
-            'QCLib_flashless.elf': ('QCLib_flashless.melf', False),
+            'QCLib_flashless.mbn': ('QCLib_flashless.melf', False),
         }
 
         # Check if u-boot-spl.mbn exists (required)
@@ -644,6 +742,12 @@ def gen_mbn():
             return prc.returncode
 
     print("U-Boot .mbn file is created")
+
+    # Process QCLib files (convert/rename .elf to .mbn) for ipq5210 and ipq9650
+    if arch == "ipq5210" or arch == "ipq9650":
+        if process_qclib_files() != 0:
+            return -1
+
     return 0
 
 def gen_lk_mbn():
