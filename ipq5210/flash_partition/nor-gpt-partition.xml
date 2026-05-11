@@ -274,7 +274,7 @@ SPDX-License-Identifier: ISC
 		/>
 	<partition
 		label="0:PONCAL"
-		size_in_kb="4096"
+		size_in_kb="8192"
 		type="e6e98da2-e22a-4d12-ab33-169e7deaa507"
 		bootable="false"
 		readonly="false"
