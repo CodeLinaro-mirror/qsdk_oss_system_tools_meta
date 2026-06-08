@@ -90,7 +90,7 @@ SPDX-License-Identifier: ISC
 				<props name="mr6" type="DALPROP_ATTR_TYPE_UINT32">102</props>
 				<props name="mr3" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="reserved_6" type="DALPROP_ATTR_TYPE_UINT32">0</props>
-				<props name="ddr5_mr8" type="DALPROP_ATTR_TYPE_UINT32">211</props>
+				<props name="ddr5_mr8" type="DALPROP_ATTR_TYPE_UINT32">220</props>
 				<props name="ddr5_mr9" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="ddr5_mr10" type="DALPROP_ATTR_TYPE_UINT32">52</props>
 				<props name="ddr5_mr11" type="DALPROP_ATTR_TYPE_UINT32">41</props>
@@ -99,8 +99,8 @@ SPDX-License-Identifier: ISC
 				<props name="ddr5_mr14" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="ddr5_mr15" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="ddr5_mr32" type="DALPROP_ATTR_TYPE_UINT32">109</props>
-				<props name="ddr5_mr33" type="DALPROP_ATTR_TYPE_UINT32">5</props>
-				<props name="ddr5_mr34" type="DALPROP_ATTR_TYPE_UINT32">40</props>
+				<props name="ddr5_mr33" type="DALPROP_ATTR_TYPE_UINT32">45</props>
+				<props name="ddr5_mr34" type="DALPROP_ATTR_TYPE_UINT32">32</props>
 				<props name="ddr5_mr35" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="ddr5_mr37" type="DALPROP_ATTR_TYPE_UINT32">36</props>
 				<props name="ddr5_mr38" type="DALPROP_ATTR_TYPE_UINT32">36</props>
@@ -176,7 +176,7 @@ SPDX-License-Identifier: ISC
 				<props name="mr6" type="DALPROP_ATTR_TYPE_UINT32">102</props>
 				<props name="mr3" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="reserved_6" type="DALPROP_ATTR_TYPE_UINT32">0</props>
-				<props name="ddr5_mr8" type="DALPROP_ATTR_TYPE_UINT32">211</props>
+				<props name="ddr5_mr8" type="DALPROP_ATTR_TYPE_UINT32">220</props>
 				<props name="ddr5_mr9" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="ddr5_mr10" type="DALPROP_ATTR_TYPE_UINT32">52</props>
 				<props name="ddr5_mr11" type="DALPROP_ATTR_TYPE_UINT32">41</props>
@@ -185,8 +185,8 @@ SPDX-License-Identifier: ISC
 				<props name="ddr5_mr14" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="ddr5_mr15" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="ddr5_mr32" type="DALPROP_ATTR_TYPE_UINT32">109</props>
-				<props name="ddr5_mr33" type="DALPROP_ATTR_TYPE_UINT32">5</props>
-				<props name="ddr5_mr34" type="DALPROP_ATTR_TYPE_UINT32">40</props>
+				<props name="ddr5_mr33" type="DALPROP_ATTR_TYPE_UINT32">45</props>
+				<props name="ddr5_mr34" type="DALPROP_ATTR_TYPE_UINT32">32</props>
 				<props name="ddr5_mr35" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="ddr5_mr37" type="DALPROP_ATTR_TYPE_UINT32">36</props>
 				<props name="ddr5_mr38" type="DALPROP_ATTR_TYPE_UINT32">36</props>
