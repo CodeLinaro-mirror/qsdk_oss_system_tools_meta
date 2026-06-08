@@ -222,6 +222,45 @@ SPDX-License-Identifier: ISC
 			</fw_override>
 		</entry>
 		<entry>
+			<machid>0x8090200</machid>
+			<board>RDP490</board>
+			<memory>1024M32_DDR5</memory>
+			<memory_2048>1024M32_DDR5</memory_2048>
+			<layouts>default,vendor</layouts>
+			<fw_override>
+				<wifi_fw image="wifi_fw_qcn9625_qcn9589_squashfs.img" vol_size="10240KiB"/>
+				<profile-default layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP490_1024M32_DDR5.elf</qcconfig>
+					</bootldr_components>
+				</profile-default>
+				<profile-2048 layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP490_1024M32_DDR5_LM2048.elf</qcconfig>
+					</bootldr_components>
+				</profile-2048>
+			</fw_override>
+		</entry>
+		<entry>
+			<machid>0x8090300</machid>
+			<board>RDP491</board>
+			<memory>256M32_DDR4</memory>
+			<layouts>default,vendor</layouts>
+			<fw_override>
+				<wifi_fw image="wifi_fw_qcn9625_qcn9589_squashfs.img" vol_size="10240KiB"/>
+				<profile-default layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP491_256M32_DDR4.elf</qcconfig>
+					</bootldr_components>
+				</profile-default>
+				<profile-512 layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP491_256M32_DDR4_LM512.elf</qcconfig>
+					</bootldr_components>
+				</profile-512>
+			</fw_override>
+		</entry>
+		<entry>
 			<machid>0x1090000</machid>
 			<board>DB-JU01</board>
 			<memory>1024M32_DDR5</memory>
