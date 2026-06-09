@@ -23,12 +23,14 @@ MAX_NUM_ROOT_CERTS        = 4               # Maximum number of OEM root certifi
 MI_BOOT_IMG_HDR_SIZE      = 40              # sizeof(mi_boot_image_header_type)
 MI_BOOT_IMG_HDR_SIZE_V6   = 48              # V6 sizeof(mi_boot_image_header_type)
 MI_BOOT_IMG_HDR_SIZE_V7   = 64              # V7 sizeof(mi_boot_image_header_type)
+MI_BOOT_IMG_HDR_SIZE_V8   = 80              # V8 sizeof(mi_boot_image_header_type) - 20 fields × 4 bytes
 MI_BOOT_SBL_HDR_SIZE      = 80              # sizeof(sbl_header)
 BOOT_HEADER_LENGTH        = 20              # Boot Header Number of Elements
 SBL_HEADER_LENGTH         = 20              # SBL Header Number of Elements
 FLASH_PARTI_VERSION       = 3               # Flash Partition Version Number
 FLASH_PARTI_VERSION_V6    = 6               # V6 Flash Partition Version Number
 FLASH_PARTI_VERSION_V7    = 7               # V7 Flash Partition Version Number
+FLASH_PARTI_VERSION_V8    = 8               # V8 Flash Partition Version Number
 MAX_PHDR_COUNT            = 100             # Maximum allowable program headers
 CERT_CHAIN_ONEROOT_MAXSIZE = 6*1024          # Default Cert Chain Max Size for one root
 VIRTUAL_BLOCK_SIZE        = 131072          # Virtual block size for MCs insertion in SBL1 if ENABLE_VIRTUAL_BLK ON
@@ -659,10 +661,74 @@ class Boot_Hdr_V7:
                   self.hash_table_algo,
                   self.measurement_register_target]
 
-        # Write 12 entries(40B) or 20 entries(80B) of boot header
+        # Write 12 entries(64B) or 20 entries(80B) of boot header
         if write_full_hdr == False:
             s = struct.Struct('I'* 16)
             values = values[:16]
+        else:
+            s = struct.Struct('I' * self.getLength())
+
+        packed_data = s.pack(*values)
+
+        fp = OPEN(target,'wb')
+        fp.write(packed_data)
+        fp.close()
+
+#----------------------------------------------------------------------------
+# V8 Regular Boot Header Class (14 size fields - Hybrid Signing Support)
+#----------------------------------------------------------------------------
+class Boot_Hdr_V8:
+    def __init__(self, init_val):
+        self.image_id = ImageType.NONE_IMG
+        self.flash_parti_ver = FLASH_PARTI_VERSION_V8
+        self.common_metadata_size = init_val
+        self.qti_metadata_size = init_val
+        self.oem_metadata_size = init_val
+        self.code_size = init_val
+        self.qti_signature_1_size = init_val
+        self.qti_cert_chain_1_size = init_val
+        self.qti_signature_2_size = init_val
+        self.qti_cert_chain_2_size = init_val
+        self.oem_signature_1_size = init_val
+        self.oem_cert_chain_1_size = init_val
+        self.oem_signature_2_size = init_val
+        self.oem_cert_chain_2_size = init_val
+        self.major = init_val
+        self.minor = init_val
+        self.sw_id = init_val
+        self.sec_sw_id = init_val
+        self.hash_table_algo = init_val
+        self.measurement_register_target = init_val
+
+    def getLength(self):
+        return BOOT_HEADER_LENGTH
+
+    def writePackedData(self, target, write_full_hdr):
+        values = [self.image_id,
+                  self.flash_parti_ver,
+                  self.common_metadata_size,
+                  self.qti_metadata_size,
+                  self.oem_metadata_size,
+                  self.code_size,
+                  self.qti_signature_1_size,
+                  self.qti_cert_chain_1_size,
+                  self.qti_signature_2_size,
+                  self.qti_cert_chain_2_size,
+                  self.oem_signature_1_size,
+                  self.oem_cert_chain_1_size,
+                  self.oem_signature_2_size,
+                  self.oem_cert_chain_2_size,
+                  self.major,
+                  self.minor,
+                  self.sw_id,
+                  self.sec_sw_id,
+                  self.hash_table_algo,
+                  self.measurement_register_target]
+
+        # Write 20 entries(80B) of boot header for V8
+        if write_full_hdr == False:
+            s = struct.Struct('I'* 20)
+            values = values[:20]
         else:
             s = struct.Struct('I' * self.getLength())
 
@@ -911,8 +977,8 @@ def image_header(env, gen_dict,
     if (in_code_size == None) and (os.path.exists(code_file_name) == False):
         raise RuntimeError("Code size unavailable, and input file does not exist")
 
-    if (sw_id == None) and (mbn_version == 7):
-        raise RuntimeError("Image Header MBN v7 requires a SW ID")
+    if (sw_id == None) and (mbn_version == 7 or mbn_version == 8):
+        raise RuntimeError("Image Header MBN v7/v8 requires a SW ID")
 
     # Initialize
     if in_code_size != None:
@@ -1020,6 +1086,30 @@ def image_header(env, gen_dict,
         # Package up the header and write to output file
         boot_header.writePackedData(target = output_file_name, write_full_hdr = write_full_hdr)
 
+    elif header_format == 'reg' and mbn_version == 8:
+        boot_header = Boot_Hdr_V8(init_val = int('0x0',16))
+        boot_header.image_id = gen_dict['IMAGE_KEY_IMAGE_ID']
+        boot_header.common_metadata_size = 24
+        boot_header.qti_metadata_size = 0
+        boot_header.oem_metadata_size = 0
+        boot_header.code_size = code_size
+        # QTI signatures (currently only using slot 1, slot 2 reserved for future)
+        boot_header.qti_signature_1_size = 0
+        boot_header.qti_cert_chain_1_size = 0
+        boot_header.qti_signature_2_size = 0
+        boot_header.qti_cert_chain_2_size = 0
+        # OEM signatures (slot 1 for current signature, slot 2 for hybrid/PQC)
+        boot_header.oem_signature_1_size = signature_size
+        boot_header.oem_cert_chain_1_size = cert_chain_size
+        boot_header.oem_signature_2_size = 0
+        boot_header.oem_cert_chain_2_size = 0
+        boot_header.sw_id = int(sw_id)
+        # sha384 algo
+        boot_header.hash_table_algo = 3
+
+        # Package up the header and write to output file
+        boot_header.writePackedData(target = output_file_name, write_full_hdr = write_full_hdr)
+
     else:
         raise RuntimeError("Header format not supported: " + str(header_format))
     return 0
@@ -1042,7 +1132,7 @@ def pboot_gen_elf(env, elf_in_file_name,
     iarrPhdrFileLen = []
     iarrPhdrFileOff = []
 
-    if mbn_version == 7:
+    if mbn_version == 7 or mbn_version == 8:
         sha_algo = 'sha384'
         MI_PROG_BOOT_DIGEST_SIZE = 48
     elif mbn_version == 6:
@@ -1227,12 +1317,14 @@ def pboot_gen_elf(env, elf_in_file_name,
             hashtable_size += XML_HEADER_MAXSIZE
 
         # Initialize the hash table program header
-        if mbn_version == 7:
+        if mbn_version == 7 or mbn_version == 8:
             hhdr_off = (elf_header_size + (elf_header.e_phnum * phdr_size))
             if (hhdr_off & (ELF_BLOCK_ALIGN_4B - 1)):
                 hhdr_off += ELF_BLOCK_ALIGN_4B - (hhdr_off & (ELF_BLOCK_ALIGN_4B - 1))
+            # Use V8 header size for version 8, V7 for version 7
+            hdr_size = MI_BOOT_IMG_HDR_SIZE_V8 if mbn_version == 8 else MI_BOOT_IMG_HDR_SIZE_V7
             [hash_Phdr, pad_hash_segment, hash_tbl_end_addr, hash_tbl_offset] = \
-                    initialize_hash_phdr(elf_in_file_name, hashtable_size, MI_BOOT_IMG_HDR_SIZE_V7, hhdr_off, is_elf64, ELF_BLOCK_ALIGN_4B)
+                    initialize_hash_phdr(elf_in_file_name, hashtable_size, hdr_size, hhdr_off, is_elf64, ELF_BLOCK_ALIGN_4B)
         elif mbn_version == 6:
             [hash_Phdr, pad_hash_segment, hash_tbl_end_addr, hash_tbl_offset] = \
                     initialize_hash_phdr(elf_in_file_name, hashtable_size, MI_BOOT_IMG_HDR_SIZE_V6, ELF_BLOCK_ALIGN, is_elf64)
@@ -1259,7 +1351,7 @@ def pboot_gen_elf(env, elf_in_file_name,
 
         # Determine the end of the hash segment, make sure it's block aligned
         if (pad_hash_segment):
-            if mbn_version == 7:
+            if mbn_version == 7 or mbn_version == 8:
                 bytes_to_pad = ELF_BLOCK_ALIGN_4B - pad_hash_segment
             else:
                 bytes_to_pad = ELF_BLOCK_ALIGN - pad_hash_segment

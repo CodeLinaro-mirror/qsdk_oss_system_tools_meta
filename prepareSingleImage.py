@@ -103,6 +103,9 @@ def print_help():
     print("\t\tIf specified the <VALUE> is taken as memory size in generating cdt binaries\n")
     print("\t\te.g python prepareSingleImage.py --gencdt --memory <VALUE>\n\n")
 
+    print("--mbnv \t\tMBN version for ELF to MBN conversion")
+    print("\t\tSpecify the MBN version to use (e.g., 7 or 8)")
+
     print("--genpart \tWhether flash partition table(s) to be generated")
     print("\t\tIf not specified partition table(s) will not be generated")
     print("\t\tThis Argument does not take any value\n")
@@ -213,6 +216,7 @@ def gen_xblcfg():
     global configDir
     global memory
     global dtcDir
+    global mbn_version
 
     xblconfig_path = srcDir + '/gen_xblconfig_bin.py'
     data_retention_xblcfg_path = cdir + "/data_retention_xblcfg"
@@ -222,7 +226,7 @@ def gen_xblcfg():
         sed_cmd = "sed -i.bak -e 's/ddr_retention_en = <0>/ddr_retention_en = <1>/g' " + dts_file_path
         os.system(sed_cmd)
 
-        prc = subprocess.Popen(['python', xblconfig_path, '-c', configDir, '-o', inDir, '-m', memory, '--dtc_path', dtcDir], cwd=cdir)
+        prc = subprocess.Popen(['python', xblconfig_path, '-c', configDir, '-o', inDir, '-m', memory, '--dtc_path', dtcDir, '--mbnv', mbn_version], cwd=cdir)
         prc.wait()
 
         if prc.returncode != 0:
@@ -236,7 +240,7 @@ def gen_xblcfg():
         sed_cmd = "sed -i.bak -e 's/ddr_retention_en = <1>/ddr_retention_en = <0>/g' " + dts_file_path
         os.system(sed_cmd)
 
-    prc = subprocess.Popen(['python', xblconfig_path, '-c', configDir, '-o', inDir, '-m', memory, '--dtc_path', dtcDir], cwd=cdir)
+    prc = subprocess.Popen(['python', xblconfig_path, '-c', configDir, '-o', inDir, '-m', memory, '--dtc_path', dtcDir, '--mbnv', mbn_version], cwd=cdir)
     prc.wait()
 
     if prc.returncode != 0:
@@ -249,6 +253,7 @@ def gen_qccfg():
     global configDir
     global memory
     global dtcDir
+    global mbn_version
 
     xblconfig_path = srcDir + '/gen_xblconfig_bin.py'
     data_retention_qccfg_path = cdir + "/data_retention_qccfg"
@@ -261,7 +266,7 @@ def gen_qccfg():
             print('ERROR: unable to modify dts files for data retention')
             return -1
 
-        prc = subprocess.Popen(['python', xblconfig_path, '-c', configDir, '-o', inDir, '-m', memory, '--dtc_path', dtcDir, '--genqccfg'], cwd=cdir)
+        prc = subprocess.Popen(['python', xblconfig_path, '-c', configDir, '-o', inDir, '-m', memory, '--dtc_path', dtcDir, '--genqccfg', '--mbnv', mbn_version], cwd=cdir)
         prc.wait()
 
         if prc.returncode != 0:
@@ -286,7 +291,7 @@ def gen_qccfg():
             print('ERROR: unable to restore dts files')
             return -1
 
-    prc = subprocess.Popen(['python', xblconfig_path, '-c', configDir, '-o', inDir, '-m', memory, '--dtc_path', dtcDir, '--genqccfg'], cwd=cdir)
+    prc = subprocess.Popen(['python', xblconfig_path, '-c', configDir, '-o', inDir, '-m', memory, '--dtc_path', dtcDir, '--genqccfg', '--mbnv', mbn_version], cwd=cdir)
     prc.wait()
 
     if prc.returncode != 0:
@@ -770,10 +775,11 @@ def gen_lk_mbn():
 
 def gen_tfa_mbn():
     global srcDir
+    global mbn_version
 
     bootconfig_path = srcDir + '/elftombn.py'
     print("Converting TF-A elf to mbn ...")
-    prc = subprocess.Popen(['python', bootconfig_path, '-f', inDir + "/bl31.elf", '-o', inDir + "/bl31.mbn", '-v', "7", '-s', "30"], cwd=cdir)
+    prc = subprocess.Popen(['python', bootconfig_path, '-f', inDir + "/bl31.elf", '-o', inDir + "/bl31.mbn", '-v', mbn_version, '-s', "30"], cwd=cdir)
     prc.wait()
 
     if prc.returncode != 0:
@@ -786,6 +792,7 @@ def gen_tfa_mbn():
 def gen_optee_mbn():
     global srcDir
     global inDir
+    global mbn_version
 
     tee_elf_path = inDir + "/tee.elf"
 
@@ -867,7 +874,7 @@ SECTIONS
         mbn_path = inDir + "/" + elf_file.replace('.elf', '.mbn')
 
         if os.path.exists(elf_path):
-            prc = subprocess.Popen(['python', bootconfig_path, '-f', elf_path, '-o', mbn_path, '-v', "7", '-s', "204"], cwd=cdir)
+            prc = subprocess.Popen(['python', bootconfig_path, '-f', elf_path, '-o', mbn_path, '-v', mbn_version, '-s', "204"], cwd=cdir)
             prc.wait()
 
             if prc.returncode != 0:
@@ -966,12 +973,13 @@ def main():
     flash_size = ""
     total_blocks = ""
     lic_dir = ""
+    mbnv_provided = False
 
     if len(sys.argv) > 1:
         try:
             opts, args = getopt(sys.argv[1:], "h", ["arch=", "fltype=", "in=",
                 "bootimg=", "tzimg=", "nhssimg=", "rpmimg=", "wififwimg",
-                "gencdt", "genxblcfg", "genqccfg", "genmelf", "dtc_path=","memory=",
+                "gencdt", "genxblcfg", "genqccfg", "genmelf", "dtc_path=", "memory=", "mbnv=",
                 "total_blocks=", "flash_size=", "genpart", "genbootconf", "genbootconf_crc",
                 "genmbn", "lk", "genbootldr", "genlicense", "gentfambn", "genopteembn", "soc=","attach1=",
 		"attach2=", "attach3=", "attach4=", "attach5=", "help"])
@@ -1060,6 +1068,13 @@ def main():
                 to_gen_tfa_mbn = "true"
             elif option == "--genopteembn":
                 to_gen_optee_mbn = "true"
+            elif option == "--mbnv":
+                if value in ["7", "8"]:
+                    mbn_version = value
+                    mbnv_provided = True
+                else:
+                    print("ERROR: Invalid MBN version '" + value + "'. Supported versions are 7 and 8")
+                    return -1
             elif option == "--soc":
                 soc_dir = value
 
@@ -1094,6 +1109,15 @@ def main():
             copy_images("RPM", rpmImgDir)
         if wififwImgDir != "":
             copy_images("WIFIFW", wififwImgDir)
+
+        # Set architecture-specific MBN version BEFORE generating configs
+        if arch == "ipq6018" or arch == "ipq9574" or arch == "ipq5332":
+            mbn_version = "6"
+        elif arch == "ipq5424" or arch == "ipq5210":
+            mbn_version = "7"
+        elif arch == "ipq9650":
+            if not mbnv_provided:
+                mbn_version = "7"
 
         if to_generate_cdt == "true":
             if gen_cdt() != 0:
@@ -1147,10 +1171,6 @@ def main():
 
         if to_generate_mbn == "true":
             if arch == "ipq807x" or arch == "ipq6018" or arch == "ipq5018" or arch == "ipq9574" or arch == "ipq5332" or arch == "ipq5424" or arch == "ipq5210" or arch == "ipq9650":
-                if arch == "ipq6018" or arch == "ipq9574" or arch == "ipq5332":
-                    mbn_version = "6"
-                elif arch == "ipq5424" or arch == "ipq5210" or arch == "ipq9650":
-                    mbn_version = "7"
                 if gen_mbn() != 0:
                     return -1
                 if to_generate_lk_mbn == "true" and gen_lk_mbn() != 0:
