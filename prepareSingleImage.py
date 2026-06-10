@@ -1113,9 +1113,9 @@ def main():
         # Set architecture-specific MBN version BEFORE generating configs
         if arch == "ipq6018" or arch == "ipq9574" or arch == "ipq5332":
             mbn_version = "6"
-        elif arch == "ipq5424" or arch == "ipq5210":
+        elif arch == "ipq5424":
             mbn_version = "7"
-        elif arch == "ipq9650":
+        elif arch == "ipq9650" or arch == "ipq5210":
             if not mbnv_provided:
                 mbn_version = "7"
 
