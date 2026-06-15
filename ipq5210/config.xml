@@ -419,6 +419,7 @@ SPDX-License-Identifier: ISC
 			<memory>1024M16_DDR4</memory>
 			<layouts>default,vendor</layouts>
 			<fw_override>
+				<wifi_fw image="wifi_fw_qcn9589_squashfs.img" vol_size="7168KiB"/>
 				<profile-512 layouts="default,vendor">
 					<bootldr_components>
 						<qcconfig>qcconfig-RDP511_1024M16_DDR4_LM512.elf</qcconfig>
@@ -437,6 +438,7 @@ SPDX-License-Identifier: ISC
 			<memory>1024M16_DDR4</memory>
 			<layouts>default,vendor</layouts>
 			<fw_override>
+				<wifi_fw image="wifi_fw_qcn9589_squashfs.img" vol_size="7168KiB"/>
 				<profile-512 layouts="default,vendor">
 					<bootldr_components>
 						<qcconfig>qcconfig-RDP512_1024M16_DDR4_LM512.elf</qcconfig>
