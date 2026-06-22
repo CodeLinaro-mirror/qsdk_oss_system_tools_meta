@@ -1,13 +1,18 @@
-#!/usr/bin/python
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 # ===========================================================================
 # Copyright (c) 2024, Qualcomm Innovation Center, Inc. All rights reserved.
 # SPDX-License-Identifier: ISC
 # ===========================================================================
 
+from __future__ import print_function
 import xml.etree.ElementTree as ET
 import os
 import subprocess
 import sys
+
+PYTHON_EXECUTABLE = sys.executable or 'python'
+import re
 from getopt import getopt
 from getopt import GetoptError
 import json
@@ -15,6 +20,11 @@ import shutil
 import struct
 
 ARCH_NAME = ''
+
+# Fallback DDR boot frequencies (in KHz) used only if not found in base DTS
+DEFAULT_DDR3_BOOT_FREQ = 933000
+DEFAULT_DDR4_BOOT_FREQ = 1600000
+DEFAULT_DDR5_BOOT_FREQ = 2800000
 
 # Architecture-specific configuration
 ARCH_CONFIG = {
@@ -27,6 +37,24 @@ cdir = os.path.dirname("")
 cdir = os.path.abspath(cdir)
 
 XBL_CONFIG_RAW_ELF = cdir + "/xbl_config_raw.elf"
+
+def parse_default_freqs_from_dts(dts_path):
+    """Parse default DDR boot frequencies from the base DTS file.
+
+    Returns a dict with keys 'ddr3_boot_freq', 'ddr4_boot_freq', 'ddr5_boot_freq'
+    for whichever values are present in the DTS.
+    """
+    defaults = {}
+    try:
+        with open(dts_path, 'r') as f:
+            content = f.read()
+        for key in ['ddr3_boot_freq', 'ddr4_boot_freq', 'ddr5_boot_freq']:
+            m = re.search(r'{}\s*=\s*<(\d+)>'.format(key), content)
+            if m:
+                defaults[key] = int(m.group(1))
+    except Exception as e:
+        print("WARNING: Could not parse default frequencies from DTS {0}: {1}".format(dts_path, e))
+    return defaults
 
 def update_CDT_segment(xbl_cfg_file_path, CDT_path):
     # Read the CDT content
@@ -63,7 +91,7 @@ def update_CDT_segment(xbl_cfg_file_path, CDT_path):
                 segment = elf_file.read(3)
 
                 # Check if starts with "CDT"
-                if "CDT".encode() in segment:
+                if b"CDT" in segment:
                     print("Found CDT segment ")
                     if p_filesz != CDT_file_size:
                          print("CDT size mismatch")
@@ -74,6 +102,33 @@ def update_CDT_segment(xbl_cfg_file_path, CDT_path):
 
         print("CDT not found in any loadable segment")
         return -1
+
+
+def generate_rdp_dts(base_dts_path, board_name, ddr_type, boot_freq, output_dir, arch_name):
+    """Generate RDP-specific DTS file with board-specific DDR frequency.
+
+    Reads the base DTS template, substitutes only the boot frequency
+    corresponding to ddr_type (e.g. 'DDR3', 'DDR4', 'DDR5'),
+    and writes the result to
+    qc-cust-<arch>-1.0_<board>.dts in output_dir.
+
+    Returns (rdp_dts_path, rdp_dts_name).
+    """
+    with open(base_dts_path, 'r') as f:
+        content = f.read()
+
+    # Replace only the frequency for the active DDR type
+    freq_key = ddr_type.lower() + '_boot_freq'
+    content = re.sub(r'({}\s*=\s*<)\d+(>)'.format(freq_key),
+                     r'\g<1>' + str(boot_freq) + r'\g<2>', content)
+
+    rdp_dts_name = "qc-cust-{}-1.0_{}.dts".format(arch_name, board_name)
+    rdp_dts_path = os.path.join(output_dir, rdp_dts_name)
+
+    with open(rdp_dts_path, 'w') as f:
+        f.write(content)
+
+    return rdp_dts_path, rdp_dts_name
 
 
 def main():
@@ -150,7 +205,7 @@ def main():
 
     #disassemble the xbl config
     print('Disassembling xblconfig')
-    cmd = ['python', xblconfigtool_gen, '-d', xblconfig_path, '-fELF', '-o', srcDir, '--tools_path', xblconfigtool_path]
+    cmd = [PYTHON_EXECUTABLE, xblconfigtool_gen, '-d', xblconfig_path, '-fELF', '-o', srcDir, '--tools_path', xblconfigtool_path]
     print(cmd)
     prc = subprocess.Popen(cmd, cwd=cdir)
     prc.wait()
@@ -164,32 +219,49 @@ def main():
         else:
             print('CDT will be directly added into xbl config elf')
 
-    if dircet_CDT_update == 0:
-        # add support to generate the xbl cust dtb
-        print("Generating xbl cust dtb")
-        dtcBin = os.path.join(dtcDir, "dtc")
+    # Set up DTS/DTB paths for use inside the per-board loop
+    dts_file = None
+    base_dtb_name = None
+    dtcBin = None
 
-        dts_file = None
-        dtb_file = None
+    # Initialize default frequencies from fallback constants
+    default_ddr3_freq = DEFAULT_DDR3_BOOT_FREQ
+    default_ddr4_freq = DEFAULT_DDR4_BOOT_FREQ
+    default_ddr5_freq = DEFAULT_DDR5_BOOT_FREQ
+
+    if dircet_CDT_update == 0:
+        dtcBin = os.path.join(dtcDir, "dtc")
 
         if ARCH_NAME == "ipq5424" and not genqccfg:
             dts_file = cdir + "/ipq5424/xbl_config/xbl-cust-marina-1.0.dts"
-            dtb_file = srcDir + "/" + "xbl-cust-marina-1.0.dtb"
+            base_dtb_name = "xbl-cust-marina-1.0.dtb"
         else:
             dts_file = cdir + "/" + ARCH_NAME + "/qc_config/qc-cust-" + ARCH_NAME + "-1.0.dts"
-            dtb_file = srcDir + "/" + "qc-cust-" + ARCH_NAME + "-1.0.dtb"
+            base_dtb_name = "qc-cust-" + ARCH_NAME + "-1.0.dtb"
 
         if dts_file and not os.path.isfile(dts_file):
             print('ERROR: DTS file not found: {0}'.format(dts_file))
             return -1
 
-        cmd = [dtcBin, '-@', '-O', 'dtb', '-o', dtb_file, dts_file]
-        print(cmd)
-        prc = subprocess.Popen(cmd, cwd=cdir)
-        prc.wait()
-        if prc.returncode != 0:
-            print('ERROR: unable to generate dtb')
-            return prc.returncode
+        # Parse default DDR boot frequencies from the base DTS
+        if dts_file:
+            dts_defaults = parse_default_freqs_from_dts(dts_file)
+            default_ddr3_freq = dts_defaults.get('ddr3_boot_freq', DEFAULT_DDR3_BOOT_FREQ)
+            default_ddr4_freq = dts_defaults.get('ddr4_boot_freq', DEFAULT_DDR4_BOOT_FREQ)
+            default_ddr5_freq = dts_defaults.get('ddr5_boot_freq', DEFAULT_DDR5_BOOT_FREQ)
+            print("Default DDR frequencies from DTS: DDR3={0} KHz, DDR4={1} KHz, DDR5={2} KHz".format(
+                default_ddr3_freq, default_ddr4_freq, default_ddr5_freq))
+
+        # For ipq5424 non-genqccfg mode, generate a single DTB once (not per-RDP)
+        if ARCH_NAME == "ipq5424" and not genqccfg:
+            dtb_file = srcDir + "/" + base_dtb_name
+            cmd = [dtcBin, '-@', '-O', 'dtb', '-o', dtb_file, dts_file]
+            print(cmd)
+            prc = subprocess.Popen(cmd, cwd=cdir)
+            prc.wait()
+            if prc.returncode != 0:
+                print('ERROR: unable to generate dtb')
+                return prc.returncode
 
     if ARCH_NAME == "ipq5424" and not genqccfg:
         config_name = "xblconfig-"
@@ -228,7 +300,49 @@ def main():
             cdt_bin =  "cdt-" + name_suffix + ".bin"
 
             if dircet_CDT_update == 0:
-                # edit the cdt name in json
+                # For genqccfg mode, generate RDP-specific DTS and DTB per board
+                if genqccfg:
+                    # Determine DDR type from memory string
+                    mem_text = memory.text.upper()
+                    if "DDR4" in mem_text:
+                        ddr_type = "DDR4"
+                        freq_elem = entry.find(".//ddr4_boot_freq")
+                        if freq_elem is None:
+                            print("WARNING: mem_type is DDR4 but ddr4_boot_freq is not present in config.xml for board '{0}'. Using default {1} KHz.".format(board.text, default_ddr4_freq))
+                        boot_freq = int(freq_elem.text) if freq_elem is not None else default_ddr4_freq
+                    elif "DDR3" in mem_text:
+                        ddr_type = "DDR3"
+                        freq_elem = entry.find(".//ddr3_boot_freq")
+                        if freq_elem is None:
+                            print("WARNING: mem_type is DDR3 but ddr3_boot_freq is not present in config.xml for board '{0}'. Using default {1} KHz.".format(board.text, default_ddr3_freq))
+                        boot_freq = int(freq_elem.text) if freq_elem is not None else default_ddr3_freq
+                    elif "DDR5" in mem_text:
+                        ddr_type = "DDR5"
+                        freq_elem = entry.find(".//ddr5_boot_freq")
+                        if freq_elem is None:
+                            print("WARNING: mem_type is DDR5 but ddr5_boot_freq is not present in config.xml for board '{0}'. Using default {1} KHz.".format(board.text, default_ddr5_freq))
+                        boot_freq = int(freq_elem.text) if freq_elem is not None else default_ddr5_freq
+                    else:
+                        ddr_type = "DDR4"
+                        boot_freq = default_ddr4_freq
+
+                    print("Generating RDP-specific DTS for {0} ({1}={2} KHz)".format(
+                        board.text, ddr_type, boot_freq))
+
+                    rdp_dts_path, rdp_dts_name = generate_rdp_dts(
+                        dts_file, board.text, ddr_type, boot_freq, srcDir, ARCH_NAME)
+                    rdp_dtb_name = rdp_dts_name.replace('.dts', '.dtb')
+                    rdp_dtb_path = os.path.join(srcDir, rdp_dtb_name)
+
+                    cmd = [dtcBin, '-@', '-O', 'dtb', '-o', rdp_dtb_path, rdp_dts_path]
+                    print(cmd)
+                    prc = subprocess.Popen(cmd, cwd=cdir)
+                    prc.wait()
+                    if prc.returncode != 0:
+                        print('ERROR: unable to generate dtb for {0}'.format(board.text))
+                        return prc.returncode
+
+                # edit the cdt name and (for genqccfg) the dtb name in json
                 with open(xblconfig_json, 'r') as file:
                     # Parse JSON data
                     Data = json.load(file)
@@ -240,6 +354,9 @@ def main():
                             if key1 == "config_name":
                                 if value1 == "/cdt.bin":
                                     value["file_name"] = cdt_bin
+                            elif key1 == "file_name" and genqccfg:
+                                if value1 == base_dtb_name:
+                                    value["file_name"] = rdp_dtb_name
 
                 outfile_json = os.path.join(srcDir, "create_xbl_config-" + name_suffix + ".json")
                 with open(outfile_json, "w") as outfile:
@@ -253,7 +370,7 @@ def main():
 
                 print('Generating xblconfig')
                 config = ARCH_CONFIG[ARCH_NAME]
-                cmd = ['python', xblconfigtool_gen, '-i', outfile_json, '-fELF', '-o', outfile_xblconfig,
+                cmd = [PYTHON_EXECUTABLE, xblconfigtool_gen, '-i', outfile_json, '-fELF', '-o', outfile_xblconfig,
                        '--tools_path', xblconfigtool_path, '--elf-address', config['elf_address'], '-b', srcDir]
                 if config['align']:
                     cmd.extend(['--align', config['align']])
