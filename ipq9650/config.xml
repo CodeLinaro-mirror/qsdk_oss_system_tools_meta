@@ -141,6 +141,7 @@ SPDX-License-Identifier: ISC
 			<machid>0xF060000</machid>
 			<board>JU-EMU</board>
 			<memory>512M32_DDR4</memory>
+			<ddr4_boot_freq>1600000</ddr4_boot_freq>
 			<layouts>default,vendor</layouts>
 			<uboot_dtb_name>emulation</uboot_dtb_name>
 			<kernel_dtb_name>emulation-fbc</kernel_dtb_name>
@@ -162,6 +163,7 @@ SPDX-License-Identifier: ISC
 			<board>RDP488</board>
 			<memory>1024M32_DDR5</memory>
 			<memory_2048>1024M32_DDR5</memory_2048>
+			<ddr5_boot_freq>2800000</ddr5_boot_freq>
 			<layouts>default,vendor</layouts>
 			<fw_override>
 				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="10240KiB"/>
@@ -187,6 +189,7 @@ SPDX-License-Identifier: ISC
 			<board>RDP506</board>
 			<memory>1024M32_DDR5</memory>
 			<memory_2048>1024M32_DDR5</memory_2048>
+			<ddr5_boot_freq>2800000</ddr5_boot_freq>
 			<layouts>default,vendor</layouts>
 			<fw_override>
 				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="10240KiB"/>
@@ -306,6 +309,7 @@ SPDX-License-Identifier: ISC
 			<machid>0x8090100</machid>
 			<board>RDP489</board>
 			<memory>256M32_DDR4</memory>
+			<ddr4_boot_freq>1600000</ddr4_boot_freq>
 			<layouts>default,vendor</layouts>
 			<fw_override>
 				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="10240KiB"/>
@@ -326,6 +330,7 @@ SPDX-License-Identifier: ISC
 			<board>RDP490</board>
 			<memory>1024M32_DDR5</memory>
 			<memory_2048>1024M32_DDR5</memory_2048>
+			<ddr5_boot_freq>2800000</ddr5_boot_freq>
 			<layouts>default,vendor</layouts>
 			<fw_override>
 				<wifi_fw image="wifi_fw_qcn9625_qcn9589_squashfs.img" vol_size="10240KiB"/>
@@ -345,6 +350,7 @@ SPDX-License-Identifier: ISC
 			<machid>0x8090300</machid>
 			<board>RDP491</board>
 			<memory>256M32_DDR4</memory>
+			<ddr4_boot_freq>1600000</ddr4_boot_freq>
 			<layouts>default,vendor</layouts>
 			<fw_override>
 				<wifi_fw image="wifi_fw_qcn9625_qcn9589_squashfs.img" vol_size="10240KiB"/>
@@ -365,6 +371,7 @@ SPDX-License-Identifier: ISC
 			<board>DB-JU01</board>
 			<memory>1024M32_DDR5</memory>
 			<memory_2048>1024M32_DDR5</memory_2048>
+			<ddr5_boot_freq>2800000</ddr5_boot_freq>
 			<layouts>default,vendor</layouts>
 			<fw_override>
 				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="10240KiB"/>
@@ -389,6 +396,7 @@ SPDX-License-Identifier: ISC
 			<machid>0x1090001</machid>
 			<board>DB-JU01-C1</board>
 			<memory>1024M32_DDR5</memory>
+			<ddr5_boot_freq>2800000</ddr5_boot_freq>
 			<layouts>default,vendor</layouts>
 			<fw_override>
 				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="10240KiB"/>
@@ -408,6 +416,7 @@ SPDX-License-Identifier: ISC
 			<machid>0x1090100</machid>
 			<board>DB-JU02</board>
 			<memory>256M32_DDR4</memory>
+			<ddr4_boot_freq>1600000</ddr4_boot_freq>
 			<layouts>default,vendor</layouts>
 			<fw_override>
 				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="10240KiB"/>
