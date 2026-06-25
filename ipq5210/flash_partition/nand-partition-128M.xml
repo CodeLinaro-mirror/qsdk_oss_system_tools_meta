@@ -46,19 +46,9 @@ SPDX-License-Identifier: ISC
 			<img_name type="string">nand-system-partition-ipq5210-128M.bin</img_name>
 		</partition>
 		<partition>
-			<name length="16" type="string">0:ART</name>
-			<size_kb length="4">2048</size_kb>
-			<pad_kb length="2">512</pad_kb>
-			<which_flash length="2">0</which_flash>
-			<attr>0xFF</attr>
-			<attr>0xFF</attr>
-			<attr>0x00</attr>
-			<attr>0xFF</attr>
-		</partition>
-		<partition>
 			<name length="16" type="string">0:BOOTLDR</name>
-			<size_kb length="4">3584</size_kb>
-			<pad_kb length="2">1536</pad_kb>
+			<size_kb length="4">1792</size_kb>
+			<pad_kb length="2">768</pad_kb>
 			<which_flash length="2">0</which_flash>
 			<attr>0xFF</attr>
 			<attr>0xFF</attr>
@@ -67,8 +57,8 @@ SPDX-License-Identifier: ISC
 		</partition>
 		<partition>
 			<name length="16" type="string">0:BOOTLDR_1</name>
-			<size_kb length="4">3584</size_kb>
-			<pad_kb length="2">1536</pad_kb>
+			<size_kb length="4">1792</size_kb>
+			<pad_kb length="2">768</pad_kb>
 			<which_flash length="2">0</which_flash>
 			<attr>0xFF</attr>
 			<attr>0xFF</attr>
@@ -96,16 +86,6 @@ SPDX-License-Identifier: ISC
 			<attr>0xFF</attr>
 		</partition>
 		<partition>
-			<name length="16" type="string">0:LICENSE</name>
-			<size_kb length="4">256</size_kb>
-			<pad_kb length="2">0</pad_kb>
-			<which_flash length="2">0</which_flash>
-			<attr>0xFF</attr>
-			<attr>0xFF</attr>
-			<attr>0x00</attr>
-			<attr>0xFF</attr>
-		</partition>
-		<partition>
 			<name length="16" type="string">0:PONCAL</name>
 			<size_kb length="4">4096</size_kb>
 			<pad_kb length="2">0</pad_kb>
@@ -117,7 +97,7 @@ SPDX-License-Identifier: ISC
 		</partition>
 		<partition>
 			<name length="16" type="string">rootfs</name>
-			<size_kb length="4">53504</size_kb>
+			<size_kb length="4">57600</size_kb>
 			<pad_kb length="2">0</pad_kb>
 			<which_flash length="2">0</which_flash>
 			<attr>0xFF</attr>
@@ -130,7 +110,7 @@ SPDX-License-Identifier: ISC
 		</partition>
 		<partition>
 			<name length="16" type="string">rootfs_1</name>
-			<size_kb length="4">53504</size_kb>
+			<size_kb length="4">57600</size_kb>
 			<pad_kb length="2">0</pad_kb>
 			<which_flash length="2">0</which_flash>
 			<attr>0xFF</attr>

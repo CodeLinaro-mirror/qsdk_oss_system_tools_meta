@@ -187,6 +187,8 @@ SPDX-License-Identifier: ISC
 			<machid>0x8080000</machid>
 			<board>RDP497</board>
 			<memory_128>64M16_DDR3</memory_128>
+			<memory_256>128M16_DDR3</memory_256>
+			<memory_512>256M16_DDR3</memory_512>
 			<layouts>default,vendor,128M</layouts>
 			<fw_override>
 				<profile-128 layouts="default,vendor,128M">
@@ -197,6 +199,22 @@ SPDX-License-Identifier: ISC
 						<uboot flash="norplusnand,norplusnand-gpt,norplusnand-4k,norplusnand-4k-gpt" mode="32">openwrt-ipq5210-ipq52xx_32-tiny_norplusnand32-u-boot-rdp497.mbn</uboot>
 					</bootldr_components>
 				</profile-128>
+				<profile-256 layouts="default,vendor,128M">
+					<bootldr_components>
+						<optee>tee-raw_lm.mbn</optee>
+						<qcconfig>qcconfig-RDP497_128M16_DDR3_LM256.elf</qcconfig>
+						<uboot flash="nand,nand-4k" mode="32">openwrt-ipq5210-ipq52xx_32-tiny_nand32-u-boot-rdp497.mbn</uboot>
+						<uboot flash="norplusnand,norplusnand-gpt,norplusnand-4k,norplusnand-4k-gpt" mode="32">openwrt-ipq5210-ipq52xx_32-tiny_norplusnand32-u-boot-rdp497.mbn</uboot>
+					</bootldr_components>
+				</profile-256>
+				<profile-512 layouts="default,vendor,128M">
+					<bootldr_components>
+						<optee>tee-raw_lm.mbn</optee>
+						<qcconfig>qcconfig-RDP497_256M16_DDR3_LM512.elf</qcconfig>
+						<uboot flash="nand,nand-4k" mode="32">openwrt-ipq5210-ipq52xx_32-tiny_nand32-u-boot-rdp497.mbn</uboot>
+						<uboot flash="norplusnand,norplusnand-gpt,norplusnand-4k,norplusnand-4k-gpt" mode="32">openwrt-ipq5210-ipq52xx_32-tiny_norplusnand32-u-boot-rdp497.mbn</uboot>
+					</bootldr_components>
+				</profile-512>
 			</fw_override>
 		</entry>
 		<entry>
@@ -419,6 +437,7 @@ SPDX-License-Identifier: ISC
 			<memory>1024M16_DDR4</memory>
 			<layouts>default,vendor</layouts>
 			<fw_override>
+				<wifi_fw image="wifi_fw_qcn9589_squashfs.img" vol_size="7168KiB"/>
 				<profile-512 layouts="default,vendor">
 					<bootldr_components>
 						<qcconfig>qcconfig-RDP511_1024M16_DDR4_LM512.elf</qcconfig>
@@ -437,6 +456,7 @@ SPDX-License-Identifier: ISC
 			<memory>1024M16_DDR4</memory>
 			<layouts>default,vendor</layouts>
 			<fw_override>
+				<wifi_fw image="wifi_fw_qcn9589_squashfs.img" vol_size="7168KiB"/>
 				<profile-512 layouts="default,vendor">
 					<bootldr_components>
 						<qcconfig>qcconfig-RDP512_1024M16_DDR4_LM512.elf</qcconfig>
