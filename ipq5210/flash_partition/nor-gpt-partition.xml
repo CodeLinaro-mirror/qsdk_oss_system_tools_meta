@@ -107,7 +107,7 @@ SPDX-License-Identifier: ISC
 		/>
 	<partition
 		label="rootfs"
-		size_in_kb="104960"
+		size_in_kb="123392"
 		type="98D2248D-7140-449F-A954-39D67BD6C3B4"
 		bootable="false"
 		readonly="false"
@@ -119,7 +119,7 @@ SPDX-License-Identifier: ISC
 		/>
 	<partition
 		label="rootfs_1"
-		size_in_kb="104960"
+		size_in_kb="123392"
 		type="5647B280-DC2A-485D-9913-CF53AC40FA32"
 		bootable="false"
 		readonly="false"
@@ -292,7 +292,7 @@ SPDX-License-Identifier: ISC
 		/>
 	<partition
 		label="rootfs"
-		size_in_kb="104960"
+		size_in_kb="120320"
 		type="98D2248D-7140-449F-A954-39D67BD6C3B4"
 		bootable="false"
 		readonly="false"
@@ -304,7 +304,7 @@ SPDX-License-Identifier: ISC
 		/>
 	<partition
 		label="rootfs_1"
-		size_in_kb="104960"
+		size_in_kb="120320"
 		type="5647B280-DC2A-485D-9913-CF53AC40FA32"
 		bootable="false"
 		readonly="false"
