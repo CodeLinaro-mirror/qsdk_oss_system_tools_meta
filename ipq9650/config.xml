@@ -203,6 +203,106 @@ SPDX-License-Identifier: ISC
 			</fw_override>
 		</entry>
 		<entry>
+			<machid>0x8090002</machid>
+			<board>RDP507</board>
+			<memory>1024M32_DDR5</memory>
+			<memory_2048>1024M32_DDR5</memory_2048>
+			<layouts>default,vendor</layouts>
+			<fw_override>
+				<wifi_fw image="wifi_fw_qcn9625_qcn9589_squashfs.img" vol_size="10240KiB"/>
+				<profile-default layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP507_1024M32_DDR5.elf</qcconfig>
+					</bootldr_components>
+				</profile-default>
+				<profile-2048 layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP507_1024M32_DDR5_LM2048.elf</qcconfig>
+					</bootldr_components>
+				</profile-2048>
+				<profile-512 layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP507_1024M32_DDR5_LM512.elf</qcconfig>
+					</bootldr_components>
+				</profile-512>
+			</fw_override>
+		</entry>
+		<entry>
+			<machid>0x8090004</machid>
+			<board>RDP529</board>
+			<memory>1024M32_DDR5</memory>
+			<memory_2048>1024M32_DDR5</memory_2048>
+			<layouts>default,vendor</layouts>
+			<fw_override>
+				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="10240KiB"/>
+				<profile-default layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP529_1024M32_DDR5.elf</qcconfig>
+					</bootldr_components>
+				</profile-default>
+				<profile-2048 layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP529_1024M32_DDR5_LM2048.elf</qcconfig>
+					</bootldr_components>
+				</profile-2048>
+				<profile-512 layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP529_1024M32_DDR5_LM512.elf</qcconfig>
+					</bootldr_components>
+				</profile-512>
+			</fw_override>
+		</entry>
+		<entry>
+			<machid>0x8090005</machid>
+			<board>RDP530</board>
+			<memory>1024M32_DDR5</memory>
+			<memory_2048>1024M32_DDR5</memory_2048>
+			<layouts>default,vendor</layouts>
+			<fw_override>
+				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="10240KiB"/>
+				<profile-default layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP530_1024M32_DDR5.elf</qcconfig>
+					</bootldr_components>
+				</profile-default>
+				<profile-2048 layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP530_1024M32_DDR5_LM2048.elf</qcconfig>
+					</bootldr_components>
+				</profile-2048>
+				<profile-512 layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP530_1024M32_DDR5_LM512.elf</qcconfig>
+					</bootldr_components>
+				</profile-512>
+			</fw_override>
+		</entry>
+		<entry>
+			<machid>0x8090006</machid>
+			<board>RDP532</board>
+			<memory>1024M32_DDR5</memory>
+			<memory_2048>1024M32_DDR5</memory_2048>
+			<layouts>default,vendor</layouts>
+			<fw_override>
+				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="10240KiB"/>
+				<profile-default layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP532_1024M32_DDR5.elf</qcconfig>
+					</bootldr_components>
+				</profile-default>
+				<profile-2048 layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP532_1024M32_DDR5_LM2048.elf</qcconfig>
+					</bootldr_components>
+				</profile-2048>
+				<profile-512 layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP532_1024M32_DDR5_LM512.elf</qcconfig>
+					</bootldr_components>
+				</profile-512>
+			</fw_override>
+		</entry>
+		<entry>
 			<machid>0x8090100</machid>
 			<board>RDP489</board>
 			<memory>256M32_DDR4</memory>
