@@ -423,10 +423,10 @@ SPDX-License-Identifier: ISC
 			<board>RDP505</board>
 			<memory>256M16_DDR3</memory>
 			<ddr3_boot_freq>933000</ddr3_boot_freq>
-			<layouts>vendor,128M</layouts>
+			<layouts>default,vendor</layouts>
 			<fw_override>
 				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="7168KiB"/>
-				<profile-256 layouts="vendor,128M">
+				<profile-256 layouts="default,vendor">
 					<bootldr_components>
 						<optee>tee-raw_lm.mbn</optee>
 						<qcconfig>qcconfig-RDP505_256M16_DDR3_LM256.elf</qcconfig>
@@ -434,7 +434,7 @@ SPDX-License-Identifier: ISC
 						<uboot flash="norplusnand,norplusnand-gpt,norplusnand-4k,norplusnand-4k-gpt" mode="32">openwrt-ipq5210-ipq52xx_32-tiny_norplusnand32-u-boot-rdp505.mbn</uboot>
 					</bootldr_components>
 				</profile-256>
-				<profile-512 layouts="vendor,128M">
+				<profile-512 layouts="default,vendor">
 					<bootldr_components>
 						<qcconfig>qcconfig-RDP505_256M16_DDR3_LM512.elf</qcconfig>
 					</bootldr_components>
