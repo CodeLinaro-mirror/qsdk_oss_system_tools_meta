@@ -106,16 +106,6 @@ SPDX-License-Identifier: ISC
 			<attr>0xFF</attr>
 		</partition>
 		<partition>
-			<name length="16" type="string">0:DPR</name>
-			<size_kb length="4">256</size_kb>
-			<pad_kb length="2">0</pad_kb>
-			<which_flash length="2">0</which_flash>
-			<attr>0xFF</attr>
-			<attr>0xFF</attr>
-			<attr>0x00</attr>
-			<attr>0xFF</attr>
-		</partition>
-		<partition>
 			<name length="16" type="string">rootfs</name>
 			<size_kb length="4">112384</size_kb>
 			<pad_kb length="2">0</pad_kb>
