@@ -63,14 +63,6 @@ SPDX-License-Identifier: ISC
 		filename=""
 		/>
 	<partition
-		label="0:DPR"
-		size_in_kb="256"
-		type="e6e98da2-e22a-4d12-ab33-169e7deaa507"
-		bootable="false"
-		readonly="false"
-		filename=""
-		/>
-	<partition
 		label="0:PRIMEFW"
 		size_in_kb="512"
 		type="0a44c7ab-6022-49f1-9c18-f34895755b59"
