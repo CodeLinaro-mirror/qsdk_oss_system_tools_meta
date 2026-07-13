@@ -396,6 +396,7 @@ SPDX-License-Identifier: ISC
 			<machid>0x1090001</machid>
 			<board>DB-JU01-C1</board>
 			<memory>1024M32_DDR5</memory>
+			<memory_2048>1024M32_DDR5</memory_2048>
 			<ddr5_boot_freq>2800000</ddr5_boot_freq>
 			<layouts>default,vendor</layouts>
 			<fw_override>
@@ -405,9 +406,40 @@ SPDX-License-Identifier: ISC
 						<qcconfig>qcconfig-DB-JU01-C1_1024M32_DDR5.elf</qcconfig>
 					</bootldr_components>
 				</profile-default>
+				<profile-2048 layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-DB-JU01_-C1_1024M32_DDR5_LM2048.elf</qcconfig>
+					</bootldr_components>
+				</profile-2048>
 				<profile-512 layouts="default,vendor">
 					<bootldr_components>
 						<qcconfig>qcconfig-DB-JU01-C1_1024M32_DDR5_LM512.elf</qcconfig>
+					</bootldr_components>
+				</profile-512>
+			</fw_override>
+		</entry>
+		<entry>
+			<machid>0x1090002</machid>
+			<board>DB-JU01-C2</board>
+			<memory>1024M32_DDR5</memory>
+			<memory_2048>1024M32_DDR5</memory_2048>
+			<ddr5_boot_freq>2800000</ddr5_boot_freq>
+			<layouts>default,vendor</layouts>
+			<fw_override>
+				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="10240KiB"/>
+				<profile-default layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-DB-JU01-C2_1024M32_DDR5.elf</qcconfig>
+					</bootldr_components>
+				</profile-default>
+				<profile-2048 layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-DB-JU01_-C2_1024M32_DDR5_LM2048.elf</qcconfig>
+					</bootldr_components>
+				</profile-2048>
+				<profile-512 layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-DB-JU01-C2_1024M32_DDR5_LM512.elf</qcconfig>
 					</bootldr_components>
 				</profile-512>
 			</fw_override>
@@ -428,6 +460,32 @@ SPDX-License-Identifier: ISC
 				<profile-512 layouts="default,vendor">
 					<bootldr_components>
 						<qcconfig>qcconfig-DB-JU02_256M32_DDR4_LM512.elf</qcconfig>
+					</bootldr_components>
+				</profile-512>
+			</fw_override>
+		</entry>
+		<entry>
+			<machid>0x2090000</machid>
+			<board>TB-JU01.1</board>
+			<memory>4096M32_DDR5</memory>
+			<memory_2048>4096M32_DDR5</memory_2048>
+			<ddr5_boot_freq>2800000</ddr5_boot_freq>
+			<layouts>default,vendor</layouts>
+			<fw_override>
+				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="10240KiB"/>
+				<profile-default layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-TB-JU01.1_4096M32_DDR5.elf</qcconfig>
+					</bootldr_components>
+				</profile-default>
+				<profile-2048 layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-TB-JU01.1_4096M32_DDR5_LM2048.elf</qcconfig>
+					</bootldr_components>
+				</profile-2048>
+				<profile-512 layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-TB-JU01.1_4096M32_DDR5_LM512.elf</qcconfig>
 					</bootldr_components>
 				</profile-512>
 			</fw_override>
