@@ -22,7 +22,7 @@ SPDX-License-Identifier: ISC
 			<attr>0xFF</attr>
 			<attr>0x00</attr>
 			<attr>0xFF</attr>
-			<img_name type="string">u-boot-spl_nand.melf</img_name>
+			<img_name type="string">u-boot-spl_nand-ipq9650-SPL_DTB_NAME.melf</img_name>
 		</partition>
 		<partition>
 			<name length="16" type="string">0:SPL_1</name>

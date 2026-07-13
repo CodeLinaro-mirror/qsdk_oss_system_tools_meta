@@ -144,6 +144,7 @@ SPDX-License-Identifier: ISC
 			<ddr4_boot_freq>1600000</ddr4_boot_freq>
 			<layouts>default,vendor</layouts>
 			<uboot_dtb_name>emulation</uboot_dtb_name>
+			<spl_dtb_name>emulation</spl_dtb_name>
 			<kernel_dtb_name>emulation-fbc</kernel_dtb_name>
 			<fw_override>
 				<profile-default layouts="default,vendor">
