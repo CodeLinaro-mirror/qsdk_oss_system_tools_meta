@@ -232,6 +232,7 @@ SPDX-License-Identifier: ISC
 					<bootldr_components>
 						<optee>tee-raw_lm.mbn</optee>
 						<qcconfig>qcconfig-RDP498_512M16_DDR4_LM256.elf</qcconfig>
+					</bootldr_components>
 				</profile-256>
 				<profile-512 layouts="default,vendor">
 					<bootldr_components>
