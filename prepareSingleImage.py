@@ -106,6 +106,12 @@ def print_help():
     print("--mbnv \t\tMBN version for ELF to MBN conversion")
     print("\t\tSpecify the MBN version to use (e.g., 7 or 8)")
 
+    print("--combined_soc \tEnable multi-MBN version build for supported chipsets")
+    print("\t\tIf specified, multiple MBN versions will be generated automatically")
+    print("\t\tCurrently supported for IPQ5210/IPQ5210_64 (generates v7 and v8)")
+    print("\t\tThis Argument does not take any value\n")
+    print("\t\te.g python prepareSingleImage.py --combined_soc --genmbn --genmelf\n\n")
+
     print("--genpart \tWhether flash partition table(s) to be generated")
     print("\t\tIf not specified partition table(s) will not be generated")
     print("\t\tThis Argument does not take any value\n")
@@ -403,6 +409,7 @@ def gen_melf():
     global memory
     global dtcDir
     global arch
+    global combined_soc
 
     # Check if this is IPQ5424 chipset (only IPQ5424 uses xbl_sc.elf)
     if arch == "ipq5424" or arch == "ipq5424_64":
@@ -467,9 +474,9 @@ def gen_melf():
             print('ERROR: u-boot-spl.mbn file not present in input directory')
             return -1
 
-        # Determine TME patch file based on architecture
-        # Map architecture to TME patch file naming convention
-        tme_patch_map = {
+        # Determine TME patch file based on architecture and MBN version
+        # Legacy TME patch files (single file for all versions)
+        tme_patch_map_legacy = {
             'ipq5210': 'tmel-ipq52xx-patch.elf',
             'ipq5210_64': 'tmel-ipq52xx-patch.elf',
             'ipq9650': 'tmel-ipq96xx-patch.elf',
@@ -477,12 +484,34 @@ def gen_melf():
             # Add more architectures here as needed
         }
 
-        tme_patch_file = tme_patch_map.get(arch, None)
+        # Combined SoC TME patch files (version-specific files for IPQ5210 only)
+        tme_patch_map_combined = {
+            'ipq5210': {
+                '7': 'tmel-ipq52xx-patch.elf',
+                '8': 'tmel-ipq52xx-1.1.1-patch.elf',
+            },
+            'ipq5210_64': {
+                '7': 'tmel-ipq52xx-patch.elf',
+                '8': 'tmel-ipq52xx-1.1.1-patch.elf',
+            },
+        }
 
-        if not tme_patch_file:
+        # Select appropriate TME patch map based on combined_soc flag
+        if combined_soc and arch in tme_patch_map_combined:
+            # Use version-specific files for combined SoC builds (IPQ5210 only)
+            if mbn_version in tme_patch_map_combined[arch]:
+                tme_patch_file = tme_patch_map_combined[arch][mbn_version]
+            else:
+                print('ERROR: No TME patch file mapping defined for architecture: ' + arch + ' and MBN version: ' + mbn_version)
+                return -1
+        elif arch in tme_patch_map_legacy:
+            # Use legacy single file for all versions
+            tme_patch_file = tme_patch_map_legacy[arch]
+        else:
             print('ERROR: No TME patch file mapping defined for architecture: ' + arch)
             return -1
 
+        # Verify the TME patch file exists
         if not os.path.isfile(inDir+"/"+tme_patch_file):
             print('ERROR: TME patch file not present in input directory: ' + tme_patch_file)
             return -1
@@ -902,6 +931,9 @@ def cleanup_intermediate_files():
         "*.hash",           # Hash files (144 bytes each)
         "*_hash.hd",        # Hash header files (64 bytes each)
         "*_combined_hash.mbn",  # Combined hash MBN files (208 bytes each)
+        "*_combined_hash.melf", # Combined hash MELF files (intermediate)
+        "*_combined_hash_nand.melf",    # Combined hash NAND MELF files (intermediate)
+        "*_combined_hash_nand_4K.melf", # Combined hash NAND 4K MELF files (intermediate)
         "*_phdr.pbn",       # Program header binary files
         "*_out.o",          # Object files from objcopy (~900KB+ each)
         "*_wrapped.elf",    # Wrapped ELF files from linker (~900KB+ each)
@@ -932,6 +964,144 @@ def cleanup_intermediate_files():
 
     return 0
 
+def build_multi_mbn_versions(to_generate_mbn, to_generate_melf, to_gen_tfa_mbn, to_gen_optee_mbn, to_generate_qccfg):
+    """Build multiple MBN versions for chipsets that support it.
+
+    This function handles automatic generation of multiple MBN versions when --mbnv
+    is not explicitly provided. It builds the default version plus any additional
+    versions specified in the multi_mbn_version_support dictionary.
+
+    Args:
+        to_generate_mbn: Whether to generate MBN files
+        to_generate_melf: Whether to generate MELF files
+        to_gen_tfa_mbn: Whether to generate TF-A MBN
+        to_gen_optee_mbn: Whether to generate OPTEE MBN
+        to_generate_qccfg: Whether to generate qc_config
+
+    Returns:
+        0 on success, -1 on failure
+    """
+    global arch
+    global mbn_version
+    global inDir
+
+    import shutil
+
+    # Chipsets that support automatic multi-version MBN generation
+    # Specify list of ADDITIONAL MBN versions to build (beyond the default version)
+    # The default version for each chipset is already built before calling this function
+    # Set to empty list [] or None to disable multi-version build
+    multi_mbn_version_support = {
+        'ipq5210': ['8'],           # Default is v7, also build v8
+        'ipq5210_64': ['8'],        # Default is v7, also build v8
+        # Add more chipsets here as needed
+    }
+
+    # Map MBN versions to directory names: v7 -> V1, v8 -> V2
+    version_to_dir_map = {
+        '7': 'V1',
+        '8': 'V2',
+    }
+
+    # Check if this chipset supports multi-version build
+    if arch not in multi_mbn_version_support or not multi_mbn_version_support[arch]:
+        return 0
+
+    additional_versions = multi_mbn_version_support[arch]
+    # Build list: default version + additional versions
+    mbn_versions_to_build = [mbn_version] + additional_versions
+
+    print("\n" + "="*60)
+    print("%s: Building MBN versions: %s (default: %s, additional: %s)" % (arch.upper(), ', '.join(mbn_versions_to_build), mbn_version, ', '.join(additional_versions)))
+    print("="*60 + "\n")
+
+    data_retention_root = os.path.join(inDir, "data_retention_qccfg")
+
+    # Build each MBN version
+    for idx, version in enumerate(mbn_versions_to_build):
+        if idx > 0:
+            # For versions after the first, we need to rebuild
+            print("\nBuilding MBN version %s...\n" % version)
+            mbn_version = version
+
+            if to_generate_qccfg == "true" and gen_qccfg() != 0:
+                return -1
+            if to_generate_mbn == "true" and gen_mbn() != 0:
+                return -1
+            if to_generate_melf == "true" and gen_melf() != 0:
+                return -1
+            if to_gen_tfa_mbn == "true" and gen_tfa_mbn() != 0:
+                return -1
+            if to_gen_optee_mbn == "true" and gen_optee_mbn() != 0:
+                return -1
+        else:
+            # First version already built, just need to organize
+            print("\nOrganizing MBN version %s...\n" % version)
+
+        # Clean up intermediate files BEFORE moving to version directory
+        cleanup_intermediate_files()
+
+        # Get directory name for this version (V1, V2, etc.)
+        dir_name = version_to_dir_map.get(version, "mbnv" + version)
+
+        # Save files to version-specific directory
+        version_dir = os.path.join(inDir, dir_name)
+        if not os.path.exists(version_dir):
+            os.makedirs(version_dir)
+
+        for pattern in ["*.mbn", "*.melf"]:
+            for f in glob.glob(os.path.join(inDir, pattern)):
+                if os.path.isfile(f):
+                    shutil.move(f, os.path.join(version_dir, os.path.basename(f)))
+
+        # Handle qcconfig files for this version
+        # For the first version, copy qcconfig files from root inDir to version directory
+        # For subsequent versions, they will be regenerated and then moved
+        qcconfig_files_root = glob.glob(os.path.join(inDir, "qcconfig-*.elf"))
+        if qcconfig_files_root:
+            if idx == 0:
+                # First version: copy files (keep originals for next version)
+                for f in qcconfig_files_root:
+                    shutil.copy2(f, version_dir)
+            else:
+                # Subsequent versions: move files (they were just regenerated)
+                for f in qcconfig_files_root:
+                    shutil.move(f, os.path.join(version_dir, os.path.basename(f)))
+
+        # Also copy from data_retention_qccfg root to its version subdirectory
+        if os.path.exists(data_retention_root):
+            qcconfig_files = glob.glob(os.path.join(data_retention_root, "qcconfig-*.elf"))
+            if qcconfig_files:
+                retention_dir = os.path.join(data_retention_root, dir_name)
+                if not os.path.exists(retention_dir):
+                    os.makedirs(retention_dir)
+                for f in qcconfig_files:
+                    shutil.copy2(f, retention_dir)
+
+    # Clean up qcconfig files from both root directories after all versions are done
+    # Remove from main inDir root
+    qcconfig_files_root = glob.glob(os.path.join(inDir, "qcconfig-*.elf"))
+    for f in qcconfig_files_root:
+        try:
+            os.remove(f)
+        except OSError as e:
+            print("Warning: Could not remove %s: %s" % (f, str(e)))
+
+    # Remove from data_retention_qccfg root
+    if os.path.exists(data_retention_root):
+        qcconfig_files = glob.glob(os.path.join(data_retention_root, "qcconfig-*.elf"))
+        for f in qcconfig_files:
+            try:
+                os.remove(f)
+            except OSError as e:
+                print("Warning: Could not remove %s: %s" % (f, str(e)))
+
+    print("\n" + "="*60)
+    print("All MBN versions (%s) generated successfully!" % ', '.join(mbn_versions_to_build))
+    print("="*60 + "\n")
+
+    return 0
+
 def main():
     global flash
     global arch
@@ -955,6 +1125,7 @@ def main():
     global attach3_dir
     global attach4_dir
     global attach5_dir
+    global combined_soc
 
     to_generate_cdt = "false"
     to_generate_xblcfg = "false"
@@ -974,6 +1145,7 @@ def main():
     total_blocks = ""
     lic_dir = ""
     mbnv_provided = False
+    combined_soc = False
 
     if len(sys.argv) > 1:
         try:
@@ -981,7 +1153,7 @@ def main():
                 "bootimg=", "tzimg=", "nhssimg=", "rpmimg=", "wififwimg",
                 "gencdt", "genxblcfg", "genqccfg", "genmelf", "dtc_path=", "memory=", "mbnv=",
                 "total_blocks=", "flash_size=", "genpart", "genbootconf", "genbootconf_crc",
-                "genmbn", "lk", "genbootldr", "genlicense", "gentfambn", "genopteembn", "soc=","attach1=",
+                "genmbn", "lk", "genbootldr", "genlicense", "gentfambn", "genopteembn", "combined_soc", "soc=","attach1=",
 		"attach2=", "attach3=", "attach4=", "attach5=", "help"])
         except GetoptError as e:
             print_help()
@@ -1075,6 +1247,8 @@ def main():
                 else:
                     print("ERROR: Invalid MBN version '" + value + "'. Supported versions are 7 and 8")
                     return -1
+            elif option == "--combined_soc":
+                combined_soc = True
             elif option == "--soc":
                 soc_dir = value
 
@@ -1188,6 +1362,12 @@ def main():
 
         if to_gen_optee_mbn == "true" and gen_optee_mbn() != 0:
             return -1
+
+        # Build multiple MBN versions if --combined_soc is specified, supported chipset, and --mbnv not provided
+        if combined_soc and not mbnv_provided and (to_generate_mbn == "true" or to_generate_melf == "true" or to_gen_tfa_mbn == "true" or to_gen_optee_mbn == "true" or to_generate_qccfg == "true"):
+            result = build_multi_mbn_versions(to_generate_mbn, to_generate_melf, to_gen_tfa_mbn, to_gen_optee_mbn, to_generate_qccfg)
+            if result != 0:
+                return -1
 
         # Clean up temp files after all operations are complete
         cleanup_intermediate_files()
