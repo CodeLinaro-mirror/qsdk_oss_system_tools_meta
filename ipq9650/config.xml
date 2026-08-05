@@ -408,7 +408,7 @@ SPDX-License-Identifier: ISC
 				</profile-default>
 				<profile-2048 layouts="default,vendor">
 					<bootldr_components>
-						<qcconfig>qcconfig-DB-JU01_-C1_1024M32_DDR5_LM2048.elf</qcconfig>
+						<qcconfig>qcconfig-DB-JU01-C1_1024M32_DDR5_LM2048.elf</qcconfig>
 					</bootldr_components>
 				</profile-2048>
 				<profile-512 layouts="default,vendor">
@@ -434,7 +434,7 @@ SPDX-License-Identifier: ISC
 				</profile-default>
 				<profile-2048 layouts="default,vendor">
 					<bootldr_components>
-						<qcconfig>qcconfig-DB-JU01_-C2_1024M32_DDR5_LM2048.elf</qcconfig>
+						<qcconfig>qcconfig-DB-JU01-C2_1024M32_DDR5_LM2048.elf</qcconfig>
 					</bootldr_components>
 				</profile-2048>
 				<profile-512 layouts="default,vendor">
