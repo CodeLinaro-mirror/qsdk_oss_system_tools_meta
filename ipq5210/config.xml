@@ -423,6 +423,11 @@ SPDX-License-Identifier: ISC
 						<qcconfig>qcconfig-RDP505_256M16_DDR3_LM512.elf</qcconfig>
 					</bootldr_components>
 				</profile-512>
+				<profile-default layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP505_256M16_DDR3.elf</qcconfig>
+					</bootldr_components>
+				</profile-default>
 			</fw_override>
 		</entry>
 		<entry>
@@ -483,11 +488,16 @@ SPDX-License-Identifier: ISC
 		<entry>
 			<machid>0x1080100</machid>
 			<board>DB-HM02.1</board>
-			<memory_512>256M16_DDR3</memory_512>
+			<memory>256M16_DDR3</memory>
 			<ddr3_boot_freq>933000</ddr3_boot_freq>
 			<layouts>default,vendor</layouts>
 			<fw_override>
 				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="7168KiB"/>
+				<profile-default layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-DB-HM02.1_256M16_DDR3.elf</qcconfig>
+					</bootldr_components>
+				</profile-default>
 				<profile-512 layouts="default,vendor">
 					<bootldr_components>
 						<qcconfig>qcconfig-DB-HM02.1_256M16_DDR3_LM512.elf</qcconfig>
