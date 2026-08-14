@@ -101,6 +101,42 @@ soc_hw_versions["ipq5332"] = { 0x201A0100, 0x201A0101 };
 soc_hw_versions["ipq5424"] = { 0xE0010100 };
 soc_hw_versions["ipq5210"] = { 0xE0030100, 0xE0030101, 0xE0030102 };
 soc_hw_versions["ipq9650"] = { 0xE0020100, 0xE0020200 };
+combined_soc = False
+
+# Combined version mapping: soc_hw_version -> (version_string, version_dir)
+soc_version_map = {
+    'ipq5210': {
+        0xE0030100: ('1.0', 'V1'),
+        0xE0030101: ('1.1', 'V1'),
+        0xE0030102: ('1.2', 'V2'),
+    },
+}
+
+def get_version_string_from_soc_hw(soc_hw_version, arch):
+    """Map soc_hw_version to version string (1.0, 1.1, 1.2) for combined_soc builds.
+
+    Args:
+        soc_hw_version: Hardware version value (e.g., 0xE0030100)
+        arch: Architecture name (e.g., 'ipq5210')
+
+    Returns:
+        Version string ('1.0', '1.1', '1.2') or None if not mapped
+    """
+    version_info = soc_version_map.get(arch, {}).get(soc_hw_version)
+    return version_info[0] if version_info else None
+
+def get_version_dir_from_soc_hw(soc_hw_version, arch):
+    """Map soc_hw_version to version directory (V1/V2) for combined_soc builds.
+
+    Args:
+        soc_hw_version: Hardware version value (e.g., 0xE0030100)
+        arch: Architecture name (e.g., 'ipq5210')
+
+    Returns:
+        Version directory name ('V1' or 'V2') or None if not mapped
+    """
+    version_info = soc_version_map.get(arch, {}).get(soc_hw_version)
+    return version_info[1] if version_info else None
 
 #
 # Python 2.6 and earlier did not have OrderedDict use the backport
@@ -606,109 +642,138 @@ class Pack(object):
         self.its_fname = os.path.join(self.images_dname, "flash.its")
 
     def __gen_machid_flash_script(self, machid_map, images):
+        global combined_soc
+        global ARCH_NAME
 
         for machid, part_img in machid_map.items():
-            script_name = os.path.join(self.images_dname, "flash_" + machid + ".scr")
-            script_fp = open(script_name, "w")
-            flinfo = part_img["flinfo"]
-            self.flinfo = flinfo
-            script = FlashScript(flinfo)
+            # Determine if we need to generate multiple scripts for combined_soc
+            if combined_soc == "true":
+                soc_versions_to_generate = soc_hw_versions[ARCH_NAME]
+            else:
+                soc_versions_to_generate = [None]  # Single script without version suffix
 
-            print("#################", sys._getframe(0).f_code.co_name, sys._getframe(0).f_lineno, part_img["part_info"])
-            # For non-apps image, load mibib for mibib based partition configs
-            if image_type == "all":
-                if flinfo.type != "nor-gpt" and flinfo.type != "emmc":
-                    for pinfo in part_img["part_info"]:
-                        if pinfo[0] == "0:MIBIB":
-                            self.mibib_reload(pinfo[1], pinfo[0], flinfo, script)
-
-            current_pftype = None
-
-            for pinfo in part_img["part_info"]:
-                pname = pinfo[0]
-                fname = pinfo[1]
-                pftype = pinfo[3]
-                pre_cmd_list = pinfo[4]
-                post_cmd_list = pinfo[5]
-                erase_only = pinfo[6]
-
-                if (erase_only == 'true'):
-                    script.erase_partition(pname)
-
-                if fname == "":
-                    continue
+            for soc_hw_version in soc_versions_to_generate:
+                # Generate script name with version suffix if combined_soc
+                if combined_soc == "true":
+                    version_string = get_version_string_from_soc_hw(soc_hw_version, ARCH_NAME)
+                    if version_string is None:
+                        print("Warning: no version mapping for soc_hw_version %x, arch %s, skipping" % (soc_hw_version, ARCH_NAME))
+                        continue
+                    script_name = os.path.join(self.images_dname, "flash_" + machid + "_" + version_string + ".scr")
+                    version_dir = get_version_dir_from_soc_hw(soc_hw_version, ARCH_NAME)
                 else:
-                    section_conf = pname.lower()
-                    section_conf = section_conf.replace("0:","")
+                    script_name = os.path.join(self.images_dname, "flash_" + machid + ".scr")
+                    version_dir = None
 
-                    if ARCH_NAME == "ipq5332":
-                        if section_conf == "qsee":
-                            section_conf = "tz"
-                        elif section_conf == "cdt":
-                            section_conf = "ddr" + fname[3:-4]
-                        elif section_conf == "bootconfig" or  section_conf == "bootconfig1":
-                            section_conf = fname[:-4]
-                        elif section_conf == "appsbl":
-                            section_conf = "u-boot"
-                        elif section_conf == "rootfs" and self.flash_type in ["nand", "nand-4k", "norplusnand", "norplusnand-4k"]:
-                            section_conf = "ubi"
-                        elif section_conf == "wifi_fw" or section_conf == "wififw":
-                            section_conf = fname[:-13]
+                script_fp = open(script_name, "w")
+                flinfo = part_img["flinfo"]
+                self.flinfo = flinfo
+                script = FlashScript(flinfo)
+
+                print("#################", sys._getframe(0).f_code.co_name, sys._getframe(0).f_lineno, part_img["part_info"])
+                # For non-apps image, load mibib for mibib based partition configs
+                if image_type == "all":
+                    if flinfo.type != "nor-gpt" and flinfo.type != "emmc":
+                        for pinfo in part_img["part_info"]:
+                            if pinfo[0] == "0:MIBIB":
+                                self.mibib_reload(pinfo[1], pinfo[0], flinfo, script)
+
+                current_pftype = None
+
+                for pinfo in part_img["part_info"]:
+                    pname = pinfo[0]
+                    fname = pinfo[1]
+                    pftype = pinfo[3]
+                    pre_cmd_list = pinfo[4]
+                    post_cmd_list = pinfo[5]
+                    erase_only = pinfo[6]
+
+                    if (erase_only == 'true'):
+                        script.erase_partition(pname)
+
+                    if fname == "":
+                        continue
                     else:
-                        if section_conf == "rootfs" and self.flash_type in ["nand", "nand-4k", "norplusnand", "norplusnand-4k", "norplusnand-gpt", "norplusnand-4k-gpt"]:
-                            section_conf = "ubi"
+                        section_conf = pname.lower()
+                        section_conf = section_conf.replace("0:","")
 
-                    section_name = section_conf + "-" + sha1(fname)
+                        if ARCH_NAME == "ipq5332":
+                            if section_conf == "qsee":
+                                section_conf = "tz"
+                            elif section_conf == "cdt":
+                                section_conf = "ddr" + fname[3:-4]
+                            elif section_conf == "bootconfig" or  section_conf == "bootconfig1":
+                                section_conf = fname[:-4]
+                            elif section_conf == "appsbl":
+                                section_conf = "u-boot"
+                            elif section_conf == "rootfs" and self.flash_type in ["nand", "nand-4k", "norplusnand", "norplusnand-4k"]:
+                                section_conf = "ubi"
+                            elif section_conf == "wifi_fw" or section_conf == "wififw":
+                                section_conf = fname[:-13]
+                        else:
+                            if section_conf == "rootfs" and self.flash_type in ["nand", "nand-4k", "norplusnand", "norplusnand-4k", "norplusnand-gpt", "norplusnand-4k-gpt"]:
+                                section_conf = "ubi"
 
-                    # Identify the change in flashtype and do flash update
-                    if current_pftype != pftype:
-                        if pftype == "emmc":
-                            if ARCH_NAME != "ipq5332":
-                                if flayout == "vendor" or flayout == "default":
-                                    script.append("switch_to_user")
-                                if flayout == "default" and image_type == "all":
-                                    script.append("mmc partconf 0 0 0 0")
-                                script.append("flupdate set mmc")
-                        elif pftype == "nor-gpt":
-                            script.append("flupdate set nor-gpt")
+                        # Apply version directory prefix for combined_soc u-boot-spl files
+                        fname_to_use = fname
+                        if combined_soc == "true" and version_dir:
+                            if 'u-boot-spl' in fname.lower() and fname.endswith('.melf'):
+                                fname_to_use = os.path.join(version_dir, fname)
 
-                        current_pftype = pftype
+                        section_name = section_conf + "-" + sha1(fname_to_use)
 
-                    for cmd in pre_cmd_list:
-                        script.append(cmd)
+                        # Identify the change in flashtype and do flash update
+                        if current_pftype != pftype:
+                            if pftype == "emmc":
+                                if ARCH_NAME != "ipq5332":
+                                    if flayout == "vendor" or flayout == "default":
+                                        script.append("switch_to_user")
+                                    if flayout == "default" and image_type == "all":
+                                        script.append("mmc partconf 0 0 0 0")
+                                    script.append("flupdate set mmc")
+                            elif pftype == "nor-gpt":
+                                script.append("flupdate set nor-gpt")
 
-                    for cmd in post_cmd_list:
-                        script.append(cmd)
+                            current_pftype = pftype
 
-                    for img_info in images:
-                         if fname == img_info.filename:
-                             section_name = img_info.name
+                        for cmd in pre_cmd_list:
+                            script.append(cmd)
 
-                    image_info = ImageInfo(section_name, fname, "firmware")
-                    if fname.lower() != "none":
-                        if image_info not in images:
-                            images.append(image_info)
+                        for cmd in post_cmd_list:
+                            script.append(cmd)
 
-                    script.imxtract_n_flash(section_name, pname)
+                        for img_info in images:
+                             if fname_to_use == img_info.filename:
+                                 section_name = img_info.name
 
-                    print("#################", sys._getframe(0).f_code.co_name, sys._getframe(0).f_lineno, section_name, pname)
+                        image_info = ImageInfo(section_name, fname_to_use, "firmware")
+                        if fname_to_use.lower() != "none":
+                            if image_info not in images:
+                                images.append(image_info)
 
-            if current_pftype == "emmc" or current_pftype == "nor-gpt":
-                script.append("flupdate clear")
+                        script.imxtract_n_flash(section_name, pname)
 
-            script.end()
+                        print("#################", sys._getframe(0).f_code.co_name, sys._getframe(0).f_lineno, section_name, pname)
 
-            try:
-                script_fp.write(script.dumps())
-            except IOError as e:
-                error("error writing to script '%s'" % script_fp.name, e)
+                if current_pftype == "emmc" or current_pftype == "nor-gpt":
+                    script.append("flupdate clear")
 
-            script_fp.close()
-            print("#################", sys._getframe(0).f_code.co_name, sys._getframe(0).f_lineno, script_name + " script generated")
+                script.end()
+
+                try:
+                    script_fp.write(script.dumps())
+                except IOError as e:
+                    error("error writing to script '%s'" % script_fp.name, e)
+
+                script_fp.close()
+                print("#################", sys._getframe(0).f_code.co_name, sys._getframe(0).f_lineno, script_name + " script generated")
 
         return 0
 
     def __gen_main_flash_script(self, machid_map, images):
+        global combined_soc
+        global ARCH_NAME
+
         script_fp = open(self.scr_fname, "w")
         flinfo = FlashInfo("dummy", 0, 0, 0)
         script = FlashScript(flinfo)
@@ -751,18 +816,53 @@ class Pack(object):
                 script.script.append('exit 1\n')
                 script.script.append('fi\n')
 
-        script.script.append('source $imgaddr:script_$machid\n')
+        # For combined_soc, generate version-specific source commands
+        if combined_soc == "true":
+            # Generate nested if-else for soc_hw_version to source the correct script
+            first_version = True
+            for soc_hw_version in soc_hw_versions[ARCH_NAME]:
+                version_string = get_version_string_from_soc_hw(soc_hw_version, ARCH_NAME)
 
+                if first_version:
+                    script.script.append('if test "$soc_hw_version" = "%x"; then\n' % soc_hw_version)
+                    first_version = False
+                else:
+                    script.script.append('elif test "$soc_hw_version" = "%x"; then\n' % soc_hw_version)
+
+                script.script.append('source $imgaddr:script_${machid}_%s\n' % version_string)
+
+            script.script.append('else\n')
+            script.script.append('echo \'Unknown soc_hw_version, cannot determine script\'\n')
+            script.script.append('exit 1\n')
+            script.script.append('fi\n')
+        else:
+            script.script.append('source $imgaddr:script_$machid\n')
+
+        # Add version-specific scripts to images for combined_soc
         for machid in machid_map:
-            fname = "flash_" + machid + ".scr"
-            section_name = "script_" + machid
+            if combined_soc == "true":
+                # Add all version-specific scripts
+                for soc_hw_version in soc_hw_versions[ARCH_NAME]:
+                    version_string = get_version_string_from_soc_hw(soc_hw_version, ARCH_NAME)
+                    fname = "flash_" + machid + "_" + version_string + ".scr"
+                    section_name = "script_" + machid + "_" + version_string
 
-            image_info = ImageInfo(section_name, fname, "script")
-            if fname.lower() != "none":
-                if image_info not in images:
-                    images.insert(0, image_info)
+                    image_info = ImageInfo(section_name, fname, "script")
+                    if fname.lower() != "none":
+                        if image_info not in images:
+                            images.insert(0, image_info)
 
-            print("#################", sys._getframe(0).f_code.co_name, sys._getframe(0).f_lineno, section_name)
+                    print("#################", sys._getframe(0).f_code.co_name, sys._getframe(0).f_lineno, section_name)
+            else:
+                fname = "flash_" + machid + ".scr"
+                section_name = "script_" + machid
+
+                image_info = ImageInfo(section_name, fname, "script")
+                if fname.lower() != "none":
+                    if image_info not in images:
+                        images.insert(0, image_info)
+
+                print("#################", sys._getframe(0).f_code.co_name, sys._getframe(0).f_lineno, section_name)
 
         script.end()
 
@@ -1541,11 +1641,27 @@ class Pack(object):
                 if bootldr_only == "true" and pname.lower().replace("0:", "") != "bootldr":
                     continue
 
-                if os.path.isfile(os.path.join(self.images_dname, fname)) == False:
-                    print("file '%s' is not exist " % fname)
-                    return 1
+                # For combined_soc u-boot-spl files, check in both V1 and V2 directories
+                if combined_soc == "true" and 'u-boot-spl' in fname.lower() and fname.endswith('.melf'):
+                    v1_path = os.path.join(self.images_dname, "V1", fname)
+                    v2_path = os.path.join(self.images_dname, "V2", fname)
+                    if not os.path.isfile(v1_path) or not os.path.isfile(v2_path):
+                        print("file '%s' does not exist in both V1 and V2 directories" % fname)
+                        return 1
+                else:
+                    if os.path.isfile(os.path.join(self.images_dname, fname)) == False:
+                        print("file '%s' is not exist " % fname)
+                        return 1
 
-                img_size = self.__get_img_size(fname)
+                # For combined_soc u-boot-spl files, check size from both V1 and V2 directories
+                if combined_soc == "true" and 'u-boot-spl' in fname.lower() and fname.endswith('.melf'):
+                    v1_size = getsize(os.path.join(self.images_dname, "V1", fname))
+                    v2_size = getsize(os.path.join(self.images_dname, "V2", fname))
+                    # Use the larger of the two sizes for partition size check
+                    img_size = max(v1_size, v2_size)
+                else:
+                    img_size = self.__get_img_size(fname)
+
                 if psize != "dynamic" and img_size > int(psize):
                     print("img size is larger than part. len in '%s'" % pname)
                     return 1
@@ -1754,6 +1870,9 @@ class Pack(object):
         mode -- string, 32 or 64 bit mode
         components -- dict, containing paths to bootldr components
         """
+        global combined_soc
+        global SRC_DIR
+
         # Create output filename according to the pattern
         output_name = "bootldr_%s_%s_%s_%s-bit_%s.itb" % (arch, memory_tag, flash_type, mode, board)
         #output_path = os.path.join(self.images_dname, output_name)
@@ -1761,23 +1880,47 @@ class Pack(object):
 
         # Also create an ITS file with the same base name
         its_name = "bootldr_%s_%s_%s_%s-bit_%s.its" % (arch, memory_tag, flash_type, mode, board)
-        its_path = os.path.join(self.images_dname, its_name)
 
         # Prepare command for gen_its.py
         cmd = [
             "python",
             os.path.join(SRC_DIR, "scripts/gen_its.py"),
             "--arch", arch,
-            "--qclib_path", components.get("qclib", ""),
-            "--qcconfig_path", components.get("qcconfig", ""),
-            "--tfa_bl31_path", components.get("tfa_bl31", ""),
-            "--uboot_path", components.get("uboot", ""),
-            "--optee_path", components.get("optee", ""),
+        ]
+
+        # Add component paths - for combined_soc, use relative paths from images_dname to SRC_DIR/V1 and SRC_DIR/V2
+        if combined_soc == "true":
+            # Calculate relative path from images_dname to SRC_DIR
+            rel_path_to_src = os.path.relpath(SRC_DIR, self.images_dname)
+
+            cmd.extend([
+                "--qclib_path", os.path.join(rel_path_to_src, "V2", components.get("qclib", "")),
+                "--qcconfig_path", os.path.join(rel_path_to_src, "V2", components.get("qcconfig", "")),
+                "--tfa_bl31_path", os.path.join(rel_path_to_src, "V2", components.get("tfa_bl31", "")),
+                "--uboot_path", os.path.join(rel_path_to_src, "V2", components.get("uboot", "")),
+                "--optee_path", os.path.join(rel_path_to_src, "V2", components.get("optee", "")),
+                "--qclib_path_v7", os.path.join(rel_path_to_src, "V1", components.get("qclib", "")),
+                "--qcconfig_path_v7", os.path.join(rel_path_to_src, "V1", components.get("qcconfig", "")),
+                "--tfa_bl31_path_v7", os.path.join(rel_path_to_src, "V1", components.get("tfa_bl31", "")),
+                "--uboot_path_v7", os.path.join(rel_path_to_src, "V1", components.get("uboot", "")),
+                "--optee_path_v7", os.path.join(rel_path_to_src, "V1", components.get("optee", "")),
+            ])
+        else:
+            cmd.extend([
+                "--qclib_path", components.get("qclib", ""),
+                "--qcconfig_path", components.get("qcconfig", ""),
+                "--tfa_bl31_path", components.get("tfa_bl31", ""),
+                "--uboot_path", components.get("uboot", ""),
+                "--optee_path", components.get("optee", ""),
+            ])
+
+        # Add common parameters
+        cmd.extend([
             "-p", "qclib", "qcconfig",
             "-P", "tfa_bl31", "uboot", "optee",
             "-o", output_name,
             "--template", "scripts/template.its"
-        ]
+        ])
 
         print("#################", sys._getframe(0).f_code.co_name, sys._getframe(0).f_lineno,
               "Generating bootldr image:", output_name)
@@ -1806,6 +1949,9 @@ class Pack(object):
         flash_type -- string, flash type (e.g., emmc, nand)
         mode -- string, 32 or 64 bit mode
         """
+        global combined_soc
+        global ARCH_NAME
+
         components = {}
         bootldr_section = root.find(".//data[@type='BOOTLDR_COMPONENTS']")
 
@@ -1827,10 +1973,7 @@ class Pack(object):
                     flash_types = flash_attr.split(",")
                     if flash_type in flash_types and mode_attr == mode:
                         uboot_filename = uboot.text
-                        components["uboot"] = uboot.text
-                        uboot_dtb_name = board_entry.find(".//uboot_dtb_name")
 
-                        global ARCH_NAME
                         if ARCH_NAME in split_by_rdp_supported_arch:
                             dtb_name = board_name.lower()
                             if "UBOOT_DTB_NAME" in uboot_filename:
@@ -2003,6 +2146,7 @@ class ArgParser(object):
         global flayout
         global split_by_rdp
         global bootldr_only
+        global combined_soc
         skip_test = False
 
         """Start the parsing process, and populate members with parsed value.
@@ -2013,7 +2157,7 @@ class ArgParser(object):
         cdir = os.path.abspath(os.path.dirname(""))
         if len(sys.argv) > 1:
             try:
-                opts, args = getopt(sys.argv[1:], "", ["arch=", "fltype=", "srcPath=", "inImage=", "outImage=", "image_type=", "memory=", "img_suffix=", "skip_4k_nand", "atf", "flayout=", "split_by_rdp", "bootldr"])
+                opts, args = getopt(sys.argv[1:], "", ["arch=", "fltype=", "srcPath=", "inImage=", "outImage=", "image_type=", "memory=", "img_suffix=", "skip_4k_nand", "atf", "flayout=", "split_by_rdp", "bootldr", "combined_soc"])
             except GetoptError as e:
                 raise UsageError(e.msg)
 
@@ -2056,6 +2200,9 @@ class ArgParser(object):
 
                 elif option =="--bootldr":
                     bootldr_only = "true"
+
+                elif option =="--combined_soc":
+                    combined_soc = "true"
             # Verify Arguments passed by user
             # Verify arch type
             if ARCH_NAME not in supported_arch:
