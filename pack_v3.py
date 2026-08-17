@@ -99,8 +99,8 @@ gpt_flash = ["nor-gpt", "emmc"]
 soc_hw_versions = {}
 soc_hw_versions["ipq5332"] = { 0x201A0100, 0x201A0101 };
 soc_hw_versions["ipq5424"] = { 0xE0010100 };
-soc_hw_versions["ipq5210"] = { 0xE0030100 };
-soc_hw_versions["ipq9650"] = { 0xE0020100 };
+soc_hw_versions["ipq5210"] = { 0xE0030100, 0xE0030101, 0xE0030102 };
+soc_hw_versions["ipq9650"] = { 0xE0020100, 0xE0020200 };
 
 #
 # Python 2.6 and earlier did not have OrderedDict use the backport
