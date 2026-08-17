@@ -663,10 +663,12 @@ class Pack(object):
                     # Identify the change in flashtype and do flash update
                     if current_pftype != pftype:
                         if pftype == "emmc":
-                            if ARCH_NAME != "ipq5332" and flayout == "default":
-                                script.append("switch_to_user")
-                                script.append("mmc partconf 0 0 0 0")
-                            script.append("flupdate set mmc")
+                            if ARCH_NAME != "ipq5332":
+                                if flayout == "vendor" or flayout == "default":
+                                    script.append("switch_to_user")
+                                if flayout == "default" and image_type == "all":
+                                    script.append("mmc partconf 0 0 0 0")
+                                script.append("flupdate set mmc")
                         elif pftype == "nor-gpt":
                             script.append("flupdate set nor-gpt")
 
