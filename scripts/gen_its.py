@@ -61,7 +61,12 @@ class TemplateManager:
             'HAVE_UBOOT': 0,
             'HAVE_OPTEE': 0,
             'HAVE_FDT': 0,
-            'HAVE_DPR': 0
+            'HAVE_DPR': 0,
+            'HAVE_QCLIB_V7': 0,
+            'HAVE_QCCONFIG_V7': 0,
+            'HAVE_TFA_BL31_V7': 0,
+            'HAVE_UBOOT_V7': 0,
+            'HAVE_OPTEE_V7': 0
         }
         self.placeholders = {}
         self.is_conditional = True
@@ -294,7 +299,12 @@ path_to_component = {
     'qcconfig_path': 'qcconfig',
     'tfa_bl31_path': 'tfa_bl31',
     'uboot_path': 'uboot',
-    'optee_path': 'optee'
+    'optee_path': 'optee',
+    'qclib_path_v7': 'qclib_v7',
+    'qcconfig_path_v7': 'qcconfig_v7',
+    'tfa_bl31_path_v7': 'tfa_bl31_v7',
+    'uboot_path_v7': 'uboot_v7',
+    'optee_path_v7': 'optee_v7'
 }
 
 # OS mapping table
@@ -704,7 +714,12 @@ class FitImageGenerator:
             ('qcconfig_path', self.args.qcconfig_path),
             ('tfa_bl31_path', self.args.tfa_bl31_path),
             ('uboot_path', self.args.uboot_path),
-            ('optee_path', self.args.optee_path)
+            ('optee_path', self.args.optee_path),
+            ('qclib_path_v7', self.args.qclib_path_v7),
+            ('qcconfig_path_v7', self.args.qcconfig_path_v7),
+            ('tfa_bl31_path_v7', self.args.tfa_bl31_path_v7),
+            ('uboot_path_v7', self.args.uboot_path_v7),
+            ('optee_path_v7', self.args.optee_path_v7)
         ]:
             if file_path:
                 component_name = path_to_component[arg_name]
@@ -745,6 +760,23 @@ class FitImageGenerator:
         # Add component data to the template manager
         for component_name, parser in self.parsers.items():
             self.template_manager.add_component_data(component_name, parser)
+
+        # Warn if only a subset of a V7 group's components was provided, since
+        # pre-ddr-config-v7/post-ddr-config-v7 require every member of their
+        # group and will silently be omitted from the ITS otherwise.
+        pre_v7 = {'qcconfig_v7', 'qclib_v7'}
+        post_v7 = {'tfa_bl31_v7', 'uboot_v7', 'optee_v7'}
+        present = set(self.parsers.keys())
+
+        if present & pre_v7 and not pre_v7.issubset(present):
+            missing = [c for c in pre_v7 if c not in present]
+            print("Warning: Incomplete pre-DDR V7 set. Missing: {0}. "
+                  "pre-ddr-config-v7 block will not be generated.".format(missing))
+
+        if present & post_v7 and not post_v7.issubset(present):
+            missing = [c for c in post_v7 if c not in present]
+            print("Warning: Incomplete post-DDR V7 set. Missing: {0}. "
+                  "post-ddr-config-v7 block will not be generated.".format(missing))
 
         # Determine pre and post components
         pre_components = []
@@ -802,9 +834,13 @@ class FitImageGenerator:
             return False
         self.template_manager.set_placeholder("META_LOAD_ADDR", meta_load_addr)
 
-        # Extract U-Boot architecture and set placeholder
+        # Extract U-Boot architecture and set placeholder. Fall back to the
+        # v7 parser so UBOOT_ARCH is still set when only uboot_path_v7 is given.
         if 'uboot' in self.parsers:
             uboot_arch = self.parsers['uboot'].get_architecture()
+            self.template_manager.set_placeholder("UBOOT_ARCH", uboot_arch)
+        elif 'uboot_v7' in self.parsers:
+            uboot_arch = self.parsers['uboot_v7'].get_architecture()
             self.template_manager.set_placeholder("UBOOT_ARCH", uboot_arch)
 
         # Handle DPR if provided: enable the conditional block and set placeholders
@@ -926,6 +962,11 @@ def main():
     parser.add_argument('--tfa_bl31_path', type=str, required=True, help="Path to TFA BL31 MBN file")
     parser.add_argument('--uboot_path', type=str, required=True, help="Path to U-Boot MBN file")
     parser.add_argument('--optee_path', type=str, required=True, help="Path to OPTEE MBN file")
+    parser.add_argument('--qclib_path_v7', type=str, default=None, help="Path to qclib MBN v7 ELF file (optional)")
+    parser.add_argument('--qcconfig_path_v7', type=str, default=None, help="Path to qcconfig MBN v7 ELF file (optional)")
+    parser.add_argument('--tfa_bl31_path_v7', type=str, default=None, help="Path to TFA BL31 MBN v7 file (optional)")
+    parser.add_argument('--uboot_path_v7', type=str, default=None, help="Path to U-Boot MBN v7 file (optional)")
+    parser.add_argument('--optee_path_v7', type=str, default=None, help="Path to OPTEE MBN v7 file (optional)")
     parser.add_argument('-p', '--pre', nargs='+', default=None,
                         help="Files to include in pre-DDR configuration (optional, defaults to qclib qcconfig)")
     parser.add_argument('-P', '--post', nargs='+', default=None,
@@ -966,6 +1007,11 @@ def main():
         ('tfa_bl31_path', args.tfa_bl31_path),
         ('uboot_path', args.uboot_path),
         ('optee_path', args.optee_path),
+        ('qclib_path_v7', args.qclib_path_v7),
+        ('qcconfig_path_v7', args.qcconfig_path_v7),
+        ('tfa_bl31_path_v7', args.tfa_bl31_path_v7),
+        ('uboot_path_v7', args.uboot_path_v7),
+        ('optee_path_v7', args.optee_path_v7),
         ('dtb_path', args.dtb_path),
         ('dpr_path', args.dpr_path)
     ]:

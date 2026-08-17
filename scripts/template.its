@@ -10,6 +10,11 @@
 /* Component availability defines */
 #define HAVE_FDT 0
 #define HAVE_DPR 0
+#define HAVE_QCLIB_V7 0
+#define HAVE_QCCONFIG_V7 0
+#define HAVE_TFA_BL31_V7 0
+#define HAVE_UBOOT_V7 0
+#define HAVE_OPTEE_V7 0
 
 / {
     description = "FIT Image for Vendor Boot Loader";
@@ -76,6 +81,18 @@
             compression = "none";
         };
 
+#if HAVE_QCCONFIG_V7 == 1
+        qcconfig-meta-v7 {
+            description = "qcconfig meta v7";
+            data = /incbin/("./qcconfig_v7_meta_segments.bin");
+            type = "firmware";
+            arch = "arm64";
+            load = <META_LOAD_ADDR>;
+            entry = <QCCONFIG_V7_ENTRY_ADDR>;
+            compression = "none";
+        };
+#endif
+
         qclib_1 {
             description = "qclib1";
             data = /incbin/("./qclib_1_load_segment.bin");
@@ -105,6 +122,18 @@
             entry = <QCLIB_ENTRY_ADDR>;
             compression = "none";
         };
+
+#if HAVE_QCLIB_V7 == 1
+        qclib-meta-v7 {
+            description = "qclib meta v7";
+            data = /incbin/("./qclib_v7_meta_segments.bin");
+            type = "firmware";
+            arch = "arm64";
+            load = <META_LOAD_ADDR>;
+            entry = <QCLIB_V7_ENTRY_ADDR>;
+            compression = "none";
+        };
+#endif
 
         tfa_bl31_1 {
             description = "tfa_bl311";
@@ -156,6 +185,18 @@
             compression = "none";
         };
 
+#if HAVE_TFA_BL31_V7 == 1
+        tfa_bl31-meta-v7 {
+            description = "tfa_bl31 meta v7";
+            data = /incbin/("./tfa_bl31_v7_meta_segments.bin");
+            type = "firmware";
+            arch = "arm64";
+            load = <META_LOAD_ADDR>;
+            entry = <TFA_BL31_V7_ENTRY_ADDR>;
+            compression = "none";
+        };
+#endif
+
         uboot_1 {
             description = "uboot1";
             data = /incbin/("./uboot_1_load_segment.bin");
@@ -176,6 +217,18 @@
             entry = <UBOOT_ENTRY_ADDR>;
             compression = "none";
         };
+
+#if HAVE_UBOOT_V7 == 1
+        uboot-meta-v7 {
+            description = "uboot meta v7";
+            data = /incbin/("./uboot_v7_meta_segments.bin");
+            type = "standalone";
+            arch = "UBOOT_ARCH";
+            load = <META_LOAD_ADDR>;
+            entry = <UBOOT_V7_ENTRY_ADDR>;
+            compression = "none";
+        };
+#endif
 
         optee_1 {
             description = "optee1";
@@ -198,6 +251,18 @@
             compression = "none";
         };
 
+#if HAVE_OPTEE_V7 == 1
+        optee-meta-v7 {
+            description = "optee meta v7";
+            data = /incbin/("./optee_v7_meta_segments.bin");
+            type = "firmware";
+            arch = "arm64";
+            load = <META_LOAD_ADDR>;
+            entry = <OPTEE_V7_ENTRY_ADDR>;
+            compression = "none";
+        };
+#endif
+
 #if HAVE_FDT == 1
         fdt-uboot {
             description = "ARM64 OpenWrt qcom_maxx device tree blob";
@@ -212,6 +277,31 @@
 
  configurations {
                 default = "post-ddr-config";
+#if HAVE_QCCONFIG_V7 == 1
+#if HAVE_QCLIB_V7 == 1
+                pre-ddr-config-v7 {
+                        description = "pre-ddr-v7";
+                        loadables =
+                        "qcconfig_1", "qcconfig_2", "qcconfig_3", "qcconfig_4", "qcconfig-meta-v7",
+                        "qclib_1", "qclib_2", "qclib-meta-v7"
+                        ;
+                };
+#endif
+#endif
+#if HAVE_TFA_BL31_V7 == 1
+#if HAVE_UBOOT_V7 == 1
+#if HAVE_OPTEE_V7 == 1
+                post-ddr-config-v7 {
+                        description = "post-ddr-v7";
+                        loadables =
+                        "tfa_bl31_1", "tfa_bl31_2", "tfa_bl31_3", "tfa_bl31_4", "tfa_bl31-meta-v7",
+                        "uboot_1", "uboot-meta-v7",
+                        "optee_1", "optee-meta-v7"
+                        ;
+                };
+#endif
+#endif
+#endif
                 pre-ddr-config {
                         description = "pre-ddr";
                         loadables =
