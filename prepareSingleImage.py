@@ -484,7 +484,7 @@ def gen_melf():
             # Add more architectures here as needed
         }
 
-        # Combined SoC TME patch files (version-specific files for IPQ5210 only)
+        # Combined SoC TME patch files (version-specific files for IPQ5210 and IPQ9650)
         tme_patch_map_combined = {
             'ipq5210': {
                 '7': 'tmel-ipq52xx-patch.elf',
@@ -494,11 +494,28 @@ def gen_melf():
                 '7': 'tmel-ipq52xx-patch.elf',
                 '8': 'tmel-ipq52xx-1.1.1-patch.elf',
             },
+            'ipq9650': {
+                '7': 'tmel-ipq96xx-patch.elf',
+                '8': 'tmel-ipq96xxv2-patch.elf',
+            },
+            'ipq9650_64': {
+                '7': 'tmel-ipq96xx-patch.elf',
+                '8': 'tmel-ipq96xxv2-patch.elf',
+            },
         }
 
-        # Select appropriate TME patch map based on combined_soc flag
-        if combined_soc and arch in tme_patch_map_combined:
-            # Use version-specific files for combined SoC builds (IPQ5210 only)
+        # Select appropriate TME patch map based on combined_soc flag and architecture
+        # IPQ5210: Use version-specific files only with combined_soc flag
+        # IPQ9650: Always use version-specific files based on mbnv
+        if arch in ['ipq9650', 'ipq9650_64']:
+            # IPQ9650 always uses version-specific files based on mbnv
+            if arch in tme_patch_map_combined and mbn_version in tme_patch_map_combined[arch]:
+                tme_patch_file = tme_patch_map_combined[arch][mbn_version]
+            else:
+                print('ERROR: No TME patch file mapping defined for architecture: ' + arch + ' and MBN version: ' + mbn_version)
+                return -1
+        elif combined_soc and arch in tme_patch_map_combined:
+            # IPQ5210: Use version-specific files for combined SoC builds
             if mbn_version in tme_patch_map_combined[arch]:
                 tme_patch_file = tme_patch_map_combined[arch][mbn_version]
             else:
