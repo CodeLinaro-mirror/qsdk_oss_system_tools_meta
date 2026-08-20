@@ -24,7 +24,7 @@ SPDX-License-Identifier: ISC
 				<props name="magic_number" type="DALPROP_ATTR_TYPE_BYTE_SEQ">0x00, 0x52, 0x44, 0x44, end</props>
 				<props name="checksum" type="DALPROP_ATTR_TYPE_BYTE_SEQ">0xFF, 0xFF, 0x00, 0x00, end</props>
 				<props name="num_of_device" type="DALPROP_ATTR_TYPE_UINT32">1</props>
-				<props name="size_of_param" type="DALPROP_ATTR_TYPE_UINT32">344</props>
+				<props name="size_of_param" type="DALPROP_ATTR_TYPE_UINT32">348</props>
 				<props name="interleaved" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="OBT_Threshold" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="ODT_Threshold" type="DALPROP_ATTR_TYPE_UINT32">0</props>
@@ -74,7 +74,7 @@ SPDX-License-Identifier: ISC
 				<props name="tCCD_L" type="DALPROP_ATTR_TYPE_UINT32">14</props>
 				<props name="tRRD_L" type="DALPROP_ATTR_TYPE_UINT32">5000</props>
 				<props name="num_device_per_cs0" type="DALPROP_ATTR_TYPE_UINT32">2</props>
-				<props name="features" type="DALPROP_ATTR_TYPE_UINT32">18</props>
+				<props name="features" type="DALPROP_ATTR_TYPE_UINT32">16</props>
 				<props name="low_power_ctrl" type="DALPROP_ATTR_TYPE_UINT32">1024</props>
 				<props name="ctl_long_count_param" type="DALPROP_ATTR_TYPE_UINT32">4194320</props>
 				<props name="pu_pd_params" type="DALPROP_ATTR_TYPE_UINT32">7454734</props>
@@ -89,8 +89,9 @@ SPDX-License-Identifier: ISC
 				<props name="mr5" type="DALPROP_ATTR_TYPE_UINT32">98</props>
 				<props name="mr6" type="DALPROP_ATTR_TYPE_UINT32">102</props>
 				<props name="mr3" type="DALPROP_ATTR_TYPE_UINT32">0</props>
+				<props name="train_2d_opt" type="DALPROP_ATTR_TYPE_UINT32">2880115989</props>
 				<props name="reserved_6" type="DALPROP_ATTR_TYPE_UINT32">0</props>
-				<props name="ddr5_mr8" type="DALPROP_ATTR_TYPE_UINT32">220</props>
+				<props name="ddr5_mr8" type="DALPROP_ATTR_TYPE_UINT32">211</props>
 				<props name="ddr5_mr9" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="ddr5_mr10" type="DALPROP_ATTR_TYPE_UINT32">52</props>
 				<props name="ddr5_mr11" type="DALPROP_ATTR_TYPE_UINT32">41</props>
@@ -100,13 +101,13 @@ SPDX-License-Identifier: ISC
 				<props name="ddr5_mr15" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="ddr5_mr32" type="DALPROP_ATTR_TYPE_UINT32">91</props>
 				<props name="ddr5_mr33" type="DALPROP_ATTR_TYPE_UINT32">43</props>
-				<props name="ddr5_mr34" type="DALPROP_ATTR_TYPE_UINT32">32</props>
+				<props name="ddr5_mr34" type="DALPROP_ATTR_TYPE_UINT32">40</props>
 				<props name="ddr5_mr35" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="ddr5_mr37" type="DALPROP_ATTR_TYPE_UINT32">36</props>
 				<props name="ddr5_mr38" type="DALPROP_ATTR_TYPE_UINT32">36</props>
 				<props name="ddr5_mr39" type="DALPROP_ATTR_TYPE_UINT32">36</props>
 				<props name="ddr5_mr40" type="DALPROP_ATTR_TYPE_UINT32">0</props>
-				<props name="ddr5_mr45" type="DALPROP_ATTR_TYPE_UINT32">0</props>
+				<props name="ddr5_mr45" type="DALPROP_ATTR_TYPE_UINT32">64</props>
 				<props name="ddr5_mr50" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="ddr5_mr51" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="ddr5_mr52" type="DALPROP_ATTR_TYPE_UINT32">0</props>
@@ -117,7 +118,7 @@ SPDX-License-Identifier: ISC
 				<props name="tREFSBRD" type="DALPROP_ATTR_TYPE_UINT32">30000</props>
 				<props name="tRx_DQS2DQ" type="DALPROP_ATTR_TYPE_UINT32">114</props>
 				<props name="num_bankgroups_cs0" type="DALPROP_ATTR_TYPE_UINT32">8</props>
-				<props name="train_2d_opt" type="DALPROP_ATTR_TYPE_UINT32">2880115989</props>
+				<props name="vref_cs" type="DALPROP_ATTR_TYPE_UINT32">65</props>
 				<props name="manufacture_name" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="ddr_type" type="DALPROP_ATTR_TYPE_UINT32">11</props>
 				<props name="num_rows_cs0" type="DALPROP_ATTR_TYPE_UINT32">17</props>
@@ -160,7 +161,7 @@ SPDX-License-Identifier: ISC
 				<props name="tCCD_L" type="DALPROP_ATTR_TYPE_UINT32">14</props>
 				<props name="tRRD_L" type="DALPROP_ATTR_TYPE_UINT32">5000</props>
 				<props name="num_device_per_cs0" type="DALPROP_ATTR_TYPE_UINT32">2</props>
-				<props name="features" type="DALPROP_ATTR_TYPE_UINT32">18</props>
+				<props name="features" type="DALPROP_ATTR_TYPE_UINT32">16</props>
 				<props name="low_power_ctrl" type="DALPROP_ATTR_TYPE_UINT32">1024</props>
 				<props name="ctl_long_count_param" type="DALPROP_ATTR_TYPE_UINT32">4194320</props>
 				<props name="pu_pd_params" type="DALPROP_ATTR_TYPE_UINT32">7454734</props>
@@ -175,8 +176,9 @@ SPDX-License-Identifier: ISC
 				<props name="mr5" type="DALPROP_ATTR_TYPE_UINT32">98</props>
 				<props name="mr6" type="DALPROP_ATTR_TYPE_UINT32">102</props>
 				<props name="mr3" type="DALPROP_ATTR_TYPE_UINT32">0</props>
+				<props name="train_2d_opt" type="DALPROP_ATTR_TYPE_UINT32">2880115989</props>
 				<props name="reserved_6" type="DALPROP_ATTR_TYPE_UINT32">0</props>
-				<props name="ddr5_mr8" type="DALPROP_ATTR_TYPE_UINT32">220</props>
+				<props name="ddr5_mr8" type="DALPROP_ATTR_TYPE_UINT32">211</props>
 				<props name="ddr5_mr9" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="ddr5_mr10" type="DALPROP_ATTR_TYPE_UINT32">52</props>
 				<props name="ddr5_mr11" type="DALPROP_ATTR_TYPE_UINT32">41</props>
@@ -186,13 +188,13 @@ SPDX-License-Identifier: ISC
 				<props name="ddr5_mr15" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="ddr5_mr32" type="DALPROP_ATTR_TYPE_UINT32">91</props>
 				<props name="ddr5_mr33" type="DALPROP_ATTR_TYPE_UINT32">43</props>
-				<props name="ddr5_mr34" type="DALPROP_ATTR_TYPE_UINT32">32</props>
+				<props name="ddr5_mr34" type="DALPROP_ATTR_TYPE_UINT32">40</props>
 				<props name="ddr5_mr35" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="ddr5_mr37" type="DALPROP_ATTR_TYPE_UINT32">36</props>
 				<props name="ddr5_mr38" type="DALPROP_ATTR_TYPE_UINT32">36</props>
 				<props name="ddr5_mr39" type="DALPROP_ATTR_TYPE_UINT32">36</props>
 				<props name="ddr5_mr40" type="DALPROP_ATTR_TYPE_UINT32">0</props>
-				<props name="ddr5_mr45" type="DALPROP_ATTR_TYPE_UINT32">0</props>
+				<props name="ddr5_mr45" type="DALPROP_ATTR_TYPE_UINT32">64</props>
 				<props name="ddr5_mr50" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="ddr5_mr51" type="DALPROP_ATTR_TYPE_UINT32">0</props>
 				<props name="ddr5_mr52" type="DALPROP_ATTR_TYPE_UINT32">0</props>
@@ -203,7 +205,7 @@ SPDX-License-Identifier: ISC
 				<props name="tREFSBRD" type="DALPROP_ATTR_TYPE_UINT32">30000</props>
 				<props name="tRx_DQS2DQ" type="DALPROP_ATTR_TYPE_UINT32">114</props>
 				<props name="num_bankgroups_cs0" type="DALPROP_ATTR_TYPE_UINT32">8</props>
-				<props name="train_2d_opt" type="DALPROP_ATTR_TYPE_UINT32">2880115989</props>
+				<props name="vref_cs" type="DALPROP_ATTR_TYPE_UINT32">65</props>
 			</device>
 		</driver>
 	</module>
