@@ -191,9 +191,15 @@ SPDX-License-Identifier: ISC
 			<memory_128>64M16_DDR3</memory_128>
 			<memory_256>128M16_DDR3</memory_256>
 			<memory_512>256M16_DDR3</memory_512>
+			<memory>256M16_DDR3</memory>
 			<ddr3_boot_freq>933000</ddr3_boot_freq>
 			<layouts>default,vendor,128M</layouts>
 			<fw_override>
+				<profile-default layouts="default,vendor,128M">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP497_256M16_DDR3.elf</qcconfig>
+					</bootldr_components>
+				</profile-default>
 				<profile-128 layouts="default,vendor,128M">
 					<bootldr_components>
 						<optee>tee-raw_lm.mbn</optee>
