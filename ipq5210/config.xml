@@ -382,6 +382,7 @@ SPDX-License-Identifier: ISC
 			<machid>0x8080203</machid>
 			<board>RDP504</board>
 			<memory>512M16_DDR4</memory>
+			<memory_2048>1024M16_DDR4</memory_2048>
 			<ddr4_boot_freq>1600000</ddr4_boot_freq>
 			<layouts>default,vendor</layouts>
 			<fw_override>
@@ -402,6 +403,11 @@ SPDX-License-Identifier: ISC
 						<qcconfig>qcconfig-RDP504_512M16_DDR4.elf</qcconfig>
 					</bootldr_components>
 				</profile-default>
+				<profile-2048 layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP504_1024M16_DDR4.elf</qcconfig>
+					</bootldr_components>
+				</profile-2048>
 			</fw_override>
 		</entry>
 		<entry>
