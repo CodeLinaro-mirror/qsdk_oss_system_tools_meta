@@ -461,18 +461,39 @@ def gen_melf():
                     else:
                         os.rename(os.path.join(inDir, xbl_nand_intermediate), os.path.join(inDir, xbl_nand_output_img));
     else:
-        # IPQ5210, IPQ9650 and other chipsets: Use u-boot-spl.mbn
-        # Dict: input_file -> (output_melf, is_optional)
-        # u-boot-spl.mbn QCLib_flashless.elf is required
-        spl_img_dict = {
-            'u-boot-spl.mbn'     : ('u-boot-spl.melf',     False),
-            'QCLib_flashless.mbn': ('QCLib_flashless.melf', False),
-        }
+        # IPQ5210, IPQ9650 and other chipsets: Use u-boot-spl*.mbn files
+        # Priority sequence:
+        # 1. Check if u-boot-spl.mbn exists (generic version)
+        # 2. If not, use RDP-specific u-boot-spl*.mbn files
+        generic_spl_mbn = inDir + "/u-boot-spl.mbn"
 
-        # Check if u-boot-spl.mbn exists (required)
-        if not os.path.isfile(inDir+"/u-boot-spl.mbn"):
-            print('ERROR: u-boot-spl.mbn file not present in input directory')
+        if os.path.exists(generic_spl_mbn):
+            # Generic u-boot-spl.mbn exists, use it
+            spl_mbn_files = [generic_spl_mbn]
+            print("Using existing generic u-boot-spl.mbn")
+        else:
+            # Generic not found, search for RDP-specific SPL images
+            spl_mbn_files = glob.glob(inDir + "/u-boot-spl*.mbn")
+            if spl_mbn_files:
+                print("Generic u-boot-spl.mbn not found, using RDP-specific SPL images")
+
+        # Check if at least one u-boot-spl*.mbn file exists (required)
+        if not spl_mbn_files:
+            print('ERROR: No u-boot-spl*.mbn files found in input directory')
             return -1
+
+        # Build dictionary of input files to process
+        # Dict: input_file -> (output_melf, is_optional)
+        spl_img_dict = {}
+
+        # Add all found u-boot-spl*.mbn files
+        for spl_mbn in spl_mbn_files:
+            spl_basename = os.path.basename(spl_mbn)
+            spl_melf_name = spl_basename.replace('.mbn', '.melf')
+            spl_img_dict[spl_basename] = (spl_melf_name, False)
+
+        # Add QCLib_flashless.mbn (optional)
+        spl_img_dict['QCLib_flashless.mbn'] = ('QCLib_flashless.melf', False)
 
         # Determine TME patch file based on architecture and MBN version
         # Legacy TME patch files (single file for all versions)
@@ -547,8 +568,12 @@ def gen_melf():
                 print('ERROR: unable to create '+output_melf+' binary')
                 return prc.returncode
 
-        # NAND images are generated only for u-boot-spl.melf
-        nand_input_img_list = ['u-boot-spl.melf']
+        # NAND images are generated for all u-boot-spl*.melf files
+        nand_input_img_list = []
+        for spl_mbn in spl_mbn_files:
+            spl_basename = os.path.basename(spl_mbn)
+            spl_melf_name = spl_basename.replace('.mbn', '.melf')
+            nand_input_img_list.append(spl_melf_name)
 
         # create nand melf for each generated melf
         script_path = inDir + '/Gen_xbl_nand_elf.py'
@@ -666,7 +691,6 @@ def gen_mbn():
     bootconfig_path = srcDir + '/elftombn.py'
     print("Converting u-boot elf to mbn ...")
     u_boot_2016_path=inDir + "/openwrt-" + arch + "-u-boot.elf"
-    u_boot_spl_path=inDir + "/u-boot-spl.elf"
     tiny_path=inDir + "/openwrt-" + arch + "_tiny" + "-u-boot.elf"
     tiny_nor_path=inDir + "/openwrt-" + arch + "_tiny_nor" + "-u-boot.elf"
     img_flag = 1
@@ -775,17 +799,39 @@ def gen_mbn():
         if os.path.exists(tiny_nor_path):
             prc = subprocess.Popen(['python', bootconfig_path, '-a', arch, '-f', inDir + "/openwrt-" + arch + "_tiny_nor" + "-u-boot.elf", '-o', inDir + "/openwrt-" + arch + "_tiny_nor" + "-u-boot.mbn", '-v', "6"], cwd=cdir)
 
-        if os.path.exists(u_boot_spl_path):
-            print("Converting u-boot-spl.elf to u-boot-spl.mbn ...")
-            prc = subprocess.Popen(['python', bootconfig_path, '-a', arch, '-f', inDir + "/u-boot-spl.elf", '-o', inDir + "/u-boot-spl.mbn", '-v', mbn_version, '-s', "0"], cwd=cdir)
-            img_flag = 0
+        # Handle u-boot-spl*.elf files with priority sequence:
+        # 1. Check if u-boot-spl.elf exists (generic version)
+        # 2. If not, use RDP-specific u-boot-spl*.elf files
+        generic_spl_elf = inDir + "/u-boot-spl.elf"
+
+        if os.path.exists(generic_spl_elf):
+            # Generic u-boot-spl.elf exists, use it
+            spl_elf_files = [generic_spl_elf]
+            print("Using existing generic u-boot-spl.elf")
+        else:
+            # Generic not found, search for RDP-specific SPL images
+            spl_elf_files = glob.glob(inDir + "/u-boot-spl*.elf")
+            if spl_elf_files:
+                print("Generic u-boot-spl.elf not found, using RDP-specific SPL images")
+
+        if spl_elf_files:
+            for spl_elf in spl_elf_files:
+                spl_basename = os.path.basename(spl_elf)
+                spl_mbn = spl_elf.replace('.elf', '.mbn')
+                print("Converting %s to %s ..." % (spl_basename, os.path.basename(spl_mbn)))
+                prc = subprocess.Popen(['python', bootconfig_path, '-a', arch, '-f', spl_elf, '-o', spl_mbn, '-v', mbn_version, '-s', "0"], cwd=cdir)
+                prc.wait()
+                if prc.returncode != 0:
+                    print('ERROR: unable to convert %s to .mbn' % spl_basename)
+                    return prc.returncode
+                img_flag = 0
 
     if(img_flag):
         print("u-boot image is not available")
         print("Failed to create mbn!")
         return -1
 
-    if os.path.exists(u_boot_2016_path) or os.path.exists(tiny_path) or os.path.exists(u_boot_spl_path):
+    if os.path.exists(u_boot_2016_path) or os.path.exists(tiny_path):
         prc.wait()
 
         if prc.returncode != 0:
