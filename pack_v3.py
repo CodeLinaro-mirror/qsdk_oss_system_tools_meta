@@ -1584,6 +1584,18 @@ class Pack(object):
                         if "UBOOT_DTB_NAME" in fname:
                             fname = fname.replace("-UBOOT_DTB_NAME", "")
 
+                if pname.lower().replace("0:", "") == "spl" and fname != "" and "u-boot-spl" in fname.lower():
+                    if split_by_rdp == "true":
+                        if "SPL_DTB_NAME" in fname:
+                            spl_dtb_name = segment.find(".//spl_dtb_name")
+                            if spl_dtb_name is not None:
+                                fname = fname.replace("SPL_DTB_NAME", spl_dtb_name.text)
+                            else:
+                                fname = fname.replace("SPL_DTB_NAME", board.lower())
+                    else:
+                        if "SPL_DTB_NAME" in fname:
+                            fname = fname.replace("-SPL_DTB_NAME", "")
+
                 # Apply WiFi firmware overrides for eMMC partitions (board-specific)
                 if split_by_rdp == "true":
                     fw_override = segment.find('.//fw_override')
@@ -1649,9 +1661,25 @@ class Pack(object):
                         print("file '%s' does not exist in both V1 and V2 directories" % fname)
                         return 1
                 else:
-                    if os.path.isfile(os.path.join(self.images_dname, fname)) == False:
-                        print("file '%s' is not exist " % fname)
-                        return 1
+                    file_path = os.path.join(self.images_dname, fname)
+                    # Priority sequence for SPL files: RDP-specific -> generic
+                    # If RDP-specific doesn't exist, fall back to generic
+                    if os.path.isfile(file_path) == False:
+                        if 'u-boot-spl' in fname.lower() and '-ipq' in fname.lower():
+                            # RDP-specific file doesn't exist, try generic version
+                            # e.g., u-boot-spl_nand-ipq5210-emulation.melf -> u-boot-spl_nand.melf
+                            generic_fname = fname[:fname.find('-ipq')] + '.melf'
+
+                            generic_path = os.path.join(self.images_dname, generic_fname)
+                            if os.path.isfile(generic_path):
+                                print("RDP-specific file '%s' not found, using generic '%s'" % (fname, generic_fname))
+                                fname = generic_fname
+                            else:
+                                print("file '%s' is not exist " % fname)
+                                return 1
+                        else:
+                            print("file '%s' is not exist " % fname)
+                            return 1
 
                 # For combined_soc u-boot-spl files, check size from both V1 and V2 directories
                 if combined_soc == "true" and 'u-boot-spl' in fname.lower() and fname.endswith('.melf'):

@@ -29,7 +29,7 @@ SPDX-License-Identifier: ISC
 		type="DEA0BA2C-CBDD-4805-B4F9-F428251C3E98"
 		bootable="false"
 		readonly="false"
-		filename="u-boot-spl.melf"
+		filename="u-boot-spl-ipq9650-SPL_DTB_NAME.melf"
 		flash_type="nor"
 		/>
 	<partition
@@ -131,7 +131,7 @@ SPDX-License-Identifier: ISC
 		type="DEA0BA2C-CBDD-4805-B4F9-F428251C3E98"
 		bootable="false"
 		readonly="false"
-		filename="u-boot-spl.melf"
+		filename="u-boot-spl-ipq9650-SPL_DTB_NAME.melf"
 		flash_type="nor"
 		/>
 	<partition
@@ -204,7 +204,7 @@ SPDX-License-Identifier: ISC
 		type="DEA0BA2C-CBDD-4805-B4F9-F428251C3E98"
 		bootable="false"
 		readonly="false"
-		filename="u-boot-spl.melf"
+		filename="u-boot-spl-ipq9650-SPL_DTB_NAME.melf"
 		flash_type="nor"
 		/>
 	<partition
