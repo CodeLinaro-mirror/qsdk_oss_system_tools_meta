@@ -17,6 +17,7 @@ flash="nor,tiny-nor,nand,norplusnand,emmc,norplusemmc"
 ipq5424_supported_flash="nor,nand,norplusnand,emmc,norplusemmc,norplusemmc-gpt,norplusnand-gpt"
 ipq5210_supported_flash="nor,nand,norplusnand,emmc,norplusemmc,norplusemmc-gpt,norplusnand-gpt"
 ipq9650_supported_flash="nor,nand,norplusnand,emmc,norplusemmc,norplusemmc-gpt,norplusnand-gpt"
+ipq5610_supported_flash="nor,nand,norplusnand,emmc,norplusemmc,norplusemmc-gpt,norplusnand-gpt"
 bootImgDir=""
 rpmImgDir=""
 tzImgDir=""
@@ -42,7 +43,7 @@ mbn_version = "3"
 def print_help():
     print("\nUsage: python prepareSingleImage.py <option> <value>\n")
 
-    print("--arch \t\tArch(e.g ipq40xx/ipq807x/ipq807x_64/ipq6018/ipq6018_64/ipq5018/ipq5018_64/ipq9574/ipq9574_64/ipq5332/ipq5332_64/ipq5424/ipq5424_64/ipq5210/ipq5210_64/ipq9650/ipq9650_64)\n")
+    print("--arch \t\tArch(e.g ipq40xx/ipq807x/ipq807x_64/ipq6018/ipq6018_64/ipq5018/ipq5018_64/ipq9574/ipq9574_64/ipq5332/ipq5332_64/ipq5424/ipq5424_64/ipq5210/ipq5210_64/ipq9650/ipq9650_64/ipq5610/ipq5610_64)\n")
     print(" \t\te.g python prepareSingleImage.py --arch ipq807x\n\n")
 
     print("--fltype \tFlash Type (nor/nand/emmc/norplusnand/norplusemmc)")
@@ -83,7 +84,7 @@ def print_help():
 
     print("--genqccfg \tWhether qc_config binaries to be generated")
     print("\t\tIf not specified qc_config binary will not be generated")
-    print("\t\tThis is currently used/needed only for IPQ5210/IPQ9650")
+    print("\t\tThis is currently used/needed only for IPQ5210/IPQ9650/IPQ5610")
     print("\t\tThis Argument does not take any value\n")
     print("\t\te.g python prepareSingleImage.py --genqccfg\n\n")
 
@@ -94,7 +95,7 @@ def print_help():
 
     print("--genmelf \tWhether merged elf of xbl_sc and tme-l patch to be generated")
     print("\t\tIf not specified merged elf will not be generated")
-    print("\t\tThis is currently used/needed only for IPQ5424/IPQ5210/IPQ9650")
+    print("\t\tThis is currently used/needed only for IPQ5424/IPQ5210/IPQ9650/IPQ5610")
     print("\t\tThis Argument does not take any value\n")
     print("\t\te.g python prepareSingleImage.py --genmelf\n\n")
 
@@ -124,7 +125,7 @@ def print_help():
 
     print("--genmbn \tWhether u-boot.elf to be converted to u-boot.mbn")
     print("\t\tIf not specified u-boot.mbn will not be generated")
-    print("\t\tThis is currently used/needed only for IPQ807x, IPQ6018, IPQ5018, IPQ9574, IPQ5332, IPQ5424, IPQ5210, IPQ9650")
+    print("\t\tThis is currently used/needed only for IPQ807x, IPQ6018, IPQ5018, IPQ9574, IPQ5332, IPQ5424, IPQ5210, IPQ9650, IPQ5610")
     print("\t\tThis Argument does not take any value\n")
     print("\t\te.g python prepareSingleImage.py --genmbn\n\n")
 
@@ -137,13 +138,13 @@ def print_help():
 
     print("--gentfambn \t\tWhether tfa elf to be converted to mbn")
     print("\t\tIf not specified tfa mbn will not be generated")
-    print("\t\tThis is currently used/needed only for IPQ5210, IPQ9650")
+    print("\t\tThis is currently used/needed only for IPQ5210, IPQ9650, IPQ5610")
     print("\t\tThis Argument does not take any value")
     print("\t\te.g python prepareSingleImage.py --gentfambn\n\n")
 
     print("--genopteembn \t\tWhether optee bin to be converted to mbn")
     print("\t\tIf not specified optee mbn will not be generated")
-    print("\t\tThis is currently used/needed only for IPQ5210, IPQ9650")
+    print("\t\tThis is currently used/needed only for IPQ5210, IPQ9650, IPQ5610")
     print("\t\tAuto-generates single-segment ELF from .bin files with chipset load addresses")
     print("\t\tThis Argument does not take any value")
     print("\t\te.g python prepareSingleImage.py --genopteembn\n\n")
@@ -461,7 +462,7 @@ def gen_melf():
                     else:
                         os.rename(os.path.join(inDir, xbl_nand_intermediate), os.path.join(inDir, xbl_nand_output_img));
     else:
-        # IPQ5210, IPQ9650 and other chipsets: Use u-boot-spl*.mbn files
+        # IPQ5210, IPQ9650, IPQ5610 and other chipsets: Use u-boot-spl*.mbn files
         # Priority sequence:
         # 1. Check if u-boot-spl.mbn exists (generic version)
         # 2. If not, use RDP-specific u-boot-spl*.mbn files
@@ -502,6 +503,8 @@ def gen_melf():
             'ipq5210_64': 'tmel-ipq52xx-patch.elf',
             'ipq9650': 'tmel-ipq96xx-patch.elf',
             'ipq9650_64': 'tmel-ipq96xx-patch.elf',
+            'ipq5610': 'tmel-ipq56xx-patch.elf',
+            'ipq5610_64': 'tmel-ipq56xx-patch.elf',
             # Add more architectures here as needed
         }
 
@@ -841,7 +844,7 @@ def gen_mbn():
     print("U-Boot .mbn file is created")
 
     # Process QCLib files (convert/rename .elf to .mbn) for ipq5210 and ipq9650
-    if arch == "ipq5210" or arch == "ipq9650":
+    if arch == "ipq5210" or arch == "ipq9650" or arch == "ipq5610":
         if process_qclib_files() != 0:
             return -1
 
@@ -1225,13 +1228,13 @@ def main():
         for option, value in opts:
             if option == "--arch":
                 arch = value
-                if arch not in ["ipq40xx", "ipq806x", "ipq807x", "ipq807x_64", "ipq6018", "ipq6018_64", "ipq5018", "ipq5018_64", "ipq9574", "ipq9574_64", "ipq5332", "ipq5332_64", "ipq5424", "ipq5424_64", "ipq5210", "ipq5210_64", "ipq9650", "ipq9650_64"]:
+                if arch not in ["ipq40xx", "ipq806x", "ipq807x", "ipq807x_64", "ipq6018", "ipq6018_64", "ipq5018", "ipq5018_64", "ipq9574", "ipq9574_64", "ipq5332", "ipq5332_64", "ipq5424", "ipq5424_64", "ipq5210", "ipq5210_64", "ipq9650", "ipq9650_64", "ipq5610", "ipq5610_64"]:
                     print("Invalid arch type: " + arch)
                     print_help()
                     return -1
-                if arch == "ipq807x" or arch == "ipq5018" or arch == "ipq9574" or arch == "ipq5332" or arch == "ipq5424" or arch == "ipq5210" or arch == "ipq9650":
+                if arch == "ipq807x" or arch == "ipq5018" or arch == "ipq9574" or arch == "ipq5332" or arch == "ipq5424" or arch == "ipq5210" or arch == "ipq9650" or arch == "ipq5610":
                     mode = "32"
-                elif arch == "ipq807x_64" or arch == "ipq5018_64" or arch == "ipq9574_64" or arch == "ipq5332_64" or arch == "ipq5424_64" or arch == "ipq5210_64" or arch == "ipq9650_64":
+                elif arch == "ipq807x_64" or arch == "ipq5018_64" or arch == "ipq9574_64" or arch == "ipq5332_64" or arch == "ipq5424_64" or arch == "ipq5210_64" or arch == "ipq9650_64" or arch == "ipq5610_64":
                     mode = "64"
                     arch = arch[:-3]
 
@@ -1249,6 +1252,9 @@ def main():
 
                 if arch == "ipq9650":
                     flash = ipq9650_supported_flash
+
+                if arch == "ipq5610":
+                    flash = ipq5610_supported_flash
 
             elif option == "--fltype":
                 flash = value
@@ -1355,6 +1361,8 @@ def main():
         elif arch == "ipq9650" or arch == "ipq5210":
             if not mbnv_provided:
                 mbn_version = "7"
+        elif arch == "ipq5610":
+            mbn_version = "8"
 
         if to_generate_cdt == "true":
             if gen_cdt() != 0:
@@ -1407,14 +1415,14 @@ def main():
                     return -1
 
         if to_generate_mbn == "true":
-            if arch == "ipq807x" or arch == "ipq6018" or arch == "ipq5018" or arch == "ipq9574" or arch == "ipq5332" or arch == "ipq5424" or arch == "ipq5210" or arch == "ipq9650":
+            if arch == "ipq807x" or arch == "ipq6018" or arch == "ipq5018" or arch == "ipq9574" or arch == "ipq5332" or arch == "ipq5424" or arch == "ipq5210" or arch == "ipq9650" or arch == "ipq5610":
                 if gen_mbn() != 0:
                     return -1
                 if to_generate_lk_mbn == "true" and gen_lk_mbn() != 0:
                     return -1
             else:
                 print("Invalid arch \"" + arch + "\" for mbn conversion")
-                print("--genmbn is needed/used only for ipq807x, ipq6018, ipq5018, ipq9574, ipq5332, ipq5424, ipq5210 and ipq9650 type")
+                print("--genmbn is needed/used only for ipq807x, ipq6018, ipq5018, ipq9574, ipq5332, ipq5424, ipq5210, ipq9650 and ipq5610 type")
 
         if to_generate_melf == "true":
             if gen_melf() != 0:
