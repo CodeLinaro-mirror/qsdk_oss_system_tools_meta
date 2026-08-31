@@ -75,6 +75,13 @@ def print_help():
     print("\t\tThis Argument does not take any value\n")
     print("\t\te.g python prepareSingleImage.py --gencdt\n\n")
 
+    print("--gencdtmbn \tWhether CDT elf and mbn to be generated from the CDT binaries")
+    print("\t\tIf not specified CDT elf/mbn will not be generated")
+    print("\t\tThis requires CDT binaries (cdt-*.bin) to already be present in the \"--in\" directory, i.e. run with '--gencdt' first")
+    print("\t\tThis is currently used/needed only for IPQ9574 and IPQ5332")
+    print("\t\tThis Argument does not take any value\n")
+    print("\t\te.g python prepareSingleImage.py --gencdt --gencdtmbn\n\n")
+
     print("--genxblcfg \tWhether xbl_config binaries to be generated")
     print("\t\tIf not specified xbl_config binary will not be generated")
     print("\t\tThis is currently used/needed only for IPQ5424")
@@ -214,6 +221,83 @@ def gen_cdt():
     if prc.returncode != 0:
         print('ERROR: unable to create CDT binary')
         return prc.returncode
+
+    return 0
+
+# Per-arch CDT ELF load address (chipset-specific memory map). Alignment is 0x1000 for all supported chipsets.
+cdt_elf_addr_map = {
+    'ipq9574': '0x08CC5800',
+    'ipq5332': '0x8C3C400',
+}
+
+def gen_cdt_mbn():
+    global srcDir
+    global inDir
+    global cdir
+    global arch
+    global mbn_version
+
+    if arch not in cdt_elf_addr_map:
+        print('ERROR: CDT elf/mbn generation is not supported for architecture: ' + arch)
+        return -1
+
+    cdt_elf_ld = inDir + "/cdt_elf.ld"
+    ld_content = """SECTIONS
+{
+ . = %s ;
+ .data : ALIGN(0x1000) { *(.data) }
+}
+""" % cdt_elf_addr_map[arch]
+
+    try:
+        with open(cdt_elf_ld, 'w') as f:
+            f.write(ld_content)
+    except IOError as e:
+        print('ERROR: unable to create CDT linker script: ' + str(e))
+        return -1
+
+    bootconfig_path = srcDir + '/elftombn.py'
+    cdt_bin_list = glob.glob(inDir + "/cdt-*.bin")
+
+    if not cdt_bin_list:
+        print('ERROR: No cdt-*.bin files found in ' + inDir + ', run with --gencdt first')
+        return -1
+
+    for cdt_bin in cdt_bin_list:
+        cdt_name = os.path.splitext(os.path.basename(cdt_bin))[0]
+        cdt_obj = inDir + "/" + cdt_name + "_out.o"
+        cdt_elf = inDir + "/" + cdt_name + ".elf"
+        cdt_mbn = inDir + "/" + cdt_name + ".mbn"
+
+        print('Creating ' + cdt_name + '.elf from ' + cdt_name + '.bin')
+        cmd = ['objcopy', '-I', 'binary', '-O', 'elf32-i386', '--binary-architecture', 'i386', cdt_bin, cdt_obj]
+        ret = subprocess.call(cmd)
+        if ret != 0:
+            print('ERROR: unable to convert ' + cdt_name + '.bin to object file')
+            if os.path.exists(cdt_elf_ld):
+                os.remove(cdt_elf_ld)
+            return ret
+
+        cmd = ['ld', '-m', 'elf_i386', cdt_obj, '-T', cdt_elf_ld, '-o', cdt_elf]
+        ret = subprocess.call(cmd)
+        if ret != 0:
+            print('ERROR: unable to link ' + cdt_name + '.elf')
+            if os.path.exists(cdt_elf_ld):
+                os.remove(cdt_elf_ld)
+            if os.path.exists(cdt_obj):
+                os.remove(cdt_obj)
+            return ret
+
+        print('Creating ' + cdt_name + '.mbn from ' + cdt_name + '.elf')
+        prc = subprocess.Popen(['python', bootconfig_path, '-f', cdt_elf, '-o', cdt_mbn, '-a', arch, '-v', mbn_version], cwd=cdir)
+        prc.wait()
+        if prc.returncode != 0:
+            print('ERROR: unable to convert ' + cdt_name + '.elf to .mbn')
+            if os.path.exists(cdt_elf_ld):
+                os.remove(cdt_elf_ld)
+            if os.path.exists(cdt_obj):
+                os.remove(cdt_obj)
+            return prc.returncode
 
     return 0
 
@@ -1145,6 +1229,7 @@ def main():
     global combined_soc
 
     to_generate_cdt = "false"
+    to_generate_cdt_mbn = "false"
     to_generate_xblcfg = "false"
     to_generate_qccfg = "false"
     to_generate_melf = "false"
@@ -1168,7 +1253,7 @@ def main():
         try:
             opts, args = getopt(sys.argv[1:], "h", ["arch=", "fltype=", "in=",
                 "bootimg=", "tzimg=", "nhssimg=", "rpmimg=", "wififwimg",
-                "gencdt", "genxblcfg", "genqccfg", "genmelf", "dtc_path=", "memory=", "mbnv=",
+                "gencdt", "gencdtmbn", "genxblcfg", "genqccfg", "genmelf", "dtc_path=", "memory=", "mbnv=",
                 "total_blocks=", "flash_size=", "genpart", "genbootconf", "genbootconf_crc",
                 "genmbn", "lk", "genbootldr", "genlicense", "gentfambn", "genopteembn", "combined_soc", "soc=","attach1=",
 		"attach2=", "attach3=", "attach4=", "attach5=", "help"])
@@ -1227,6 +1312,8 @@ def main():
                 wififwImgDir = value
             elif option == "--gencdt":
                 to_generate_cdt = "true"
+            elif option == "--gencdtmbn":
+                to_generate_cdt_mbn = "true"
             elif option == "--genxblcfg":
                 to_generate_xblcfg = "true"
             elif option == "--genqccfg":
@@ -1312,6 +1399,10 @@ def main():
 
         if to_generate_cdt == "true":
             if gen_cdt() != 0:
+                return -1
+
+        if to_generate_cdt_mbn == "true":
+            if gen_cdt_mbn() != 0:
                 return -1
 
         if to_generate_xblcfg == "true":
