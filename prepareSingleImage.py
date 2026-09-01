@@ -1432,6 +1432,10 @@ def main():
             if result != 0:
                 return -1
 
+        # Write MBN version for pack_v3.py (ipq9650 only)
+        if arch == "ipq9650":
+            os.system('echo ' + mbn_version + ' > ' + inDir + '/mbn_version')
+
         # Clean up temp files after all operations are complete
         cleanup_intermediate_files()
 
