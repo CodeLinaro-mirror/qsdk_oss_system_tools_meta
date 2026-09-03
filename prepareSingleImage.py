@@ -465,35 +465,77 @@ def gen_melf():
         # Priority sequence:
         # 1. Check if u-boot-spl.mbn exists (generic version)
         # 2. If not, use RDP-specific u-boot-spl*.mbn files
-        generic_spl_mbn = inDir + "/u-boot-spl.mbn"
 
-        if os.path.exists(generic_spl_mbn):
-            # Generic u-boot-spl.mbn exists, use it
-            spl_mbn_files = [generic_spl_mbn]
-            print("Using existing generic u-boot-spl.mbn")
+        # When combined_soc is true, look for u-boot-spl*.mbn in version directory
+        # Map MBN versions to directory names: v7 -> V1, v8 -> V2
+        version_to_dir_map = {
+            '7': 'V1',
+            '8': 'V2',
+        }
+
+        if combined_soc:
+            # Pick u-boot-spl*.mbn from version-specific directory (V1/V2)
+            version_dir = os.path.join(inDir, version_to_dir_map.get(mbn_version, 'V1'))
+
+            if os.path.exists(version_dir):
+                # Look for files in version directory
+                generic_spl_mbn = version_dir + "/u-boot-spl.mbn"
+
+                if os.path.exists(generic_spl_mbn):
+                    # Generic u-boot-spl.mbn exists in version directory
+                    spl_mbn_files = [generic_spl_mbn]
+                    print("Using generic u-boot-spl.mbn from " + version_to_dir_map.get(mbn_version, 'V1') + " directory")
+                else:
+                    # Generic not found, search for RDP-specific SPL images in version directory
+                    spl_mbn_files = glob.glob(version_dir + "/u-boot-spl*.mbn")
+                    if spl_mbn_files:
+                        print("Using RDP-specific SPL images from " + version_to_dir_map.get(mbn_version, 'V1') + " directory")
+            else:
+                # Fallback to current directory if version dir doesn't exist yet (first build)
+                generic_spl_mbn = inDir + "/u-boot-spl.mbn"
+
+                if os.path.exists(generic_spl_mbn):
+                    spl_mbn_files = [generic_spl_mbn]
+                    print("Using existing generic u-boot-spl.mbn from current directory")
+                else:
+                    spl_mbn_files = glob.glob(inDir + "/u-boot-spl*.mbn")
+                    if spl_mbn_files:
+                        print("Using RDP-specific SPL images from current directory")
         else:
-            # Generic not found, search for RDP-specific SPL images
-            spl_mbn_files = glob.glob(inDir + "/u-boot-spl*.mbn")
-            if spl_mbn_files:
-                print("Generic u-boot-spl.mbn not found, using RDP-specific SPL images")
+            # Normal flow: pick from current directory
+            generic_spl_mbn = inDir + "/u-boot-spl.mbn"
+
+            if os.path.exists(generic_spl_mbn):
+                # Generic u-boot-spl.mbn exists, use it
+                spl_mbn_files = [generic_spl_mbn]
+                print("Using existing generic u-boot-spl.mbn")
+            else:
+                # Generic not found, search for RDP-specific SPL images
+                spl_mbn_files = glob.glob(inDir + "/u-boot-spl*.mbn")
+                if spl_mbn_files:
+                    print("Generic u-boot-spl.mbn not found, using RDP-specific SPL images")
 
         # Check if at least one u-boot-spl*.mbn file exists (required)
         if not spl_mbn_files:
-            print('ERROR: No u-boot-spl*.mbn files found in input directory')
+            if combined_soc:
+                print('ERROR: No u-boot-spl*.mbn files found in version directory or input directory')
+            else:
+                print('ERROR: No u-boot-spl*.mbn files found in input directory')
             return -1
 
         # Build dictionary of input files to process
-        # Dict: input_file -> (output_melf, is_optional)
+        # Dict: input_file_path -> (output_melf, is_optional)
         spl_img_dict = {}
 
-        # Add all found u-boot-spl*.mbn files
+        # Add all found u-boot-spl*.mbn files with their full paths
         for spl_mbn in spl_mbn_files:
             spl_basename = os.path.basename(spl_mbn)
             spl_melf_name = spl_basename.replace('.mbn', '.melf')
-            spl_img_dict[spl_basename] = (spl_melf_name, False)
+            # Store the full path as key, not just basename
+            spl_img_dict[spl_mbn] = (spl_melf_name, False)
 
-        # Add QCLib_flashless.mbn (optional)
-        spl_img_dict['QCLib_flashless.mbn'] = ('QCLib_flashless.melf', False)
+        # Add QCLib_flashless.mbn (optional) - use inDir path
+        spl_img_dict[inDir + '/QCLib_flashless.mbn'] = ('QCLib_flashless.melf', True)
 
         # Determine TME patch file based on architecture and MBN version
         # Legacy TME patch files (single file for all versions)
@@ -557,12 +599,13 @@ def gen_melf():
         # create melf for each input file
         script_path = inDir + '/create_multielf.py'
 
-        for input_img, (output_melf, is_optional) in spl_img_dict.items():
-            if is_optional and not os.path.isfile(inDir+"/"+input_img):
-                print('Optional image - '+input_img+' file not present, skipping '+output_melf+' binary')
+        for input_img_path, (output_melf, is_optional) in spl_img_dict.items():
+            # input_img_path is now the full path to the file (from dictionary)
+            if is_optional and not os.path.isfile(input_img_path):
+                print('Optional image - '+os.path.basename(input_img_path)+' file not present, skipping '+output_melf+' binary')
                 continue
-            print('Creating '+output_melf+' from '+input_img+' with TME patch: ' + tme_patch_file)
-            prc = subprocess.Popen(['python', script_path, '-f', inDir+"/"+input_img+","+ inDir+"/"+tme_patch_file, '-o', inDir+"/"+output_melf], cwd=cdir)
+            print('Creating '+output_melf+' from '+os.path.basename(input_img_path)+' with TME patch: ' + tme_patch_file)
+            prc = subprocess.Popen(['python', script_path, '-f', input_img_path+","+ inDir+"/"+tme_patch_file, '-o', inDir+"/"+output_melf], cwd=cdir)
             prc.wait()
             if prc.returncode != 0:
                 print('ERROR: unable to create '+output_melf+' binary')
