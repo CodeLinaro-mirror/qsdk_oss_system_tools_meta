@@ -88,20 +88,29 @@ skip_4k_nand = "false"
 atf = "false"
 img_suffix = ""
 bootldr_only = "false"
-supported_arch = ["ipq9650_64", "ipq9650", "ipq5210", "ipq5210_64", "ipq5424", "ipq5424_64", "ipq5332", "ipq5332_64"]
-split_by_rdp_supported_arch = ["ipq5210", "ipq9650"]
+supported_arch = ["ipq5610_64", "ipq5610", "ipq9650_64", "ipq9650", "ipq5210", "ipq5210_64", "ipq5424", "ipq5424_64", "ipq5332", "ipq5332_64"]
+split_by_rdp_supported_arch = ["ipq5210", "ipq9650", "ipq5610"]
 supported_flash_type = {}
 supported_flash_type["ipq5332"] = { "nand", "nor", "tiny-nor", "emmc", "norplusnand", "norplusemmc", "tiny-nor-debug" };
 supported_flash_type["ipq5424"] = { "nor", "nand", "emmc", "norplusnand", "norplusemmc", "norplusnand-gpt", "norplusemmc-gpt" , "tiny-nor", "tiny-nor-debug" };
 supported_flash_type["ipq5210"] = { "nor", "nand", "emmc", "norplusnand", "norplusemmc", "norplusnand-gpt", "norplusemmc-gpt" };
 supported_flash_type["ipq9650"] = { "nor", "nand", "emmc", "norplusnand", "norplusemmc", "norplusnand-gpt", "norplusemmc-gpt" };
+supported_flash_type["ipq5610"] = { "nor", "nand", "emmc", "norplusnand", "norplusemmc", "norplusnand-gpt", "norplusemmc-gpt" };
 gpt_flash = ["nor-gpt", "emmc"]
 soc_hw_versions = {}
 soc_hw_versions["ipq5332"] = { 0x201A0100, 0x201A0101 };
 soc_hw_versions["ipq5424"] = { 0xE0010100 };
 soc_hw_versions["ipq5210"] = { 0xE0030100, 0xE0030101, 0xE0030102 };
 soc_hw_versions["ipq9650"] = { 0xE0020100, 0xE0020200 };
+soc_hw_versions["ipq5610"] = { 0xE0040100 };
 combined_soc = False
+
+# Required bootldr components per architecture.
+# All arches need qclib, tfa_bl31, uboot, optee as a baseline.
+# List only the arch-specific additions here.
+bootldr_required_components = {
+    "ipq5610": ["qclib", "qcconfig", "tfa_bl31", "uboot", "optee", "shrm", "dcb"],
+}
 
 # Combined version mapping: soc_hw_version -> (version_string, version_dir)
 soc_version_map = {
@@ -1529,7 +1538,8 @@ class Pack(object):
                     bootldr_part = part
 
             # Generate bootldr image if needed
-            if bootldr_part is not None and all(key in bootldr_components for key in ["qclib", "qcconfig", "tfa_bl31", "uboot", "optee"]):
+            required = bootldr_required_components.get(ARCH_NAME, ["qclib", "qcconfig", "tfa_bl31", "uboot", "optee"])
+            if bootldr_part is not None and all(key in bootldr_components for key in required):
                 bootldr_filename = self.generate_bootldr_image(
                     ARCH_NAME, board, memory_tag, self.flash_type, MODE, bootldr_components
                 )
@@ -1941,6 +1951,10 @@ class Pack(object):
                 "--uboot_path", components.get("uboot", ""),
                 "--optee_path", components.get("optee", ""),
             ])
+            if "shrm" in components:
+                cmd.extend(["--shrm_path", components["shrm"]])
+            if "dcb" in components:
+                cmd.extend(["--dcb-path", components["dcb"]])
 
         # Add common parameters
         cmd.extend([
@@ -1984,8 +1998,8 @@ class Pack(object):
         bootldr_section = root.find(".//data[@type='BOOTLDR_COMPONENTS']")
 
         if bootldr_section is not None:
-            # Get qclib, qcconfig, tfa_bl31, and optee components
-            for component_tag in ["qclib", "qcconfig", "tfa_bl31", "optee"]:
+            # Get qclib, qcconfig, tfa_bl31, optee, shrm, and dcb components
+            for component_tag in ["qclib", "qcconfig", "tfa_bl31", "optee", "shrm", "dcb"]:
                 component = bootldr_section.find(".//%s" % component_tag)
                 if component is not None:
                     components[component_tag] = component.text
@@ -2353,7 +2367,7 @@ def main():
 
         parser.out_fname = flash_type + "-" + ARCH_NAME + MODE_APPEND + suffix
 
-        if ARCH_NAME == "ipq5424" or ARCH_NAME == "ipq5210" or ARCH_NAME == "ipq9650":
+        if ARCH_NAME == "ipq5424" or ARCH_NAME == "ipq5210" or ARCH_NAME == "ipq9650" or ARCH_NAME == "ipq5610":
             if flash_type == "norplusnand-gpt":
                 parser.out_fname = "norplusnand-" + ARCH_NAME + MODE_APPEND + suffix
             elif flash_type == "norplusnand-4k-gpt":
