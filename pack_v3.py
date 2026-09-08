@@ -2353,6 +2353,13 @@ def main():
     config = SRC_DIR + "/" + ARCH_NAME + "/config.xml"
     root = ET.parse(config)
 
+    # Apply MBN version config for ipq9650
+    if ARCH_NAME == "ipq9650":
+        mbn_file = os.path.join(parser.images_dname, 'mbn_version')
+        if os.path.exists(mbn_file):
+            mbn_version = open(mbn_file).read().strip()
+            soc_hw_versions["ipq9650"] = { 0xE0020100 if mbn_version == "7" else 0xE0020200 }
+
     print("#################", sys._getframe(0).f_code.co_name, sys._getframe(0).f_lineno, config, parser.flash_type)
 
     if skip_4k_nand != "true":
