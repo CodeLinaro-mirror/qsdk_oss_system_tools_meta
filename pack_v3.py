@@ -1668,8 +1668,24 @@ class Pack(object):
                     v1_path = os.path.join(self.images_dname, "V1", fname)
                     v2_path = os.path.join(self.images_dname, "V2", fname)
                     if not os.path.isfile(v1_path) or not os.path.isfile(v2_path):
-                        print("file '%s' does not exist in both V1 and V2 directories" % fname)
-                        return 1
+                        # Priority sequence for SPL files: RDP-specific -> generic
+                        # If RDP-specific doesn't exist, fall back to generic
+                        if '-ipq' in fname.lower():
+                            # RDP-specific file doesn't exist, try generic version
+                            # e.g., u-boot-spl_nand-ipq5210-emulation.melf -> u-boot-spl_nand.melf
+                            generic_fname = fname[:fname.find('-ipq')] + '.melf'
+
+                            v1_generic_path = os.path.join(self.images_dname, "V1", generic_fname)
+                            v2_generic_path = os.path.join(self.images_dname, "V2", generic_fname)
+                            if os.path.isfile(v1_generic_path) and os.path.isfile(v2_generic_path):
+                                print("RDP-specific file '%s' not found in V1/V2, using generic '%s'" % (fname, generic_fname))
+                                fname = generic_fname
+                            else:
+                                print("file '%s' does not exist in both V1 and V2 directories" % fname)
+                                return 1
+                        else:
+                            print("file '%s' does not exist in both V1 and V2 directories" % fname)
+                            return 1
                 else:
                     file_path = os.path.join(self.images_dname, fname)
                     # Priority sequence for SPL files: RDP-specific -> generic
