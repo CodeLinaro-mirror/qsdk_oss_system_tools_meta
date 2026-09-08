@@ -167,7 +167,7 @@ SPDX-License-Identifier: ISC
 			<ddr5_boot_freq>2800000</ddr5_boot_freq>
 			<layouts>default,vendor</layouts>
 			<fw_override>
-				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="10240KiB"/>
+				<wifi_fw image="wifi_fw_qcn9625_combined_v1_v2_squashfs.img" vol_size="10240KiB"/>
 				<profile-default layouts="default,vendor">
 					<bootldr_components>
 						<qcconfig>qcconfig-RDP488_1024M32_DDR5.elf</qcconfig>
@@ -193,7 +193,7 @@ SPDX-License-Identifier: ISC
 			<ddr5_boot_freq>2800000</ddr5_boot_freq>
 			<layouts>default,vendor</layouts>
 			<fw_override>
-				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="10240KiB"/>
+				<wifi_fw image="wifi_fw_qcn9625_combined_v1_v2_squashfs.img" vol_size="10240KiB"/>
 				<profile-default layouts="default,vendor">
 					<bootldr_components>
 						<qcconfig>qcconfig-RDP506_1024M32_DDR5.elf</qcconfig>
@@ -213,7 +213,7 @@ SPDX-License-Identifier: ISC
 			<memory_2048>1024M32_DDR5</memory_2048>
 			<layouts>default,vendor</layouts>
 			<fw_override>
-				<wifi_fw image="wifi_fw_qcn9625_qcn9589_squashfs.img" vol_size="10240KiB"/>
+				<wifi_fw image="wifi_fw_qcn9589_v1_qcn9625_combined_v1_v2_squashfs.img" vol_size="12288KiB"/>
 				<profile-default layouts="default,vendor">
 					<bootldr_components>
 						<qcconfig>qcconfig-RDP507_1024M32_DDR5.elf</qcconfig>
@@ -238,7 +238,7 @@ SPDX-License-Identifier: ISC
 			<memory_2048>1024M32_DDR5</memory_2048>
 			<layouts>default,vendor</layouts>
 			<fw_override>
-				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="10240KiB"/>
+				<wifi_fw image="wifi_fw_qcn9625_combined_v1_v2_squashfs.img" vol_size="10240KiB"/>
 				<profile-default layouts="default,vendor">
 					<bootldr_components>
 						<qcconfig>qcconfig-RDP529_1024M32_DDR5.elf</qcconfig>
@@ -263,7 +263,7 @@ SPDX-License-Identifier: ISC
 			<memory_2048>1024M32_DDR5</memory_2048>
 			<layouts>default,vendor</layouts>
 			<fw_override>
-				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="10240KiB"/>
+				<wifi_fw image="wifi_fw_qcn9625_combined_v1_v2_squashfs.img" vol_size="10240KiB"/>
 				<profile-default layouts="default,vendor">
 					<bootldr_components>
 						<qcconfig>qcconfig-RDP530_1024M32_DDR5.elf</qcconfig>
@@ -288,7 +288,7 @@ SPDX-License-Identifier: ISC
 			<memory_2048>1024M32_DDR5</memory_2048>
 			<layouts>default,vendor</layouts>
 			<fw_override>
-				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="10240KiB"/>
+				<wifi_fw image="wifi_fw_qcn9625_combined_v1_v2_squashfs.img" vol_size="10240KiB"/>
 				<profile-default layouts="default,vendor">
 					<bootldr_components>
 						<qcconfig>qcconfig-RDP532_1024M32_DDR5.elf</qcconfig>
@@ -313,7 +313,7 @@ SPDX-License-Identifier: ISC
 			<ddr4_boot_freq>1600000</ddr4_boot_freq>
 			<layouts>default,vendor</layouts>
 			<fw_override>
-				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="10240KiB"/>
+				<wifi_fw image="wifi_fw_qcn9625_combined_v1_v2_squashfs.img" vol_size="10240KiB"/>
 				<profile-default layouts="default,vendor">
 					<bootldr_components>
 						<qcconfig>qcconfig-RDP489_256M32_DDR4.elf</qcconfig>
@@ -334,7 +334,7 @@ SPDX-License-Identifier: ISC
 			<ddr5_boot_freq>2800000</ddr5_boot_freq>
 			<layouts>default,vendor</layouts>
 			<fw_override>
-				<wifi_fw image="wifi_fw_qcn9625_qcn9589_squashfs.img" vol_size="10240KiB"/>
+				<wifi_fw image="wifi_fw_qcn9589_v1_qcn9625_combined_v1_v2_squashfs.img" vol_size="12288KiB"/>
 				<profile-default layouts="default,vendor">
 					<bootldr_components>
 						<qcconfig>qcconfig-RDP490_1024M32_DDR5.elf</qcconfig>
@@ -354,7 +354,7 @@ SPDX-License-Identifier: ISC
 			<ddr4_boot_freq>1600000</ddr4_boot_freq>
 			<layouts>default,vendor</layouts>
 			<fw_override>
-				<wifi_fw image="wifi_fw_qcn9625_qcn9589_squashfs.img" vol_size="10240KiB"/>
+				<wifi_fw image="wifi_fw_qcn9589_v1_qcn9625_combined_v1_v2_squashfs.img" vol_size="12288KiB"/>
 				<profile-default layouts="default,vendor">
 					<bootldr_components>
 						<qcconfig>qcconfig-RDP491_256M32_DDR4.elf</qcconfig>
@@ -375,7 +375,7 @@ SPDX-License-Identifier: ISC
 			<ddr5_boot_freq>2800000</ddr5_boot_freq>
 			<layouts>default,vendor</layouts>
 			<fw_override>
-				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="10240KiB"/>
+				<wifi_fw image="wifi_fw_qcn9589_v1_qcn9625_combined_v1_v2_squashfs.img" vol_size="12288KiB"/>
 				<profile-default layouts="default,vendor">
 					<bootldr_components>
 						<qcconfig>qcconfig-DB-JU01_1024M32_DDR5.elf</qcconfig>
@@ -401,7 +401,7 @@ SPDX-License-Identifier: ISC
 			<ddr5_boot_freq>2800000</ddr5_boot_freq>
 			<layouts>default,vendor</layouts>
 			<fw_override>
-				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="10240KiB"/>
+				<wifi_fw image="wifi_fw_qcn9589_v1_qcn9625_combined_v1_v2_squashfs.img" vol_size="12288KiB"/>
 				<profile-default layouts="default,vendor">
 					<bootldr_components>
 						<qcconfig>qcconfig-DB-JU01-C1_1024M32_DDR5.elf</qcconfig>
@@ -427,7 +427,7 @@ SPDX-License-Identifier: ISC
 			<ddr5_boot_freq>2800000</ddr5_boot_freq>
 			<layouts>default,vendor</layouts>
 			<fw_override>
-				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="10240KiB"/>
+				<wifi_fw image="wifi_fw_qcn9589_v1_qcn9625_combined_v1_v2_squashfs.img" vol_size="12288KiB"/>
 				<profile-default layouts="default,vendor">
 					<bootldr_components>
 						<qcconfig>qcconfig-DB-JU01-C2_1024M32_DDR5.elf</qcconfig>
@@ -452,7 +452,7 @@ SPDX-License-Identifier: ISC
 			<ddr4_boot_freq>1600000</ddr4_boot_freq>
 			<layouts>default,vendor</layouts>
 			<fw_override>
-				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="10240KiB"/>
+				<wifi_fw image="wifi_fw_qcn9589_v1_qcn9625_combined_v1_v2_squashfs.img" vol_size="12288KiB"/>
 				<profile-default layouts="default,vendor">
 					<bootldr_components>
 						<qcconfig>qcconfig-DB-JU02_256M32_DDR4.elf</qcconfig>
@@ -473,7 +473,7 @@ SPDX-License-Identifier: ISC
 			<ddr5_boot_freq>2800000</ddr5_boot_freq>
 			<layouts>default,vendor</layouts>
 			<fw_override>
-				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="10240KiB"/>
+				<wifi_fw image="wifi_fw_qcn9589_v1_qcn9625_combined_v1_v2_squashfs.img" vol_size="12288KiB"/>
 				<profile-default layouts="default,vendor">
 					<bootldr_components>
 						<qcconfig>qcconfig-TB-JU01.1_4096M32_DDR5.elf</qcconfig>

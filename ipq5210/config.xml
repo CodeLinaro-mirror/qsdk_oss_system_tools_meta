@@ -314,7 +314,7 @@ SPDX-License-Identifier: ISC
 			<ddr4_boot_freq>1600000</ddr4_boot_freq>
 			<layouts>default,vendor</layouts>
 			<fw_override>
-				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="7168KiB"/>
+				<wifi_fw image="wifi_fw_qcn9625_combined_v1_v2_squashfs.img" vol_size="8192KiB"/>
 				<profile-256 layouts="default,vendor">
 					<bootldr_components>
 						<optee>tee-raw_lm.mbn</optee>
@@ -340,7 +340,7 @@ SPDX-License-Identifier: ISC
 			<ddr4_boot_freq>1600000</ddr4_boot_freq>
 			<layouts>default,vendor</layouts>
 			<fw_override>
-				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="7168KiB"/>
+				<wifi_fw image="wifi_fw_qcn9625_combined_v1_v2_squashfs.img" vol_size="8192KiB"/>
 				<profile-256 layouts="default,vendor">
 					<bootldr_components>
 						<optee>tee-raw_lm.mbn</optee>
@@ -366,7 +366,7 @@ SPDX-License-Identifier: ISC
 			<ddr4_boot_freq>1600000</ddr4_boot_freq>
 			<layouts>default,vendor</layouts>
 			<fw_override>
-				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="7168KiB"/>
+				<wifi_fw image="wifi_fw_qcn9625_combined_v1_v2_squashfs.img" vol_size="8192KiB"/>
 				<profile-256 layouts="default,vendor">
 					<bootldr_components>
 						<optee>tee-raw_lm.mbn</optee>
@@ -393,7 +393,7 @@ SPDX-License-Identifier: ISC
 			<ddr4_boot_freq>1600000</ddr4_boot_freq>
 			<layouts>default,vendor</layouts>
 			<fw_override>
-				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="7168KiB"/>
+				<wifi_fw image="wifi_fw_qcn9625_combined_v1_v2_squashfs.img" vol_size="8192KiB"/>
 				<profile-256 layouts="default,vendor">
 					<bootldr_components>
 						<optee>tee-raw_lm.mbn</optee>
@@ -424,7 +424,7 @@ SPDX-License-Identifier: ISC
 			<ddr3_boot_freq>933000</ddr3_boot_freq>
 			<layouts>default,vendor</layouts>
 			<fw_override>
-				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="7168KiB"/>
+				<wifi_fw image="wifi_fw_qcn9625_combined_v1_v2_squashfs.img" vol_size="8192KiB"/>
 				<profile-256 layouts="default,vendor">
 					<bootldr_components>
 						<optee>tee-raw_lm.mbn</optee>
@@ -490,7 +490,7 @@ SPDX-License-Identifier: ISC
 			<ddr4_boot_freq>1600000</ddr4_boot_freq>
 			<layouts>default,vendor</layouts>
 			<fw_override>
-				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="7168KiB"/>
+				<wifi_fw image="wifi_fw_qcn9625_combined_v1_v2_squashfs.img" vol_size="8192KiB"/>
 				<profile-default layouts="default,vendor">
 					<bootldr_components>
 						<qcconfig>qcconfig-DB-HM01.1_1024M16_DDR4.elf</qcconfig>
@@ -505,7 +505,7 @@ SPDX-License-Identifier: ISC
 			<ddr3_boot_freq>933000</ddr3_boot_freq>
 			<layouts>default,vendor</layouts>
 			<fw_override>
-				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="7168KiB"/>
+				<wifi_fw image="wifi_fw_qcn9625_combined_v1_v2_squashfs.img" vol_size="8192KiB"/>
 				<profile-default layouts="default,vendor">
 					<bootldr_components>
 						<qcconfig>qcconfig-DB-HM02.1_256M16_DDR3.elf</qcconfig>
