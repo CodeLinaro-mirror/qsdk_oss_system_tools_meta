@@ -325,7 +325,7 @@ image_type_mapping = {
 # Architecture mapping
 arch_meta_load_addr = {
     "ipq5424": "0x8cf4800",
-    "ipq5210": "0x08cb8000",
+    "ipq5210": "0x08cb6000",
     "ipq9650": "0x08cf1800"
 }
 

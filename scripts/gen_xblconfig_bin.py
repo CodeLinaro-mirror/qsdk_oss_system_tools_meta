@@ -29,7 +29,7 @@ DEFAULT_DDR5_BOOT_FREQ = 2800000
 # Architecture-specific configuration
 ARCH_CONFIG = {
     "ipq5424": {"elf_address": "0x08CEE800", "align": None},
-    "ipq5210": {"elf_address": "0x08CB5800", "align": "0x40"},
+    "ipq5210": {"elf_address": "0x08CB5000", "align": "0x40"},
     "ipq9650": {"elf_address": "0x08CFB800", "align": "0x40"}
 }
 
