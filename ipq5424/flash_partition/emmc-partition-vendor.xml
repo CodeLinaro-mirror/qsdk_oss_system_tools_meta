@@ -144,7 +144,7 @@ SPDX-License-Identifier: ISC
 		readonly="false"
 		image_type = "hlos"
 		optional="true"
-		filename="wifi_fw_ipq5424_qcn9224_v2_squashfs.img"
+		filename="wifi_fw_ipq5424_congo_v2_squashfs.img"
 		/>
 	<partition
 		label="0:WIFIFW_1"
