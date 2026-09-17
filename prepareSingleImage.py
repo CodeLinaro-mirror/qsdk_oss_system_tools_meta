@@ -638,11 +638,11 @@ def gen_melf():
         tme_patch_map_combined = {
             'ipq5210': {
                 '7': 'tmel-ipq52xx-patch.elf',
-                '8': 'tmel-ipq52xx-1.1.1-patch.elf',
+                '8': 'tmel-ipq52xx-1.2-patch.elf',
             },
             'ipq5210_64': {
                 '7': 'tmel-ipq52xx-patch.elf',
-                '8': 'tmel-ipq52xx-1.1.1-patch.elf',
+                '8': 'tmel-ipq52xx-1.2-patch.elf',
             },
             'ipq9650': {
                 '7': 'tmel-ipq96xx-patch.elf',
