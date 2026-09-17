@@ -355,20 +355,20 @@ SPDX-License-Identifier: ISC
 		<entry>
 			<machid>0x8090200</machid>
 			<board>RDP490</board>
-			<memory>1024M32_DDR5</memory>
-			<memory_2048>1024M32_DDR5</memory_2048>
+			<memory>2048M32_DDR5</memory>
+			<memory_2048>2048M32_DDR5</memory_2048>
 			<ddr5_boot_freq>2800000</ddr5_boot_freq>
 			<layouts>default,vendor</layouts>
 			<fw_override>
 				<wifi_fw image="wifi_fw_qcn9589_v1_qcn9625_combined_v1_v2_squashfs.img" vol_size="12288KiB"/>
 				<profile-default layouts="default,vendor">
 					<bootldr_components>
-						<qcconfig>qcconfig-RDP490_1024M32_DDR5.elf</qcconfig>
+						<qcconfig>qcconfig-RDP490_2048M32_DDR5.elf</qcconfig>
 					</bootldr_components>
 				</profile-default>
 				<profile-2048 layouts="default,vendor">
 					<bootldr_components>
-						<qcconfig>qcconfig-RDP490_1024M32_DDR5_LM2048.elf</qcconfig>
+						<qcconfig>qcconfig-RDP490_2048M32_DDR5_LM2048.elf</qcconfig>
 					</bootldr_components>
 				</profile-2048>
 			</fw_override>
