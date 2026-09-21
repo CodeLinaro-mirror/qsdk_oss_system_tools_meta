@@ -403,6 +403,15 @@ def process_qclib_files():
 
     return 0
 
+def get_rdp_specific_spl_files(search_dir, extension):
+    generic_spl_name = "u-boot-spl" + extension
+    spl_pattern = os.path.join(search_dir, "u-boot-spl*" + extension)
+
+    return sorted([
+        spl_file for spl_file in glob.glob(spl_pattern)
+        if os.path.basename(spl_file) != generic_spl_name
+    ])
+
 def gen_melf():
     global srcDir
     global configDir
@@ -463,8 +472,8 @@ def gen_melf():
     else:
         # IPQ5210, IPQ9650 and other chipsets: Use u-boot-spl*.mbn files
         # Priority sequence:
-        # 1. Check if u-boot-spl.mbn exists (generic version)
-        # 2. If not, use RDP-specific u-boot-spl*.mbn files
+        # 1. Use RDP-specific u-boot-spl*.mbn files when present
+        # 2. Fall back to u-boot-spl.mbn
 
         # When combined_soc is true, look for u-boot-spl*.mbn in version directory
         # Map MBN versions to directory names: v7 -> V1, v8 -> V2
@@ -476,44 +485,40 @@ def gen_melf():
         if combined_soc:
             # Pick u-boot-spl*.mbn from version-specific directory (V1/V2)
             version_dir = os.path.join(inDir, version_to_dir_map.get(mbn_version, 'V1'))
+            spl_mbn_files = []
 
             if os.path.exists(version_dir):
                 # Look for files in version directory
                 generic_spl_mbn = version_dir + "/u-boot-spl.mbn"
+                spl_mbn_files = get_rdp_specific_spl_files(version_dir, ".mbn")
 
-                if os.path.exists(generic_spl_mbn):
-                    # Generic u-boot-spl.mbn exists in version directory
+                if spl_mbn_files:
+                    print("Using RDP-specific SPL images from " + version_to_dir_map.get(mbn_version, 'V1') + " directory")
+                elif os.path.exists(generic_spl_mbn):
+                    # Generic u-boot-spl.mbn is the fallback.
                     spl_mbn_files = [generic_spl_mbn]
                     print("Using generic u-boot-spl.mbn from " + version_to_dir_map.get(mbn_version, 'V1') + " directory")
-                else:
-                    # Generic not found, search for RDP-specific SPL images in version directory
-                    spl_mbn_files = glob.glob(version_dir + "/u-boot-spl*.mbn")
-                    if spl_mbn_files:
-                        print("Using RDP-specific SPL images from " + version_to_dir_map.get(mbn_version, 'V1') + " directory")
             else:
                 # Fallback to current directory if version dir doesn't exist yet (first build)
                 generic_spl_mbn = inDir + "/u-boot-spl.mbn"
+                spl_mbn_files = get_rdp_specific_spl_files(inDir, ".mbn")
 
-                if os.path.exists(generic_spl_mbn):
+                if spl_mbn_files:
+                    print("Using RDP-specific SPL images from current directory")
+                elif os.path.exists(generic_spl_mbn):
                     spl_mbn_files = [generic_spl_mbn]
-                    print("Using existing generic u-boot-spl.mbn from current directory")
-                else:
-                    spl_mbn_files = glob.glob(inDir + "/u-boot-spl*.mbn")
-                    if spl_mbn_files:
-                        print("Using RDP-specific SPL images from current directory")
+                    print("Using generic u-boot-spl.mbn from current directory")
         else:
             # Normal flow: pick from current directory
             generic_spl_mbn = inDir + "/u-boot-spl.mbn"
+            spl_mbn_files = get_rdp_specific_spl_files(inDir, ".mbn")
 
-            if os.path.exists(generic_spl_mbn):
-                # Generic u-boot-spl.mbn exists, use it
+            if spl_mbn_files:
+                print("Using RDP-specific SPL images from current directory")
+            elif os.path.exists(generic_spl_mbn):
+                # Generic u-boot-spl.mbn is the fallback.
                 spl_mbn_files = [generic_spl_mbn]
                 print("Using existing generic u-boot-spl.mbn")
-            else:
-                # Generic not found, search for RDP-specific SPL images
-                spl_mbn_files = glob.glob(inDir + "/u-boot-spl*.mbn")
-                if spl_mbn_files:
-                    print("Generic u-boot-spl.mbn not found, using RDP-specific SPL images")
 
         # Check if at least one u-boot-spl*.mbn file exists (required)
         if not spl_mbn_files:
@@ -843,19 +848,17 @@ def gen_mbn():
             prc = subprocess.Popen(['python', bootconfig_path, '-a', arch, '-f', inDir + "/openwrt-" + arch + "_tiny_nor" + "-u-boot.elf", '-o', inDir + "/openwrt-" + arch + "_tiny_nor" + "-u-boot.mbn", '-v', "6"], cwd=cdir)
 
         # Handle u-boot-spl*.elf files with priority sequence:
-        # 1. Check if u-boot-spl.elf exists (generic version)
-        # 2. If not, use RDP-specific u-boot-spl*.elf files
+        # 1. Use RDP-specific u-boot-spl*.elf files when present
+        # 2. Fall back to u-boot-spl.elf
         generic_spl_elf = inDir + "/u-boot-spl.elf"
+        spl_elf_files = get_rdp_specific_spl_files(inDir, ".elf")
 
-        if os.path.exists(generic_spl_elf):
-            # Generic u-boot-spl.elf exists, use it
+        if spl_elf_files:
+            print("Using RDP-specific SPL images from current directory")
+        elif os.path.exists(generic_spl_elf):
+            # Generic u-boot-spl.elf is the fallback.
             spl_elf_files = [generic_spl_elf]
             print("Using existing generic u-boot-spl.elf")
-        else:
-            # Generic not found, search for RDP-specific SPL images
-            spl_elf_files = glob.glob(inDir + "/u-boot-spl*.elf")
-            if spl_elf_files:
-                print("Generic u-boot-spl.elf not found, using RDP-specific SPL images")
 
         if spl_elf_files:
             for spl_elf in spl_elf_files:
