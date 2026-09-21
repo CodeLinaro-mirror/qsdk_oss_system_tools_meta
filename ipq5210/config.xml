@@ -451,6 +451,12 @@ SPDX-License-Identifier: ISC
 			<layouts>default,vendor</layouts>
 			<fw_override>
 				<wifi_fw image="wifi_fw_qcn9589_squashfs.img" vol_size="7168KiB"/>
+				<profile-256 layouts="default,vendor">
+					<bootldr_components>
+						<optee>tee-raw_lm.mbn</optee>
+						<qcconfig>qcconfig-RDP511_1024M16_DDR4_LM256.elf</qcconfig>
+					</bootldr_components>
+				</profile-256>
 				<profile-512 layouts="default,vendor">
 					<bootldr_components>
 						<qcconfig>qcconfig-RDP511_1024M16_DDR4_LM512.elf</qcconfig>
@@ -471,6 +477,12 @@ SPDX-License-Identifier: ISC
 			<layouts>default,vendor</layouts>
 			<fw_override>
 				<wifi_fw image="wifi_fw_qcn9589_squashfs.img" vol_size="7168KiB"/>
+				<profile-256 layouts="default,vendor">
+					<bootldr_components>
+						<optee>tee-raw_lm.mbn</optee>
+						<qcconfig>qcconfig-RDP512_1024M16_DDR4_LM256.elf</qcconfig>
+					</bootldr_components>
+				</profile-256>
 				<profile-512 layouts="default,vendor">
 					<bootldr_components>
 						<qcconfig>qcconfig-RDP512_1024M16_DDR4_LM512.elf</qcconfig>
