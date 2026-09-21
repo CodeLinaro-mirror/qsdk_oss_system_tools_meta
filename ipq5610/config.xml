@@ -126,7 +126,7 @@ SPDX-License-Identifier: ISC
 		<qclib>QCLib.mbn</qclib>
 		<tfa_bl31>bl31.mbn</tfa_bl31>
 		<optee>tee-raw.mbn</optee>
-		<shrm>shrm_unsigned.mbn</shrm>
+		<shrm>signed-shrm.elf</shrm>
 		<dcb>E002_8_0100_0_dcb.bin</dcb>
 		<uboot flash="emmc" mode="32">openwrt-ipq5610-ipq56xx_32-mmc32-u-boot-UBOOT_DTB_NAME.mbn</uboot>
 		<uboot flash="emmc" mode="64">openwrt-ipq5610-generic-mmc-u-boot-UBOOT_DTB_NAME.mbn</uboot>
@@ -142,20 +142,20 @@ SPDX-License-Identifier: ISC
 		<entry>
 			<machid>0xF060000</machid>
 			<board>BL-EMU</board>
-			<memory>512M32_DDR4</memory>
-			<ddr4_boot_freq>1600000</ddr4_boot_freq>
+			<memory>1024M32_DDR5</memory>
+			<ddr5_boot_freq>1600000</ddr5_boot_freq>
 			<layouts>default,vendor</layouts>
 			<uboot_dtb_name>emulation</uboot_dtb_name>
 			<kernel_dtb_name>emulation-fbc</kernel_dtb_name>
 			<fw_override>
 				<profile-default layouts="default,vendor">
 					<bootldr_components>
-						<qcconfig>qcconfig-BL-EMU_512M32_DDR4.elf</qcconfig>
+						<qcconfig>qcconfig-BL-EMU_1024M32_DDR5.elf</qcconfig>
 					</bootldr_components>
 				</profile-default>
 				<profile-512 layouts="default,vendor">
 					<bootldr_components>
-						<qcconfig>qcconfig-BL-EMU_512M32_DDR4_LM512.elf</qcconfig>
+						<qcconfig>qcconfig-BL-EMU_1024M32_DDR5_LM512.elf</qcconfig>
 					</bootldr_components>
 				</profile-512>
 			</fw_override>
