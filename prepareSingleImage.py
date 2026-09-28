@@ -17,6 +17,7 @@ flash="nor,tiny-nor,nand,norplusnand,emmc,norplusemmc"
 ipq5424_supported_flash="nor,nand,norplusnand,emmc,norplusemmc,norplusemmc-gpt,norplusnand-gpt"
 ipq5210_supported_flash="nor,nand,norplusnand,emmc,norplusemmc,norplusemmc-gpt,norplusnand-gpt"
 ipq9650_supported_flash="nor,nand,norplusnand,emmc,norplusemmc,norplusemmc-gpt,norplusnand-gpt"
+ipq5610_supported_flash="nor,nand,norplusnand,emmc,norplusemmc,norplusemmc-gpt,norplusnand-gpt"
 bootImgDir=""
 rpmImgDir=""
 tzImgDir=""
@@ -42,7 +43,7 @@ mbn_version = "3"
 def print_help():
     print("\nUsage: python prepareSingleImage.py <option> <value>\n")
 
-    print("--arch \t\tArch(e.g ipq40xx/ipq807x/ipq807x_64/ipq6018/ipq6018_64/ipq5018/ipq5018_64/ipq9574/ipq9574_64/ipq5332/ipq5332_64/ipq5424/ipq5424_64/ipq5210/ipq5210_64/ipq9650/ipq9650_64)\n")
+    print("--arch \t\tArch(e.g ipq40xx/ipq807x/ipq807x_64/ipq6018/ipq6018_64/ipq5018/ipq5018_64/ipq9574/ipq9574_64/ipq5332/ipq5332_64/ipq5424/ipq5424_64/ipq5210/ipq5210_64/ipq9650/ipq9650_64/ipq5610/ipq5610_64)\n")
     print(" \t\te.g python prepareSingleImage.py --arch ipq807x\n\n")
 
     print("--fltype \tFlash Type (nor/nand/emmc/norplusnand/norplusemmc)")
@@ -75,6 +76,13 @@ def print_help():
     print("\t\tThis Argument does not take any value\n")
     print("\t\te.g python prepareSingleImage.py --gencdt\n\n")
 
+    print("--gencdtmbn \tWhether CDT elf and mbn to be generated from the CDT binaries")
+    print("\t\tIf not specified CDT elf/mbn will not be generated")
+    print("\t\tThis requires CDT binaries (cdt-*.bin) to already be present in the \"--in\" directory, i.e. run with '--gencdt' first")
+    print("\t\tThis is currently used/needed only for IPQ9574 and IPQ5332")
+    print("\t\tThis Argument does not take any value\n")
+    print("\t\te.g python prepareSingleImage.py --gencdt --gencdtmbn\n\n")
+
     print("--genxblcfg \tWhether xbl_config binaries to be generated")
     print("\t\tIf not specified xbl_config binary will not be generated")
     print("\t\tThis is currently used/needed only for IPQ5424")
@@ -83,7 +91,7 @@ def print_help():
 
     print("--genqccfg \tWhether qc_config binaries to be generated")
     print("\t\tIf not specified qc_config binary will not be generated")
-    print("\t\tThis is currently used/needed only for IPQ5210/IPQ9650")
+    print("\t\tThis is currently used/needed only for IPQ5210/IPQ9650/IPQ5610")
     print("\t\tThis Argument does not take any value\n")
     print("\t\te.g python prepareSingleImage.py --genqccfg\n\n")
 
@@ -94,7 +102,7 @@ def print_help():
 
     print("--genmelf \tWhether merged elf of xbl_sc and tme-l patch to be generated")
     print("\t\tIf not specified merged elf will not be generated")
-    print("\t\tThis is currently used/needed only for IPQ5424/IPQ5210/IPQ9650")
+    print("\t\tThis is currently used/needed only for IPQ5424/IPQ5210/IPQ9650/IPQ5610")
     print("\t\tThis Argument does not take any value\n")
     print("\t\te.g python prepareSingleImage.py --genmelf\n\n")
 
@@ -124,7 +132,7 @@ def print_help():
 
     print("--genmbn \tWhether u-boot.elf to be converted to u-boot.mbn")
     print("\t\tIf not specified u-boot.mbn will not be generated")
-    print("\t\tThis is currently used/needed only for IPQ807x, IPQ6018, IPQ5018, IPQ9574, IPQ5332, IPQ5424, IPQ5210, IPQ9650")
+    print("\t\tThis is currently used/needed only for IPQ807x, IPQ6018, IPQ5018, IPQ9574, IPQ5332, IPQ5424, IPQ5210, IPQ9650, IPQ5610")
     print("\t\tThis Argument does not take any value\n")
     print("\t\te.g python prepareSingleImage.py --genmbn\n\n")
 
@@ -137,13 +145,13 @@ def print_help():
 
     print("--gentfambn \t\tWhether tfa elf to be converted to mbn")
     print("\t\tIf not specified tfa mbn will not be generated")
-    print("\t\tThis is currently used/needed only for IPQ5210, IPQ9650")
+    print("\t\tThis is currently used/needed only for IPQ5210, IPQ9650, IPQ5610")
     print("\t\tThis Argument does not take any value")
     print("\t\te.g python prepareSingleImage.py --gentfambn\n\n")
 
     print("--genopteembn \t\tWhether optee bin to be converted to mbn")
     print("\t\tIf not specified optee mbn will not be generated")
-    print("\t\tThis is currently used/needed only for IPQ5210, IPQ9650")
+    print("\t\tThis is currently used/needed only for IPQ5210, IPQ9650, IPQ5610")
     print("\t\tAuto-generates single-segment ELF from .bin files with chipset load addresses")
     print("\t\tThis Argument does not take any value")
     print("\t\te.g python prepareSingleImage.py --genopteembn\n\n")
@@ -214,6 +222,83 @@ def gen_cdt():
     if prc.returncode != 0:
         print('ERROR: unable to create CDT binary')
         return prc.returncode
+
+    return 0
+
+# Per-arch CDT ELF load address (chipset-specific memory map). Alignment is 0x1000 for all supported chipsets.
+cdt_elf_addr_map = {
+    'ipq9574': '0x08CC5800',
+    'ipq5332': '0x8C3C400',
+}
+
+def gen_cdt_mbn():
+    global srcDir
+    global inDir
+    global cdir
+    global arch
+    global mbn_version
+
+    if arch not in cdt_elf_addr_map:
+        print('ERROR: CDT elf/mbn generation is not supported for architecture: ' + arch)
+        return -1
+
+    cdt_elf_ld = inDir + "/cdt_elf.ld"
+    ld_content = """SECTIONS
+{
+ . = %s ;
+ .data : ALIGN(0x1000) { *(.data) }
+}
+""" % cdt_elf_addr_map[arch]
+
+    try:
+        with open(cdt_elf_ld, 'w') as f:
+            f.write(ld_content)
+    except IOError as e:
+        print('ERROR: unable to create CDT linker script: ' + str(e))
+        return -1
+
+    bootconfig_path = srcDir + '/elftombn.py'
+    cdt_bin_list = glob.glob(inDir + "/cdt-*.bin")
+
+    if not cdt_bin_list:
+        print('ERROR: No cdt-*.bin files found in ' + inDir + ', run with --gencdt first')
+        return -1
+
+    for cdt_bin in cdt_bin_list:
+        cdt_name = os.path.splitext(os.path.basename(cdt_bin))[0]
+        cdt_obj = inDir + "/" + cdt_name + "_out.o"
+        cdt_elf = inDir + "/" + cdt_name + ".elf"
+        cdt_mbn = inDir + "/" + cdt_name + ".mbn"
+
+        print('Creating ' + cdt_name + '.elf from ' + cdt_name + '.bin')
+        cmd = ['objcopy', '-I', 'binary', '-O', 'elf32-i386', '--binary-architecture', 'i386', cdt_bin, cdt_obj]
+        ret = subprocess.call(cmd)
+        if ret != 0:
+            print('ERROR: unable to convert ' + cdt_name + '.bin to object file')
+            if os.path.exists(cdt_elf_ld):
+                os.remove(cdt_elf_ld)
+            return ret
+
+        cmd = ['ld', '-m', 'elf_i386', cdt_obj, '-T', cdt_elf_ld, '-o', cdt_elf]
+        ret = subprocess.call(cmd)
+        if ret != 0:
+            print('ERROR: unable to link ' + cdt_name + '.elf')
+            if os.path.exists(cdt_elf_ld):
+                os.remove(cdt_elf_ld)
+            if os.path.exists(cdt_obj):
+                os.remove(cdt_obj)
+            return ret
+
+        print('Creating ' + cdt_name + '.mbn from ' + cdt_name + '.elf')
+        prc = subprocess.Popen(['python', bootconfig_path, '-f', cdt_elf, '-o', cdt_mbn, '-a', arch, '-v', mbn_version], cwd=cdir)
+        prc.wait()
+        if prc.returncode != 0:
+            print('ERROR: unable to convert ' + cdt_name + '.elf to .mbn')
+            if os.path.exists(cdt_elf_ld):
+                os.remove(cdt_elf_ld)
+            if os.path.exists(cdt_obj):
+                os.remove(cdt_obj)
+            return prc.returncode
 
     return 0
 
@@ -461,18 +546,81 @@ def gen_melf():
                     else:
                         os.rename(os.path.join(inDir, xbl_nand_intermediate), os.path.join(inDir, xbl_nand_output_img));
     else:
-        # IPQ5210, IPQ9650 and other chipsets: Use u-boot-spl.mbn
-        # Dict: input_file -> (output_melf, is_optional)
-        # u-boot-spl.mbn QCLib_flashless.elf is required
-        spl_img_dict = {
-            'u-boot-spl.mbn'     : ('u-boot-spl.melf',     False),
-            'QCLib_flashless.mbn': ('QCLib_flashless.melf', False),
+        # IPQ5210, IPQ9650, IPQ5610 and other chipsets: Use u-boot-spl*.mbn files
+        # Priority sequence:
+        # 1. Check if u-boot-spl.mbn exists (generic version)
+        # 2. If not, use RDP-specific u-boot-spl*.mbn files
+
+        # When combined_soc is true, look for u-boot-spl*.mbn in version directory
+        # Map MBN versions to directory names: v7 -> V1, v8 -> V2
+        version_to_dir_map = {
+            '7': 'V1',
+            '8': 'V2',
         }
 
-        # Check if u-boot-spl.mbn exists (required)
-        if not os.path.isfile(inDir+"/u-boot-spl.mbn"):
-            print('ERROR: u-boot-spl.mbn file not present in input directory')
+        if combined_soc:
+            # Pick u-boot-spl*.mbn from version-specific directory (V1/V2)
+            version_dir = os.path.join(inDir, version_to_dir_map.get(mbn_version, 'V1'))
+
+            if os.path.exists(version_dir):
+                # Look for files in version directory
+                generic_spl_mbn = version_dir + "/u-boot-spl.mbn"
+
+                if os.path.exists(generic_spl_mbn):
+                    # Generic u-boot-spl.mbn exists in version directory
+                    spl_mbn_files = [generic_spl_mbn]
+                    print("Using generic u-boot-spl.mbn from " + version_to_dir_map.get(mbn_version, 'V1') + " directory")
+                else:
+                    # Generic not found, search for RDP-specific SPL images in version directory
+                    spl_mbn_files = glob.glob(version_dir + "/u-boot-spl*.mbn")
+                    if spl_mbn_files:
+                        print("Using RDP-specific SPL images from " + version_to_dir_map.get(mbn_version, 'V1') + " directory")
+            else:
+                # Fallback to current directory if version dir doesn't exist yet (first build)
+                generic_spl_mbn = inDir + "/u-boot-spl.mbn"
+
+                if os.path.exists(generic_spl_mbn):
+                    spl_mbn_files = [generic_spl_mbn]
+                    print("Using existing generic u-boot-spl.mbn from current directory")
+                else:
+                    spl_mbn_files = glob.glob(inDir + "/u-boot-spl*.mbn")
+                    if spl_mbn_files:
+                        print("Using RDP-specific SPL images from current directory")
+        else:
+            # Normal flow: pick from current directory
+            generic_spl_mbn = inDir + "/u-boot-spl.mbn"
+
+            if os.path.exists(generic_spl_mbn):
+                # Generic u-boot-spl.mbn exists, use it
+                spl_mbn_files = [generic_spl_mbn]
+                print("Using existing generic u-boot-spl.mbn")
+            else:
+                # Generic not found, search for RDP-specific SPL images
+                spl_mbn_files = glob.glob(inDir + "/u-boot-spl*.mbn")
+                if spl_mbn_files:
+                    print("Generic u-boot-spl.mbn not found, using RDP-specific SPL images")
+
+        # Check if at least one u-boot-spl*.mbn file exists (required)
+        if not spl_mbn_files:
+            if combined_soc:
+                print('ERROR: No u-boot-spl*.mbn files found in version directory or input directory')
+            else:
+                print('ERROR: No u-boot-spl*.mbn files found in input directory')
             return -1
+
+        # Build dictionary of input files to process
+        # Dict: input_file_path -> (output_melf, is_optional)
+        spl_img_dict = {}
+
+        # Add all found u-boot-spl*.mbn files with their full paths
+        for spl_mbn in spl_mbn_files:
+            spl_basename = os.path.basename(spl_mbn)
+            spl_melf_name = spl_basename.replace('.mbn', '.melf')
+            # Store the full path as key, not just basename
+            spl_img_dict[spl_mbn] = (spl_melf_name, False)
+
+        # Add QCLib_flashless.mbn (optional) - use inDir path
+        spl_img_dict[inDir + '/QCLib_flashless.mbn'] = ('QCLib_flashless.melf', True)
 
         # Determine TME patch file based on architecture and MBN version
         # Legacy TME patch files (single file for all versions)
@@ -481,24 +629,43 @@ def gen_melf():
             'ipq5210_64': 'tmel-ipq52xx-patch.elf',
             'ipq9650': 'tmel-ipq96xx-patch.elf',
             'ipq9650_64': 'tmel-ipq96xx-patch.elf',
+            'ipq5610': 'tmel-ipq56xx-patch.elf',
+            'ipq5610_64': 'tmel-ipq56xx-patch.elf',
             # Add more architectures here as needed
         }
 
-        # Combined SoC TME patch files (version-specific files for IPQ5210 only)
+        # Combined SoC TME patch files (version-specific files for IPQ5210 and IPQ9650)
         tme_patch_map_combined = {
             'ipq5210': {
                 '7': 'tmel-ipq52xx-patch.elf',
-                '8': 'tmel-ipq52xx-1.1.1-patch.elf',
+                '8': 'tmel-ipq52xx-1.2-patch.elf',
             },
             'ipq5210_64': {
                 '7': 'tmel-ipq52xx-patch.elf',
-                '8': 'tmel-ipq52xx-1.1.1-patch.elf',
+                '8': 'tmel-ipq52xx-1.2-patch.elf',
+            },
+            'ipq9650': {
+                '7': 'tmel-ipq96xx-patch.elf',
+                '8': 'tmel-ipq96xxv2-patch.elf',
+            },
+            'ipq9650_64': {
+                '7': 'tmel-ipq96xx-patch.elf',
+                '8': 'tmel-ipq96xxv2-patch.elf',
             },
         }
 
-        # Select appropriate TME patch map based on combined_soc flag
-        if combined_soc and arch in tme_patch_map_combined:
-            # Use version-specific files for combined SoC builds (IPQ5210 only)
+        # Select appropriate TME patch map based on combined_soc flag and architecture
+        # IPQ5210: Use version-specific files only with combined_soc flag
+        # IPQ9650: Always use version-specific files based on mbnv
+        if arch in ['ipq9650', 'ipq9650_64']:
+            # IPQ9650 always uses version-specific files based on mbnv
+            if arch in tme_patch_map_combined and mbn_version in tme_patch_map_combined[arch]:
+                tme_patch_file = tme_patch_map_combined[arch][mbn_version]
+            else:
+                print('ERROR: No TME patch file mapping defined for architecture: ' + arch + ' and MBN version: ' + mbn_version)
+                return -1
+        elif combined_soc and arch in tme_patch_map_combined:
+            # IPQ5210: Use version-specific files for combined SoC builds
             if mbn_version in tme_patch_map_combined[arch]:
                 tme_patch_file = tme_patch_map_combined[arch][mbn_version]
             else:
@@ -519,19 +686,24 @@ def gen_melf():
         # create melf for each input file
         script_path = inDir + '/create_multielf.py'
 
-        for input_img, (output_melf, is_optional) in spl_img_dict.items():
-            if is_optional and not os.path.isfile(inDir+"/"+input_img):
-                print('Optional image - '+input_img+' file not present, skipping '+output_melf+' binary')
+        for input_img_path, (output_melf, is_optional) in spl_img_dict.items():
+            # input_img_path is now the full path to the file (from dictionary)
+            if is_optional and not os.path.isfile(input_img_path):
+                print('Optional image - '+os.path.basename(input_img_path)+' file not present, skipping '+output_melf+' binary')
                 continue
-            print('Creating '+output_melf+' from '+input_img+' with TME patch: ' + tme_patch_file)
-            prc = subprocess.Popen(['python', script_path, '-f', inDir+"/"+input_img+","+ inDir+"/"+tme_patch_file, '-o', inDir+"/"+output_melf], cwd=cdir)
+            print('Creating '+output_melf+' from '+os.path.basename(input_img_path)+' with TME patch: ' + tme_patch_file)
+            prc = subprocess.Popen(['python', script_path, '-f', input_img_path+","+ inDir+"/"+tme_patch_file, '-o', inDir+"/"+output_melf], cwd=cdir)
             prc.wait()
             if prc.returncode != 0:
                 print('ERROR: unable to create '+output_melf+' binary')
                 return prc.returncode
 
-        # NAND images are generated only for u-boot-spl.melf
-        nand_input_img_list = ['u-boot-spl.melf']
+        # NAND images are generated for all u-boot-spl*.melf files
+        nand_input_img_list = []
+        for spl_mbn in spl_mbn_files:
+            spl_basename = os.path.basename(spl_mbn)
+            spl_melf_name = spl_basename.replace('.mbn', '.melf')
+            nand_input_img_list.append(spl_melf_name)
 
         # create nand melf for each generated melf
         script_path = inDir + '/Gen_xbl_nand_elf.py'
@@ -649,7 +821,6 @@ def gen_mbn():
     bootconfig_path = srcDir + '/elftombn.py'
     print("Converting u-boot elf to mbn ...")
     u_boot_2016_path=inDir + "/openwrt-" + arch + "-u-boot.elf"
-    u_boot_spl_path=inDir + "/u-boot-spl.elf"
     tiny_path=inDir + "/openwrt-" + arch + "_tiny" + "-u-boot.elf"
     tiny_nor_path=inDir + "/openwrt-" + arch + "_tiny_nor" + "-u-boot.elf"
     img_flag = 1
@@ -758,17 +929,39 @@ def gen_mbn():
         if os.path.exists(tiny_nor_path):
             prc = subprocess.Popen(['python', bootconfig_path, '-a', arch, '-f', inDir + "/openwrt-" + arch + "_tiny_nor" + "-u-boot.elf", '-o', inDir + "/openwrt-" + arch + "_tiny_nor" + "-u-boot.mbn", '-v', "6"], cwd=cdir)
 
-        if os.path.exists(u_boot_spl_path):
-            print("Converting u-boot-spl.elf to u-boot-spl.mbn ...")
-            prc = subprocess.Popen(['python', bootconfig_path, '-a', arch, '-f', inDir + "/u-boot-spl.elf", '-o', inDir + "/u-boot-spl.mbn", '-v', mbn_version, '-s', "0"], cwd=cdir)
-            img_flag = 0
+        # Handle u-boot-spl*.elf files with priority sequence:
+        # 1. Check if u-boot-spl.elf exists (generic version)
+        # 2. If not, use RDP-specific u-boot-spl*.elf files
+        generic_spl_elf = inDir + "/u-boot-spl.elf"
+
+        if os.path.exists(generic_spl_elf):
+            # Generic u-boot-spl.elf exists, use it
+            spl_elf_files = [generic_spl_elf]
+            print("Using existing generic u-boot-spl.elf")
+        else:
+            # Generic not found, search for RDP-specific SPL images
+            spl_elf_files = glob.glob(inDir + "/u-boot-spl*.elf")
+            if spl_elf_files:
+                print("Generic u-boot-spl.elf not found, using RDP-specific SPL images")
+
+        if spl_elf_files:
+            for spl_elf in spl_elf_files:
+                spl_basename = os.path.basename(spl_elf)
+                spl_mbn = spl_elf.replace('.elf', '.mbn')
+                print("Converting %s to %s ..." % (spl_basename, os.path.basename(spl_mbn)))
+                prc = subprocess.Popen(['python', bootconfig_path, '-a', arch, '-f', spl_elf, '-o', spl_mbn, '-v', mbn_version, '-s', "0"], cwd=cdir)
+                prc.wait()
+                if prc.returncode != 0:
+                    print('ERROR: unable to convert %s to .mbn' % spl_basename)
+                    return prc.returncode
+                img_flag = 0
 
     if(img_flag):
         print("u-boot image is not available")
         print("Failed to create mbn!")
         return -1
 
-    if os.path.exists(u_boot_2016_path) or os.path.exists(tiny_path) or os.path.exists(u_boot_spl_path):
+    if os.path.exists(u_boot_2016_path) or os.path.exists(tiny_path):
         prc.wait()
 
         if prc.returncode != 0:
@@ -778,7 +971,7 @@ def gen_mbn():
     print("U-Boot .mbn file is created")
 
     # Process QCLib files (convert/rename .elf to .mbn) for ipq5210 and ipq9650
-    if arch == "ipq5210" or arch == "ipq9650":
+    if arch == "ipq5210" or arch == "ipq9650" or arch == "ipq5610":
         if process_qclib_files() != 0:
             return -1
 
@@ -1128,6 +1321,7 @@ def main():
     global combined_soc
 
     to_generate_cdt = "false"
+    to_generate_cdt_mbn = "false"
     to_generate_xblcfg = "false"
     to_generate_qccfg = "false"
     to_generate_melf = "false"
@@ -1151,7 +1345,7 @@ def main():
         try:
             opts, args = getopt(sys.argv[1:], "h", ["arch=", "fltype=", "in=",
                 "bootimg=", "tzimg=", "nhssimg=", "rpmimg=", "wififwimg",
-                "gencdt", "genxblcfg", "genqccfg", "genmelf", "dtc_path=", "memory=", "mbnv=",
+                "gencdt", "gencdtmbn", "genxblcfg", "genqccfg", "genmelf", "dtc_path=", "memory=", "mbnv=",
                 "total_blocks=", "flash_size=", "genpart", "genbootconf", "genbootconf_crc",
                 "genmbn", "lk", "genbootldr", "genlicense", "gentfambn", "genopteembn", "combined_soc", "soc=","attach1=",
 		"attach2=", "attach3=", "attach4=", "attach5=", "help"])
@@ -1162,13 +1356,13 @@ def main():
         for option, value in opts:
             if option == "--arch":
                 arch = value
-                if arch not in ["ipq40xx", "ipq806x", "ipq807x", "ipq807x_64", "ipq6018", "ipq6018_64", "ipq5018", "ipq5018_64", "ipq9574", "ipq9574_64", "ipq5332", "ipq5332_64", "ipq5424", "ipq5424_64", "ipq5210", "ipq5210_64", "ipq9650", "ipq9650_64"]:
+                if arch not in ["ipq40xx", "ipq806x", "ipq807x", "ipq807x_64", "ipq6018", "ipq6018_64", "ipq5018", "ipq5018_64", "ipq9574", "ipq9574_64", "ipq5332", "ipq5332_64", "ipq5424", "ipq5424_64", "ipq5210", "ipq5210_64", "ipq9650", "ipq9650_64", "ipq5610", "ipq5610_64"]:
                     print("Invalid arch type: " + arch)
                     print_help()
                     return -1
-                if arch == "ipq807x" or arch == "ipq5018" or arch == "ipq9574" or arch == "ipq5332" or arch == "ipq5424" or arch == "ipq5210" or arch == "ipq9650":
+                if arch == "ipq807x" or arch == "ipq5018" or arch == "ipq9574" or arch == "ipq5332" or arch == "ipq5424" or arch == "ipq5210" or arch == "ipq9650" or arch == "ipq5610":
                     mode = "32"
-                elif arch == "ipq807x_64" or arch == "ipq5018_64" or arch == "ipq9574_64" or arch == "ipq5332_64" or arch == "ipq5424_64" or arch == "ipq5210_64" or arch == "ipq9650_64":
+                elif arch == "ipq807x_64" or arch == "ipq5018_64" or arch == "ipq9574_64" or arch == "ipq5332_64" or arch == "ipq5424_64" or arch == "ipq5210_64" or arch == "ipq9650_64" or arch == "ipq5610_64":
                     mode = "64"
                     arch = arch[:-3]
 
@@ -1186,6 +1380,9 @@ def main():
 
                 if arch == "ipq9650":
                     flash = ipq9650_supported_flash
+
+                if arch == "ipq5610":
+                    flash = ipq5610_supported_flash
 
             elif option == "--fltype":
                 flash = value
@@ -1210,6 +1407,8 @@ def main():
                 wififwImgDir = value
             elif option == "--gencdt":
                 to_generate_cdt = "true"
+            elif option == "--gencdtmbn":
+                to_generate_cdt_mbn = "true"
             elif option == "--genxblcfg":
                 to_generate_xblcfg = "true"
             elif option == "--genqccfg":
@@ -1292,9 +1491,15 @@ def main():
         elif arch == "ipq9650" or arch == "ipq5210":
             if not mbnv_provided:
                 mbn_version = "7"
+        elif arch == "ipq5610":
+            mbn_version = "8"
 
         if to_generate_cdt == "true":
             if gen_cdt() != 0:
+                return -1
+
+        if to_generate_cdt_mbn == "true":
+            if gen_cdt_mbn() != 0:
                 return -1
 
         if to_generate_xblcfg == "true":
@@ -1344,14 +1549,14 @@ def main():
                     return -1
 
         if to_generate_mbn == "true":
-            if arch == "ipq807x" or arch == "ipq6018" or arch == "ipq5018" or arch == "ipq9574" or arch == "ipq5332" or arch == "ipq5424" or arch == "ipq5210" or arch == "ipq9650":
+            if arch == "ipq807x" or arch == "ipq6018" or arch == "ipq5018" or arch == "ipq9574" or arch == "ipq5332" or arch == "ipq5424" or arch == "ipq5210" or arch == "ipq9650" or arch == "ipq5610":
                 if gen_mbn() != 0:
                     return -1
                 if to_generate_lk_mbn == "true" and gen_lk_mbn() != 0:
                     return -1
             else:
                 print("Invalid arch \"" + arch + "\" for mbn conversion")
-                print("--genmbn is needed/used only for ipq807x, ipq6018, ipq5018, ipq9574, ipq5332, ipq5424, ipq5210 and ipq9650 type")
+                print("--genmbn is needed/used only for ipq807x, ipq6018, ipq5018, ipq9574, ipq5332, ipq5424, ipq5210, ipq9650 and ipq5610 type")
 
         if to_generate_melf == "true":
             if gen_melf() != 0:
@@ -1368,6 +1573,10 @@ def main():
             result = build_multi_mbn_versions(to_generate_mbn, to_generate_melf, to_gen_tfa_mbn, to_gen_optee_mbn, to_generate_qccfg)
             if result != 0:
                 return -1
+
+        # Write MBN version for pack_v3.py (ipq9650 only)
+        if arch == "ipq9650":
+            os.system('echo ' + mbn_version + ' > ' + inDir + '/mbn_version')
 
         # Clean up temp files after all operations are complete
         cleanup_intermediate_files()

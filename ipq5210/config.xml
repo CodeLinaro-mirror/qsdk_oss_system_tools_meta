@@ -165,6 +165,7 @@ SPDX-License-Identifier: ISC
 			<ddr4_boot_freq>1600000</ddr4_boot_freq>
 			<layouts>default,vendor</layouts>
 			<uboot_dtb_name>emulation</uboot_dtb_name>
+			<spl_dtb_name>emulation</spl_dtb_name>
 			<kernel_dtb_name>emulation-fbc</kernel_dtb_name>
 			<fw_override>
 				<profile-2048 layouts="default,vendor">
@@ -190,9 +191,15 @@ SPDX-License-Identifier: ISC
 			<memory_128>64M16_DDR3</memory_128>
 			<memory_256>128M16_DDR3</memory_256>
 			<memory_512>256M16_DDR3</memory_512>
+			<memory>256M16_DDR3</memory>
 			<ddr3_boot_freq>933000</ddr3_boot_freq>
 			<layouts>default,vendor,128M</layouts>
 			<fw_override>
+				<profile-default layouts="default,vendor,128M">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP497_256M16_DDR3.elf</qcconfig>
+					</bootldr_components>
+				</profile-default>
 				<profile-128 layouts="default,vendor,128M">
 					<bootldr_components>
 						<optee>tee-raw_lm.mbn</optee>
@@ -307,7 +314,7 @@ SPDX-License-Identifier: ISC
 			<ddr4_boot_freq>1600000</ddr4_boot_freq>
 			<layouts>default,vendor</layouts>
 			<fw_override>
-				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="7168KiB"/>
+				<wifi_fw image="wifi_fw_qcn9625_combined_v1_v2_squashfs.img" vol_size="8192KiB"/>
 				<profile-256 layouts="default,vendor">
 					<bootldr_components>
 						<optee>tee-raw_lm.mbn</optee>
@@ -333,7 +340,7 @@ SPDX-License-Identifier: ISC
 			<ddr4_boot_freq>1600000</ddr4_boot_freq>
 			<layouts>default,vendor</layouts>
 			<fw_override>
-				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="7168KiB"/>
+				<wifi_fw image="wifi_fw_qcn9625_combined_v1_v2_squashfs.img" vol_size="8192KiB"/>
 				<profile-256 layouts="default,vendor">
 					<bootldr_components>
 						<optee>tee-raw_lm.mbn</optee>
@@ -359,7 +366,7 @@ SPDX-License-Identifier: ISC
 			<ddr4_boot_freq>1600000</ddr4_boot_freq>
 			<layouts>default,vendor</layouts>
 			<fw_override>
-				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="7168KiB"/>
+				<wifi_fw image="wifi_fw_qcn9625_combined_v1_v2_squashfs.img" vol_size="8192KiB"/>
 				<profile-256 layouts="default,vendor">
 					<bootldr_components>
 						<optee>tee-raw_lm.mbn</optee>
@@ -382,10 +389,11 @@ SPDX-License-Identifier: ISC
 			<machid>0x8080203</machid>
 			<board>RDP504</board>
 			<memory>512M16_DDR4</memory>
+			<memory_2048>1024M16_DDR4</memory_2048>
 			<ddr4_boot_freq>1600000</ddr4_boot_freq>
 			<layouts>default,vendor</layouts>
 			<fw_override>
-				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="7168KiB"/>
+				<wifi_fw image="wifi_fw_qcn9625_combined_v1_v2_squashfs.img" vol_size="8192KiB"/>
 				<profile-256 layouts="default,vendor">
 					<bootldr_components>
 						<optee>tee-raw_lm.mbn</optee>
@@ -402,6 +410,11 @@ SPDX-License-Identifier: ISC
 						<qcconfig>qcconfig-RDP504_512M16_DDR4.elf</qcconfig>
 					</bootldr_components>
 				</profile-default>
+				<profile-2048 layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-RDP504_1024M16_DDR4.elf</qcconfig>
+					</bootldr_components>
+				</profile-2048>
 			</fw_override>
 		</entry>
 		<entry>
@@ -411,7 +424,7 @@ SPDX-License-Identifier: ISC
 			<ddr3_boot_freq>933000</ddr3_boot_freq>
 			<layouts>default,vendor</layouts>
 			<fw_override>
-				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="7168KiB"/>
+				<wifi_fw image="wifi_fw_qcn9625_combined_v1_v2_squashfs.img" vol_size="8192KiB"/>
 				<profile-256 layouts="default,vendor">
 					<bootldr_components>
 						<optee>tee-raw_lm.mbn</optee>
@@ -438,6 +451,12 @@ SPDX-License-Identifier: ISC
 			<layouts>default,vendor</layouts>
 			<fw_override>
 				<wifi_fw image="wifi_fw_qcn9589_squashfs.img" vol_size="7168KiB"/>
+				<profile-256 layouts="default,vendor">
+					<bootldr_components>
+						<optee>tee-raw_lm.mbn</optee>
+						<qcconfig>qcconfig-RDP511_1024M16_DDR4_LM256.elf</qcconfig>
+					</bootldr_components>
+				</profile-256>
 				<profile-512 layouts="default,vendor">
 					<bootldr_components>
 						<qcconfig>qcconfig-RDP511_1024M16_DDR4_LM512.elf</qcconfig>
@@ -458,6 +477,12 @@ SPDX-License-Identifier: ISC
 			<layouts>default,vendor</layouts>
 			<fw_override>
 				<wifi_fw image="wifi_fw_qcn9589_squashfs.img" vol_size="7168KiB"/>
+				<profile-256 layouts="default,vendor">
+					<bootldr_components>
+						<optee>tee-raw_lm.mbn</optee>
+						<qcconfig>qcconfig-RDP512_1024M16_DDR4_LM256.elf</qcconfig>
+					</bootldr_components>
+				</profile-256>
 				<profile-512 layouts="default,vendor">
 					<bootldr_components>
 						<qcconfig>qcconfig-RDP512_1024M16_DDR4_LM512.elf</qcconfig>
@@ -477,10 +502,25 @@ SPDX-License-Identifier: ISC
 			<ddr4_boot_freq>1600000</ddr4_boot_freq>
 			<layouts>default,vendor</layouts>
 			<fw_override>
-				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="7168KiB"/>
+				<wifi_fw image="wifi_fw_qcn9625_combined_v1_v2_squashfs.img" vol_size="8192KiB"/>
 				<profile-default layouts="default,vendor">
 					<bootldr_components>
 						<qcconfig>qcconfig-DB-HM01.1_1024M16_DDR4.elf</qcconfig>
+					</bootldr_components>
+				</profile-default>
+			</fw_override>
+		</entry>
+		<entry>
+			<machid>0x1080001</machid>
+			<board>DB-HM01-C1</board>
+			<memory>1024M16_DDR4</memory>
+			<ddr4_boot_freq>1600000</ddr4_boot_freq>
+			<layouts>default,vendor</layouts>
+			<fw_override>
+				<wifi_fw image="wifi_fw_qcn9625_combined_v1_v2_squashfs.img" vol_size="8192KiB"/>
+				<profile-default layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-DB-HM01-C1_1024M16_DDR4.elf</qcconfig>
 					</bootldr_components>
 				</profile-default>
 			</fw_override>
@@ -492,7 +532,7 @@ SPDX-License-Identifier: ISC
 			<ddr3_boot_freq>933000</ddr3_boot_freq>
 			<layouts>default,vendor</layouts>
 			<fw_override>
-				<wifi_fw image="wifi_fw_qcn9625_squashfs.img" vol_size="7168KiB"/>
+				<wifi_fw image="wifi_fw_qcn9625_combined_v1_v2_squashfs.img" vol_size="8192KiB"/>
 				<profile-default layouts="default,vendor">
 					<bootldr_components>
 						<qcconfig>qcconfig-DB-HM02.1_256M16_DDR3.elf</qcconfig>
@@ -501,6 +541,27 @@ SPDX-License-Identifier: ISC
 				<profile-512 layouts="default,vendor">
 					<bootldr_components>
 						<qcconfig>qcconfig-DB-HM02.1_256M16_DDR3_LM512.elf</qcconfig>
+					</bootldr_components>
+				</profile-512>
+			</fw_override>
+		</entry>
+		<entry>
+			<machid>0x1080101</machid>
+			<board>DB-HM02-C1</board>
+			<memory>256M16_DDR3</memory>
+			<memory_512>256M16_DDR3</memory_512>
+			<ddr3_boot_freq>933000</ddr3_boot_freq>
+			<layouts>default,vendor</layouts>
+			<fw_override>
+				<wifi_fw image="wifi_fw_qcn9625_combined_v1_v2_squashfs.img" vol_size="8192KiB"/>
+				<profile-default layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-DB-HM02-C1_256M16_DDR3.elf</qcconfig>
+					</bootldr_components>
+				</profile-default>
+				<profile-512 layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-DB-HM02-C1_256M16_DDR3_LM512.elf</qcconfig>
 					</bootldr_components>
 				</profile-512>
 			</fw_override>

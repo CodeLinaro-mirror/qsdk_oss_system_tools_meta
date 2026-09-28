@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+===========================================================================
+Copyright (c) Qualcomm Technologies, Inc. and/or its subsidiaries.
+SPDX-License-Identifier: ISC
+===========================================================================
+-->
+
+<config>
+	<data type="ARCH">
+		<SOC>ipq5610</SOC>
+	</data>
+
+	<data type="TINY_NOR_PARAMETER">
+		<entry layout="default">
+			<page_size>256</page_size>
+			<pages_per_block>16</pages_per_block>
+			<total_block>4096</total_block>
+		</entry>
+	</data>
+
+	<data type="NOR_PARAMETER">
+		<entry layout="default">
+			<page_size>256</page_size>
+			<pages_per_block>256</pages_per_block>
+			<total_block>256</total_block>
+		</entry>
+	</data>
+
+	<data type="NAND_PARAMETER">
+		<entry type="2k" layout="default">
+			<page_size>2048</page_size>
+			<pages_per_block>64</pages_per_block>
+			<total_block>2048</total_block>
+		</entry>
+		<entry type="4k" layout="default">
+			<page_size>4096</page_size>
+			<pages_per_block>64</pages_per_block>
+			<total_block>1024</total_block>
+		</entry>
+	</data>
+
+	<data type="EMMC_PARAMETER">
+		<entry layout="default">
+			<entry physical_partition="0">
+				<total_block>15269888</total_block>
+				<partition_mbn>emmc_gpt_main.bin</partition_mbn>
+				<partition_mbn_backup>emmc_gpt_backup.bin</partition_mbn_backup>
+			</entry>
+		</entry>
+		<entry layout="vendor">
+			<entry physical_partition="0" gpt_type="user">
+				<total_block>15269888</total_block>
+				<partition_mbn>emmc_user_gpt_main.bin</partition_mbn>
+				<partition_mbn_backup>emmc_user_gpt_backup.bin</partition_mbn_backup>
+			</entry>
+			<entry physical_partition="1" gpt_type="boot0">
+				<total_block>8192</total_block>
+				<partition_mbn>emmc_boot_gpt_main.bin</partition_mbn>
+				<partition_mbn_backup>emmc_boot_gpt_backup.bin</partition_mbn_backup>
+			</entry>
+		</entry>
+	</data>
+
+	<data type="NORPLUSNAND_PARAMETER">
+		<entry type="2k" layout="default">
+			<page_size>256</page_size>
+			<pages_per_block>256</pages_per_block>
+			<total_block>256</total_block>
+			<nand_page_size>2048</nand_page_size>
+			<nand_pages_per_block>64</nand_pages_per_block>
+			<nand_total_block>4096</nand_total_block>
+		</entry>
+		<entry type="4k" layout="default">
+			<page_size>256</page_size>
+			<pages_per_block>256</pages_per_block>
+			<total_block>256</total_block>
+			<nand_page_size>4096</nand_page_size>
+			<nand_pages_per_block>64</nand_pages_per_block>
+			<nand_total_block>4096</nand_total_block>
+		</entry>
+	</data>
+
+	<data type="NORPLUSEMMC_PARAMETER">
+		<entry layout="default">
+			<entry physical_partition="0">
+				<page_size>256</page_size>
+				<page_size_flash>512</page_size_flash>
+				<pages_per_block>256</pages_per_block>
+				<total_block>256</total_block>
+				<emmc_total_block>15269888</emmc_total_block>
+				<partition_mbn>nemmc_gpt_main.bin</partition_mbn>
+				<partition_mbn_backup>nemmc_gpt_backup.bin</partition_mbn_backup>
+			</entry>
+		</entry>
+	</data>
+
+	<data type="NORPLUSNAND-GPT_PARAMETER">
+		<entry type="2k" layout="default">
+			<entry physical_partition="0">
+				<total_block>8192</total_block>
+				<partition_mbn>norplusnand_gpt_main.bin</partition_mbn>
+				<partition_mbn_backup>norplusnand_gpt_backup.bin</partition_mbn_backup>
+			</entry>
+		</entry>
+		<entry type="4k" layout="default">
+			<entry physical_partition="2">
+				<total_block>8192</total_block>
+				<partition_mbn>norplusnand_4k_gpt_main.bin</partition_mbn>
+				<partition_mbn_backup>norplusnand_4k_gpt_backup.bin</partition_mbn_backup>
+			</entry>
+		</entry>
+	</data>
+
+	<data type="NORPLUSEMMC-GPT_PARAMETER">
+		<entry layout="default">
+			<entry physical_partition="1">
+				<total_block>8192</total_block>
+				<partition_mbn>norplusemmc_gpt_main.bin</partition_mbn>
+				<partition_mbn_backup>norplusemmc_gpt_backup.bin</partition_mbn_backup>
+			</entry>
+		</entry>
+	</data>
+
+	<data type="BOOTLDR_COMPONENTS">
+		<qclib>QCLib.mbn</qclib>
+		<tfa_bl31>bl31.mbn</tfa_bl31>
+		<optee>tee-raw.mbn</optee>
+		<shrm>signed-shrm.elf</shrm>
+		<dcb>E002_8_0100_0_dcb.bin</dcb>
+		<uboot flash="emmc" mode="32">openwrt-ipq5610-ipq56xx_32-mmc32-u-boot-UBOOT_DTB_NAME.mbn</uboot>
+		<uboot flash="emmc" mode="64">openwrt-ipq5610-generic-mmc-u-boot-UBOOT_DTB_NAME.mbn</uboot>
+		<uboot flash="nand,nand-4k" mode="32">openwrt-ipq5610-ipq56xx_32-nand32-u-boot-UBOOT_DTB_NAME.mbn</uboot>
+		<uboot flash="nand,nand-4k" mode="64">openwrt-ipq5610-generic-nand-u-boot-UBOOT_DTB_NAME.mbn</uboot>
+		<uboot flash="norplusnand,norplusnand-gpt,norplusnand-4k,norplusnand-4k-gpt" mode="32">openwrt-ipq5610-ipq56xx_32-norplusnand32-u-boot-UBOOT_DTB_NAME.mbn</uboot>
+		<uboot flash="norplusnand,norplusnand-gpt,norplusnand-4k,norplusnand-4k-gpt" mode="64">openwrt-ipq5610-generic-norplusnand-u-boot-UBOOT_DTB_NAME.mbn</uboot>
+		<uboot flash="norplusemmc" mode="32">openwrt-ipq5610-ipq56xx_32-norplusmmc32-u-boot-UBOOT_DTB_NAME.mbn</uboot>
+		<uboot flash="norplusemmc" mode="64">openwrt-ipq5610-generic-norplusmmc-u-boot-UBOOT_DTB_NAME.mbn</uboot>
+	</data>
+
+	<data type="MACH_ID_BOARD_MAP">
+		<entry>
+			<machid>0xF060000</machid>
+			<board>BL-EMU</board>
+			<memory>1024M32_DDR5</memory>
+			<ddr5_boot_freq>1600000</ddr5_boot_freq>
+			<layouts>default,vendor</layouts>
+			<uboot_dtb_name>emulation</uboot_dtb_name>
+			<kernel_dtb_name>emulation-fbc</kernel_dtb_name>
+			<fw_override>
+				<profile-default layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-BL-EMU_1024M32_DDR5.elf</qcconfig>
+					</bootldr_components>
+				</profile-default>
+				<profile-512 layouts="default,vendor">
+					<bootldr_components>
+						<qcconfig>qcconfig-BL-EMU_1024M32_DDR5_LM512.elf</qcconfig>
+					</bootldr_components>
+				</profile-512>
+			</fw_override>
+		</entry>
+	</data>
+</config>

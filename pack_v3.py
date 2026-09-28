@@ -88,20 +88,29 @@ skip_4k_nand = "false"
 atf = "false"
 img_suffix = ""
 bootldr_only = "false"
-supported_arch = ["ipq9650_64", "ipq9650", "ipq5210", "ipq5210_64", "ipq5424", "ipq5424_64", "ipq5332", "ipq5332_64"]
-split_by_rdp_supported_arch = ["ipq5210", "ipq9650"]
+supported_arch = ["ipq5610_64", "ipq5610", "ipq9650_64", "ipq9650", "ipq5210", "ipq5210_64", "ipq5424", "ipq5424_64", "ipq5332", "ipq5332_64"]
+split_by_rdp_supported_arch = ["ipq5210", "ipq9650", "ipq5610"]
 supported_flash_type = {}
 supported_flash_type["ipq5332"] = { "nand", "nor", "tiny-nor", "emmc", "norplusnand", "norplusemmc", "tiny-nor-debug" };
 supported_flash_type["ipq5424"] = { "nor", "nand", "emmc", "norplusnand", "norplusemmc", "norplusnand-gpt", "norplusemmc-gpt" , "tiny-nor", "tiny-nor-debug" };
 supported_flash_type["ipq5210"] = { "nor", "nand", "emmc", "norplusnand", "norplusemmc", "norplusnand-gpt", "norplusemmc-gpt" };
 supported_flash_type["ipq9650"] = { "nor", "nand", "emmc", "norplusnand", "norplusemmc", "norplusnand-gpt", "norplusemmc-gpt" };
+supported_flash_type["ipq5610"] = { "nor", "nand", "emmc", "norplusnand", "norplusemmc", "norplusnand-gpt", "norplusemmc-gpt" };
 gpt_flash = ["nor-gpt", "emmc"]
 soc_hw_versions = {}
 soc_hw_versions["ipq5332"] = { 0x201A0100, 0x201A0101 };
 soc_hw_versions["ipq5424"] = { 0xE0010100 };
 soc_hw_versions["ipq5210"] = { 0xE0030100, 0xE0030101, 0xE0030102 };
 soc_hw_versions["ipq9650"] = { 0xE0020100, 0xE0020200 };
+soc_hw_versions["ipq5610"] = { 0xE0040100 };
 combined_soc = False
+
+# Required bootldr components per architecture.
+# All arches need qclib, tfa_bl31, uboot, optee as a baseline.
+# List only the arch-specific additions here.
+bootldr_required_components = {
+    "ipq5610": ["qclib", "qcconfig", "tfa_bl31", "uboot", "optee", "shrm", "dcb"],
+}
 
 # Combined version mapping: soc_hw_version -> (version_string, version_dir)
 soc_version_map = {
@@ -1529,7 +1538,8 @@ class Pack(object):
                     bootldr_part = part
 
             # Generate bootldr image if needed
-            if bootldr_part is not None and all(key in bootldr_components for key in ["qclib", "qcconfig", "tfa_bl31", "uboot", "optee"]):
+            required = bootldr_required_components.get(ARCH_NAME, ["qclib", "qcconfig", "tfa_bl31", "uboot", "optee"])
+            if bootldr_part is not None and all(key in bootldr_components for key in required):
                 bootldr_filename = self.generate_bootldr_image(
                     ARCH_NAME, board, memory_tag, self.flash_type, MODE, bootldr_components
                 )
@@ -1583,6 +1593,18 @@ class Pack(object):
                     else:
                         if "UBOOT_DTB_NAME" in fname:
                             fname = fname.replace("-UBOOT_DTB_NAME", "")
+
+                if pname.lower().replace("0:", "") == "spl" and fname != "" and "u-boot-spl" in fname.lower():
+                    if split_by_rdp == "true":
+                        if "SPL_DTB_NAME" in fname:
+                            spl_dtb_name = segment.find(".//spl_dtb_name")
+                            if spl_dtb_name is not None:
+                                fname = fname.replace("SPL_DTB_NAME", spl_dtb_name.text)
+                            else:
+                                fname = fname.replace("SPL_DTB_NAME", board.lower())
+                    else:
+                        if "SPL_DTB_NAME" in fname:
+                            fname = fname.replace("-SPL_DTB_NAME", "")
 
                 # Apply WiFi firmware overrides for eMMC partitions (board-specific)
                 if split_by_rdp == "true":
@@ -1646,12 +1668,44 @@ class Pack(object):
                     v1_path = os.path.join(self.images_dname, "V1", fname)
                     v2_path = os.path.join(self.images_dname, "V2", fname)
                     if not os.path.isfile(v1_path) or not os.path.isfile(v2_path):
-                        print("file '%s' does not exist in both V1 and V2 directories" % fname)
-                        return 1
+                        # Priority sequence for SPL files: RDP-specific -> generic
+                        # If RDP-specific doesn't exist, fall back to generic
+                        if '-ipq' in fname.lower():
+                            # RDP-specific file doesn't exist, try generic version
+                            # e.g., u-boot-spl_nand-ipq5210-emulation.melf -> u-boot-spl_nand.melf
+                            generic_fname = fname[:fname.find('-ipq')] + '.melf'
+
+                            v1_generic_path = os.path.join(self.images_dname, "V1", generic_fname)
+                            v2_generic_path = os.path.join(self.images_dname, "V2", generic_fname)
+                            if os.path.isfile(v1_generic_path) and os.path.isfile(v2_generic_path):
+                                print("RDP-specific file '%s' not found in V1/V2, using generic '%s'" % (fname, generic_fname))
+                                fname = generic_fname
+                            else:
+                                print("file '%s' does not exist in both V1 and V2 directories" % fname)
+                                return 1
+                        else:
+                            print("file '%s' does not exist in both V1 and V2 directories" % fname)
+                            return 1
                 else:
-                    if os.path.isfile(os.path.join(self.images_dname, fname)) == False:
-                        print("file '%s' is not exist " % fname)
-                        return 1
+                    file_path = os.path.join(self.images_dname, fname)
+                    # Priority sequence for SPL files: RDP-specific -> generic
+                    # If RDP-specific doesn't exist, fall back to generic
+                    if os.path.isfile(file_path) == False:
+                        if 'u-boot-spl' in fname.lower() and '-ipq' in fname.lower():
+                            # RDP-specific file doesn't exist, try generic version
+                            # e.g., u-boot-spl_nand-ipq5210-emulation.melf -> u-boot-spl_nand.melf
+                            generic_fname = fname[:fname.find('-ipq')] + '.melf'
+
+                            generic_path = os.path.join(self.images_dname, generic_fname)
+                            if os.path.isfile(generic_path):
+                                print("RDP-specific file '%s' not found, using generic '%s'" % (fname, generic_fname))
+                                fname = generic_fname
+                            else:
+                                print("file '%s' is not exist " % fname)
+                                return 1
+                        else:
+                            print("file '%s' is not exist " % fname)
+                            return 1
 
                 # For combined_soc u-boot-spl files, check size from both V1 and V2 directories
                 if combined_soc == "true" and 'u-boot-spl' in fname.lower() and fname.endswith('.melf'):
@@ -1913,6 +1967,10 @@ class Pack(object):
                 "--uboot_path", components.get("uboot", ""),
                 "--optee_path", components.get("optee", ""),
             ])
+            if "shrm" in components:
+                cmd.extend(["--shrm_path", components["shrm"]])
+            if "dcb" in components:
+                cmd.extend(["--dcb-path", components["dcb"]])
 
         # Add common parameters
         cmd.extend([
@@ -1956,8 +2014,8 @@ class Pack(object):
         bootldr_section = root.find(".//data[@type='BOOTLDR_COMPONENTS']")
 
         if bootldr_section is not None:
-            # Get qclib, qcconfig, tfa_bl31, and optee components
-            for component_tag in ["qclib", "qcconfig", "tfa_bl31", "optee"]:
+            # Get qclib, qcconfig, tfa_bl31, optee, shrm, and dcb components
+            for component_tag in ["qclib", "qcconfig", "tfa_bl31", "optee", "shrm", "dcb"]:
                 component = bootldr_section.find(".//%s" % component_tag)
                 if component is not None:
                     components[component_tag] = component.text
@@ -2295,6 +2353,13 @@ def main():
     config = SRC_DIR + "/" + ARCH_NAME + "/config.xml"
     root = ET.parse(config)
 
+    # Apply MBN version config for ipq9650
+    if ARCH_NAME == "ipq9650":
+        mbn_file = os.path.join(parser.images_dname, 'mbn_version')
+        if os.path.exists(mbn_file):
+            mbn_version = open(mbn_file).read().strip()
+            soc_hw_versions["ipq9650"] = { 0xE0020100 if mbn_version == "7" else 0xE0020200 }
+
     print("#################", sys._getframe(0).f_code.co_name, sys._getframe(0).f_lineno, config, parser.flash_type)
 
     if skip_4k_nand != "true":
@@ -2325,7 +2390,7 @@ def main():
 
         parser.out_fname = flash_type + "-" + ARCH_NAME + MODE_APPEND + suffix
 
-        if ARCH_NAME == "ipq5424" or ARCH_NAME == "ipq5210" or ARCH_NAME == "ipq9650":
+        if ARCH_NAME == "ipq5424" or ARCH_NAME == "ipq5210" or ARCH_NAME == "ipq9650" or ARCH_NAME == "ipq5610":
             if flash_type == "norplusnand-gpt":
                 parser.out_fname = "norplusnand-" + ARCH_NAME + MODE_APPEND + suffix
             elif flash_type == "norplusnand-4k-gpt":
