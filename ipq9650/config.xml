@@ -232,32 +232,6 @@ SPDX-License-Identifier: ISC
 			</fw_override>
 		</entry>
 		<entry>
-			<machid>0x8090003</machid>
-			<board>RDP525</board>
-			<memory>1024M32_DDR5</memory>
-			<memory_2048>1024M32_DDR5</memory_2048>
-			<ddr5_boot_freq>2800000</ddr5_boot_freq>
-			<layouts>default,vendor</layouts>
-			<fw_override>
-				<wifi_fw image="wifi_fw_qcn9589_v1_qcn9625_combined_v1_v2_squashfs.img" vol_size="12288KiB"/>
-				<profile-default layouts="default,vendor">
-					<bootldr_components>
-						<qcconfig>qcconfig-RDP525_1024M32_DDR5.elf</qcconfig>
-					</bootldr_components>
-				</profile-default>
-				<profile-2048 layouts="default,vendor">
-					<bootldr_components>
-						<qcconfig>qcconfig-RDP525_1024M32_DDR5_LM2048.elf</qcconfig>
-					</bootldr_components>
-				</profile-2048>
-				<profile-512 layouts="default,vendor">
-					<bootldr_components>
-						<qcconfig>qcconfig-RDP525_1024M32_DDR5_LM512.elf</qcconfig>
-					</bootldr_components>
-				</profile-512>
-			</fw_override>
-		</entry>
-		<entry>
 			<machid>0x8090004</machid>
 			<board>RDP529</board>
 			<memory>1024M32_DDR5</memory>
