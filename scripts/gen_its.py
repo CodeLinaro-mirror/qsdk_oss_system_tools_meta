@@ -329,6 +329,11 @@ arch_meta_load_addr = {
     "ipq9650": "0x08cf1800"
 }
 
+arch_dpr_load_addr = {
+    "ipq5210": "0x08cb5000",
+    "ipq9650": "0x08cf1800"
+}
+
 def handle_error(operation_name, e, default_return=False):
     """
     Common error handling function for operations.
@@ -848,8 +853,11 @@ class FitImageGenerator:
             dpr_basename = os.path.basename(self.args.dpr_path)
             self.template_manager.set_component_availability("DPR", True)
             self.template_manager.set_placeholder("DPR_FILENAME", dpr_basename)
-            # Use the same load address as qcconfig segment 1
-            if 'qcconfig' in self.parsers and self.parsers['qcconfig'].get_load_segments():
+            if self.args.arch in arch_dpr_load_addr:
+                dpr_load_addr = arch_dpr_load_addr[self.args.arch]
+                self.template_manager.set_placeholder("DPR_LOAD_ADDR", dpr_load_addr)
+                print("DPR load address set to: {0}".format(dpr_load_addr))
+            elif 'qcconfig' in self.parsers and self.parsers['qcconfig'].get_load_segments():
                 dpr_load_addr = self.parsers['qcconfig'].get_load_segments()[0]['load_address']
                 self.template_manager.set_placeholder("DPR_LOAD_ADDR", dpr_load_addr)
                 print("DPR load address set to: {0} (same as qcconfig)".format(dpr_load_addr))
